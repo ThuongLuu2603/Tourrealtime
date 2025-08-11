@@ -97,13 +97,13 @@ export default function TourTable() {
       };
     }
 
-    // Level 1 filters
+    // Level 1 filters - Vùng miền
     if (selectedLevel === "level1_domestic") {
       return {
-        hierarchyLevels: hierarchyLevels.filter(h => h.category === 'domestic' && h.level === 'geo_region'),
+        hierarchyLevels: hierarchyLevels.filter(h => h.category === 'domestic' && (h.level === 'geo_region' || h.level === 'region')),
         tours: filteredTours.filter(t => t.category === 'domestic'),
         showSections: ['domestic'],
-        showLevels: ['geo_region']
+        showLevels: ['geo_region', 'region']
       };
     }
     if (selectedLevel === "level1_international") {
@@ -115,39 +115,39 @@ export default function TourTable() {
       };
     }
 
-    // Level 2 filters
+    // Level 2 filters - Khu vực  
     if (selectedLevel === "level2_domestic") {
       return {
-        hierarchyLevels: hierarchyLevels.filter(h => h.category === 'domestic' && h.level === 'region'),
+        hierarchyLevels: hierarchyLevels.filter(h => h.category === 'domestic' && (h.level === 'geo_region' || h.level === 'region' || h.level === 'area')),
         tours: filteredTours.filter(t => t.category === 'domestic'),
         showSections: ['domestic'],
-        showLevels: ['region']
+        showLevels: ['geo_region', 'region', 'area']
       };
     }
     if (selectedLevel === "level2_international") {
       return {
-        hierarchyLevels: hierarchyLevels.filter(h => h.category === 'international' && h.level === 'region'),
+        hierarchyLevels: hierarchyLevels.filter(h => h.category === 'international' && (h.level === 'tour_category' || h.level === 'continent' || h.level === 'region')),
         tours: filteredTours.filter(t => t.category === 'international'),
         showSections: ['international'],
-        showLevels: ['region']
+        showLevels: ['tour_category', 'continent', 'region']
       };
     }
 
-    // Level 3 filters  
+    // Level 3 filters - Tuyến tour
     if (selectedLevel === "level3_domestic") {
       return {
-        hierarchyLevels: hierarchyLevels.filter(h => h.category === 'domestic' && h.level === 'area'),
+        hierarchyLevels: hierarchyLevels.filter(h => h.category === 'domestic'),
         tours: filteredTours.filter(t => t.category === 'domestic'),
         showSections: ['domestic'],
-        showLevels: ['area']
+        showLevels: ['geo_region', 'region', 'area', 'tour']
       };
     }
     if (selectedLevel === "level3_international") {
       return {
-        hierarchyLevels: hierarchyLevels.filter(h => h.category === 'international' && h.level === 'area'),
+        hierarchyLevels: hierarchyLevels.filter(h => h.category === 'international'),
         tours: filteredTours.filter(t => t.category === 'international'),
         showSections: ['international'],
-        showLevels: ['area']
+        showLevels: ['tour_category', 'continent', 'region', 'area']
       };
     }
 
