@@ -324,12 +324,12 @@ export default function TourTable() {
                       {sectionData.remaining.toLocaleString()}
                     </td>
                     <td className="px-2 py-3 text-center">
-                      <div className="flex flex-col items-center gap-1">
+                      <div className="flex items-center justify-center gap-2">
                         <span className={`${isDomestic ? 'bg-brand-green' : 'bg-brand-blue'} text-white px-2 py-1 rounded-full text-xs font-medium blink`}>
                           +{sectionData.recentlyBooked}
                         </span>
-                        <div className="text-xs text-green-600 text-center">
-                          <span>↗ +{sectionData.recentlyBooked30min || 0} </span>
+                        <div className="text-xs text-green-600 flex items-center gap-1">
+                          <span>↗ +{sectionData.recentlyBooked30min || 0}</span>
                           <span className="text-gray-400">30 phút qua</span>
                         </div>
                       </div>
@@ -370,12 +370,12 @@ export default function TourTable() {
                     <td className="px-2 py-2 text-center text-sm font-medium text-blue-700">{continentData.sold.toLocaleString()}</td>
                     <td className="px-2 py-2 text-center text-sm text-brand-amber font-medium">{continentData.remaining.toLocaleString()}</td>
                     <td className="px-2 py-2 text-center">
-                      <div className="flex flex-col items-center gap-1">
+                      <div className="flex items-center justify-center gap-2">
                         <span className="bg-blue-100 text-blue-800 px-2 py-1 rounded-full text-xs font-medium">
                           +{continentData.recentlyBooked}
                         </span>
-                        <div className="text-xs text-green-600 text-center">
-                          <span>↗ +{continentData.recentlyBooked30min || 0} </span>
+                        <div className="text-xs text-green-600 flex items-center gap-1">
+                          <span>↗ +{continentData.recentlyBooked30min || 0}</span>
                           <span className="text-gray-400">30 phút qua</span>
                         </div>
                       </div>
@@ -412,12 +412,12 @@ export default function TourTable() {
                     <td className="px-2 py-2 text-center text-sm font-medium text-gray-700">{regionData.sold.toLocaleString()}</td>
                     <td className="px-2 py-2 text-center text-sm text-brand-amber font-medium">{regionData.remaining.toLocaleString()}</td>
                     <td className="px-2 py-2 text-center">
-                      <div className="flex flex-col items-center gap-1">
+                      <div className="flex items-center justify-center gap-2">
                         <span className="bg-blue-100 text-blue-800 px-2 py-1 rounded-full text-xs font-medium">
                           +{regionData.recentlyBooked}
                         </span>
-                        <div className="text-xs text-green-600 text-center">
-                          <span>↗ +{regionData.recentlyBooked30min || 0} </span>
+                        <div className="text-xs text-green-600 flex items-center gap-1">
+                          <span>↗ +{regionData.recentlyBooked30min || 0}</span>
                           <span className="text-gray-400">30 phút qua</span>
                         </div>
                       </div>
@@ -459,12 +459,12 @@ export default function TourTable() {
                     <td className="px-2 py-2 text-center text-sm text-gray-600">{areaData.sold.toLocaleString()}</td>
                     <td className="px-2 py-2 text-center text-sm text-brand-amber">{areaData.remaining.toLocaleString()}</td>
                     <td className="px-2 py-2 text-center">
-                      <div className="flex flex-col items-center gap-1">
+                      <div className="flex items-center justify-center gap-2">
                         <span className="bg-blue-100 text-blue-800 px-2 py-1 rounded-full text-xs">
                           +{areaData.recentlyBooked}
                         </span>
-                        <div className="text-xs text-green-600 text-center">
-                          <span>↗ +{areaData.recentlyBooked30min || 0} </span>
+                        <div className="text-xs text-green-600 flex items-center gap-1">
+                          <span>↗ +{areaData.recentlyBooked30min || 0}</span>
                           <span className="text-gray-400">30 phút qua</span>
                         </div>
                       </div>
@@ -503,12 +503,12 @@ export default function TourTable() {
                     <td className="px-2 py-2 text-center text-sm text-gray-500">{tourData.sold.toLocaleString()}</td>
                     <td className="px-2 py-2 text-center text-sm text-gray-500">{tourData.remaining.toLocaleString()}</td>
                     <td className="px-2 py-2 text-center">
-                      <div className="flex flex-col items-center gap-1">
+                      <div className="flex items-center justify-center gap-2">
                         <span className="bg-green-100 text-green-800 px-2 py-1 rounded-full text-xs blink">
                           +{tourData.recentlyBooked}
                         </span>
-                        <div className="text-xs text-green-600 text-center">
-                          <span>↗ +{tourData.recentlyBooked30min || 0} </span>
+                        <div className="text-xs text-green-600 flex items-center gap-1">
+                          <span>↗ +{tourData.recentlyBooked30min || 0}</span>
                           <span className="text-gray-400">30 phút qua</span>
                         </div>
                       </div>
