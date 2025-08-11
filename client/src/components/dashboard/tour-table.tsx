@@ -248,9 +248,11 @@ export default function TourTable() {
       return;
     }
 
-    // Show filtered content based on active levels
-    if (activeLevels.includes('level1')) {
-      if (category === 'domestic') {
+    // Show filtered content based on active levels - only show relevant level for this category
+    if (category === 'domestic') {
+      // For domestic tours
+      if (activeLevels.includes('level1')) {
+        // Level 1: Show only regions under domestic
         domesticRegions.forEach(region => {
           allRows.push({
             type: 'region',
@@ -258,7 +260,33 @@ export default function TourTable() {
             isExpanded: false
           });
         });
-      } else {
+      }
+      
+      if (activeLevels.includes('level2')) {
+        // Level 2: Show only areas under domestic
+        domesticAreas.forEach(area => {
+          allRows.push({
+            type: 'area',
+            data: area,
+            isExpanded: false
+          });
+        });
+      }
+      
+      if (activeLevels.includes('level3')) {
+        // Level 3: Show only tours under domestic
+        const domesticTours = filteredTours.filter(tour => tour.category === 'domestic');
+        domesticTours.forEach(tour => {
+          allRows.push({
+            type: 'tour',
+            data: tour
+          });
+        });
+      }
+    } else {
+      // For international tours
+      if (activeLevels.includes('level1')) {
+        // Level 1: Show only continents under international
         internationalContinents.forEach(continent => {
           allRows.push({
             type: 'continent',
@@ -267,18 +295,9 @@ export default function TourTable() {
           });
         });
       }
-    }
-
-    if (activeLevels.includes('level2')) {
-      if (category === 'domestic') {
-        domesticAreas.forEach(area => {
-          allRows.push({
-            type: 'area',
-            data: area,
-            isExpanded: false
-          });
-        });
-      } else {
+      
+      if (activeLevels.includes('level2')) {
+        // Level 2: Show only regions under international
         internationalRegions.forEach(region => {
           allRows.push({
             type: 'region',
@@ -287,16 +306,17 @@ export default function TourTable() {
           });
         });
       }
-    }
-
-    if (activeLevels.includes('level3')) {
-      const categoryTours = filteredTours.filter(tour => tour.category === category);
-      categoryTours.forEach(tour => {
-        allRows.push({
-          type: 'tour',
-          data: tour
+      
+      if (activeLevels.includes('level3')) {
+        // Level 3: Show only tours under international
+        const internationalTours = filteredTours.filter(tour => tour.category === 'international');
+        internationalTours.forEach(tour => {
+          allRows.push({
+            type: 'tour',
+            data: tour
+          });
         });
-      });
+      }
     }
   };
 
