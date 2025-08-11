@@ -20,22 +20,22 @@ export const LevelFilter: React.FC<LevelFilterProps> = ({ value, onChange }) => 
           <SelectItem value="all">Tất cả</SelectItem>
           
           <div className="px-2 py-1.5 text-xs font-semibold text-gray-500 bg-gray-50">
-            Vùng Miền (Level 1)
+            Vùng miền (Level 1)
           </div>
-          <SelectItem value="level1_domestic">Level 1 - Nội địa (Miền Bắc, Miền Trung, Miền Nam)</SelectItem>
-          <SelectItem value="level1_international">Level 1 - Quốc tế (Châu Á, Châu Âu, Châu Úc)</SelectItem>
+          <SelectItem value="level1_domestic">Nội địa - Vùng miền (Miền Bắc, Miền Trung, Miền Nam)</SelectItem>
+          <SelectItem value="level1_international">Quốc tế - Vùng miền (Châu Á, Châu Âu)</SelectItem>
           
           <div className="px-2 py-1.5 text-xs font-semibold text-gray-500 bg-gray-50">
             Khu vực (Level 2)
           </div>
-          <SelectItem value="level2_domestic">Level 2 - Nội địa (Tây Bắc, Đông Bắc, Tây Nguyên)</SelectItem>
-          <SelectItem value="level2_international">Level 2 - Quốc tế (Đông Bắc Á, Đông Nam Á, Tây Âu)</SelectItem>
+          <SelectItem value="level2_domestic">Nội địa - Khu vực (ĐBSH&DH, Tây Bắc, Duyên Hải)</SelectItem>
+          <SelectItem value="level2_international">Quốc tế - Khu vực (Đông Bắc Á, Đông Nam Á, Nam Á)</SelectItem>
           
           <div className="px-2 py-1.5 text-xs font-semibold text-gray-500 bg-gray-50">
             Tuyến tour (Level 3)
           </div>
-          <SelectItem value="level3_domestic">Level 3 - Nội địa (Hạ Long - Sapa, Đà Nẵng - Hội An)</SelectItem>
-          <SelectItem value="level3_international">Level 3 - Quốc tế (Trung Quốc, Nhật Bản, Hàn Quốc)</SelectItem>
+          <SelectItem value="level3_domestic">Nội địa - Tuyến tour (Hạ Long - Sapa, Phú Quốc)</SelectItem>
+          <SelectItem value="level3_international">Quốc tế - Tuyến tour (Trung Quốc, Nhật Bản, Hàn Quốc)</SelectItem>
         </SelectContent>
       </Select>
     </div>
