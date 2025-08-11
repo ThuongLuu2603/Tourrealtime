@@ -4,7 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { ChevronDown, ChevronRight, Filter } from "lucide-react";
 import type { Tour, HierarchyLevel, SalesUnit } from "@shared/schema";
-import { LevelFilter, type FilterLevel } from "./level-filter";
+import { LevelFilter, type LevelFilters } from "./level-filter";
 
 export default function TourTable() {
   const [expandedSections, setExpandedSections] = useState<Record<string, boolean>>({
@@ -15,7 +15,11 @@ export default function TourTable() {
   const [expandedRegions, setExpandedRegions] = useState<Record<string, boolean>>({});
   const [expandedAreas, setExpandedAreas] = useState<Record<string, boolean>>({});
   const [selectedSalesUnit, setSelectedSalesUnit] = useState<string>("all");
-  const [selectedLevel, setSelectedLevel] = useState<FilterLevel>("all");
+  const [levelFilters, setLevelFilters] = useState<LevelFilters>({
+    level1: { domestic: false, international: false },
+    level2: { domestic: false, international: false },
+    level3: { domestic: false, international: false }
+  });
 
   const { data: tours = [], isLoading: toursLoading } = useQuery<Tour[]>({
     queryKey: ["/api/tours"],
@@ -86,65 +90,46 @@ export default function TourTable() {
     ? tours 
     : tours.filter(tour => tour.topSalesUnit === selectedSalesUnit);
 
-  // Filter data based on selected level - always keep main categories visible
-  const getFilteredData = () => {
-    if (selectedLevel === "all") {
-      return {
-        hierarchyLevels: hierarchyLevels,
-        tours: filteredTours,
-        showSections: ['domestic', 'international'],
-        showLevels: ['geo_region', 'tour_category', 'continent', 'region', 'area'],
-        filterLevel: 'all'
-      };
-    }
-
-    // Level 1 - Hiển thị main categories + vùng miền khi expand
-    if (selectedLevel === "level1") {
-      return {
-        hierarchyLevels: hierarchyLevels,
-        tours: filteredTours,
-        showSections: ['domestic', 'international'], 
-        showLevels: ['geo_region', 'tour_category', 'region', 'continent'],
-        filterLevel: 'level1'
-      };
-    }
-
-    // Level 2 - Hiển thị main categories + khu vực khi expand
-    if (selectedLevel === "level2") {
-      return {
-        hierarchyLevels: hierarchyLevels,
-        tours: filteredTours,
-        showSections: ['domestic', 'international'],
-        showLevels: ['geo_region', 'tour_category', 'area', 'region'],
-        filterLevel: 'level2'
-      };
-    }
-
-    // Level 3 - Hiển thị main categories + tuyến tour khi expand
-    if (selectedLevel === "level3") {
-      return {
-        hierarchyLevels: hierarchyLevels,
-        tours: filteredTours,
-        showSections: ['domestic', 'international'],
-        showLevels: ['geo_region', 'tour_category', 'tour'],
-        filterLevel: 'level3'
-      };
-    }
-
-    return {
-      hierarchyLevels: hierarchyLevels,
-      tours: filteredTours,
-      showSections: ['domestic', 'international'],
-      showLevels: ['geo_region', 'tour_category', 'continent', 'region', 'area'],
-      filterLevel: 'all'
-    };
+  // Check if any filters are active
+  const hasActiveFilters = () => {
+    return Object.values(levelFilters).some(level => 
+      level.domestic || level.international
+    );
   };
 
-  const { hierarchyLevels: displayHierarchyLevels, tours: displayTours, showSections, showLevels, filterLevel } = getFilteredData();
+  // Determine which sections should be shown based on filters
+  const getVisibleSections = () => {
+    if (!hasActiveFilters()) {
+      return ['domestic', 'international']; // Show all if no filters
+    }
 
-  // Group hierarchy levels by category and level (using filtered data)
-  const domesticLevels = displayHierarchyLevels.filter(level => level.category === 'domestic');
-  const internationalLevels = displayHierarchyLevels.filter(level => level.category === 'international');
+    const sections: string[] = [];
+    
+    // Check if any level has domestic filter active
+    const hasDomestic = Object.values(levelFilters).some(level => level.domestic);
+    if (hasDomestic) sections.push('domestic');
+    
+    // Check if any level has international filter active
+    const hasInternational = Object.values(levelFilters).some(level => level.international);
+    if (hasInternational) sections.push('international');
+    
+    return sections;
+  };
+
+  // Get active filter levels for a category
+  const getActiveLevels = (category: 'domestic' | 'international') => {
+    const levels: string[] = [];
+    if (levelFilters.level1[category]) levels.push('level1');
+    if (levelFilters.level2[category]) levels.push('level2'); 
+    if (levelFilters.level3[category]) levels.push('level3');
+    return levels;
+  };
+
+  const showSections = getVisibleSections();
+
+  // Group hierarchy levels by category and level
+  const domesticLevels = hierarchyLevels.filter(level => level.category === 'domestic');
+  const internationalLevels = hierarchyLevels.filter(level => level.category === 'international');
   
   // Get top-level categories
   const domesticRoot = domesticLevels.find(level => level.level === 'geo_region');
@@ -159,8 +144,8 @@ export default function TourTable() {
   const internationalRegions = internationalLevels.filter(level => level.level === 'region');
   const internationalAreas = internationalLevels.filter(level => level.level === 'area');
 
-  // Group tours by area (using filtered data)
-  const toursByArea = displayTours.reduce((acc, tour) => {
+  // Group tours by area
+  const toursByArea = filteredTours.reduce((acc, tour) => {
     if (!acc[tour.area]) {
       acc[tour.area] = [];
     }
@@ -188,38 +173,17 @@ export default function TourTable() {
   // Create rows data based on filter level - always show main categories first
   const allRows: any[] = [];
 
-  // Helper function to add content based on filter level when expanded
+  // Helper function to add content based on active filters when expanded
   const addExpandedContent = (category: 'domestic' | 'international') => {
-    if (category === 'domestic' && expandedSections.domestic) {
-      if (filterLevel === "level1") {
-        // Level 1: Show regions only
-        domesticRegions.forEach(region => {
-          allRows.push({
-            type: 'region',
-            data: region,
-            isExpanded: false
-          });
-        });
-      } else if (filterLevel === "level2") {
-        // Level 2: Show areas only
-        domesticAreas.forEach(area => {
-          allRows.push({
-            type: 'area',
-            data: area,
-            isExpanded: false
-          });
-        });
-      } else if (filterLevel === "level3") {
-        // Level 3: Show tours only
-        const domesticTours = displayTours.filter(tour => tour.category === 'domestic');
-        domesticTours.forEach(tour => {
-          allRows.push({
-            type: 'tour',
-            data: tour
-          });
-        });
-      } else {
-        // Default: Show full hierarchy
+    const activeLevels = getActiveLevels(category);
+    const isExpanded = category === 'domestic' ? expandedSections.domestic : expandedSections.international;
+    
+    if (!isExpanded) return;
+
+    // If no specific filters for this category, show full hierarchy
+    if (activeLevels.length === 0 && !hasActiveFilters()) {
+      if (category === 'domestic') {
+        // Show full domestic hierarchy
         domesticRegions.forEach(region => {
           allRows.push({
             type: 'region',
@@ -227,7 +191,6 @@ export default function TourTable() {
             isExpanded: expandedRegions[region.code] ?? true
           });
 
-          // Show areas under this region only if region is expanded
           if (expandedRegions[region.code] !== false) {
             const regionAreas = domesticAreas.filter(area => area.parentCode === region.code);
             regionAreas.forEach(area => {
@@ -237,7 +200,6 @@ export default function TourTable() {
                 isExpanded: expandedAreas[area.code] ?? true
               });
 
-              // Show tours under this area only if area is expanded
               if (expandedAreas[area.code] !== false) {
                 const areaTours = toursByArea[area.code] || [];
                 areaTours.forEach(tour => {
@@ -250,37 +212,8 @@ export default function TourTable() {
             });
           }
         });
-      }
-    } else if (category === 'international' && expandedSections.international) {
-      if (filterLevel === "level1") {
-        // Level 1: Show continents only
-        internationalContinents.forEach(continent => {
-          allRows.push({
-            type: 'continent',
-            data: continent,
-            isExpanded: false
-          });
-        });
-      } else if (filterLevel === "level2") {
-        // Level 2: Show regions only  
-        internationalRegions.forEach(region => {
-          allRows.push({
-            type: 'region',
-            data: region,
-            isExpanded: false
-          });
-        });
-      } else if (filterLevel === "level3") {
-        // Level 3: Show tours only
-        const internationalTours = displayTours.filter(tour => tour.category === 'international');
-        internationalTours.forEach(tour => {
-          allRows.push({
-            type: 'tour',
-            data: tour
-          });
-        });
       } else {
-        // Default: Show full hierarchy
+        // Show full international hierarchy
         internationalContinents.forEach(continent => {
           allRows.push({
             type: 'continent',
@@ -288,7 +221,6 @@ export default function TourTable() {
             isExpanded: expandedContinents[continent.code] ?? true
           });
 
-          // Show regions under this continent only if continent is expanded
           if (expandedContinents[continent.code] !== false) {
             const continentRegions = internationalRegions.filter(region => region.parentCode === continent.code);
             
@@ -299,10 +231,8 @@ export default function TourTable() {
                 isExpanded: expandedRegions[region.code] ?? true
               });
 
-              // Show areas under this region only if region is expanded
               if (expandedRegions[region.code] !== false) {
                 const regionAreas = internationalAreas.filter(area => area.parentCode === region.code);
-                
                 regionAreas.forEach(area => {
                   allRows.push({
                     type: 'area',
@@ -315,6 +245,58 @@ export default function TourTable() {
           }
         });
       }
+      return;
+    }
+
+    // Show filtered content based on active levels
+    if (activeLevels.includes('level1')) {
+      if (category === 'domestic') {
+        domesticRegions.forEach(region => {
+          allRows.push({
+            type: 'region',
+            data: region,
+            isExpanded: false
+          });
+        });
+      } else {
+        internationalContinents.forEach(continent => {
+          allRows.push({
+            type: 'continent',
+            data: continent,
+            isExpanded: false
+          });
+        });
+      }
+    }
+
+    if (activeLevels.includes('level2')) {
+      if (category === 'domestic') {
+        domesticAreas.forEach(area => {
+          allRows.push({
+            type: 'area',
+            data: area,
+            isExpanded: false
+          });
+        });
+      } else {
+        internationalRegions.forEach(region => {
+          allRows.push({
+            type: 'region',
+            data: region,
+            isExpanded: false
+          });
+        });
+      }
+    }
+
+    if (activeLevels.includes('level3')) {
+      const categoryTours = filteredTours.filter(tour => tour.category === category);
+      categoryTours.forEach(tour => {
+        allRows.push({
+          type: 'tour',
+          data: tour
+        });
+      });
     }
   };
 
@@ -354,8 +336,8 @@ export default function TourTable() {
           <div className="flex items-center space-x-4">
             {/* Level Filter */}
             <LevelFilter 
-              value={selectedLevel} 
-              onChange={setSelectedLevel} 
+              filters={levelFilters} 
+              onChange={setLevelFilters} 
             />
             
             {/* Sales Unit Filter */}
