@@ -328,9 +328,11 @@ export default function TourTable() {
                         <span className={`${isDomestic ? 'bg-brand-green' : 'bg-brand-blue'} text-white px-2 py-1 rounded-full text-xs font-medium blink`}>
                           +{sectionData.recentlyBooked}
                         </span>
-                        <div className="text-xs text-green-600 flex items-center gap-1">
-                          <span>↗ +{sectionData.recentlyBooked30min || 0}</span>
-                          <span className="text-gray-400">30 phút qua</span>
+                        <div className="flex flex-col items-center">
+                          <div className="text-xs text-green-600 flex items-center gap-1">
+                            <span>📈 +{sectionData.recentlyBooked30min || 0}</span>
+                          </div>
+                          <span className="text-xs text-gray-400">30 phút qua</span>
                         </div>
                       </div>
                     </td>
@@ -374,9 +376,11 @@ export default function TourTable() {
                         <span className="bg-blue-100 text-blue-800 px-2 py-1 rounded-full text-xs font-medium">
                           +{continentData.recentlyBooked}
                         </span>
-                        <div className="text-xs text-green-600 flex items-center gap-1">
-                          <span>↗ +{continentData.recentlyBooked30min || 0}</span>
-                          <span className="text-gray-400">30 phút qua</span>
+                        <div className="flex flex-col items-center">
+                          <div className="text-xs text-green-600 flex items-center gap-1">
+                            <span>📈 +{continentData.recentlyBooked30min || 0}</span>
+                          </div>
+                          <span className="text-xs text-gray-400">30 phút qua</span>
                         </div>
                       </div>
                     </td>
@@ -416,9 +420,11 @@ export default function TourTable() {
                         <span className="bg-blue-100 text-blue-800 px-2 py-1 rounded-full text-xs font-medium">
                           +{regionData.recentlyBooked}
                         </span>
-                        <div className="text-xs text-green-600 flex items-center gap-1">
-                          <span>↗ +{regionData.recentlyBooked30min || 0}</span>
-                          <span className="text-gray-400">30 phút qua</span>
+                        <div className="flex flex-col items-center">
+                          <div className="text-xs text-green-600 flex items-center gap-1">
+                            <span>📈 +{regionData.recentlyBooked30min || 0}</span>
+                          </div>
+                          <span className="text-xs text-gray-400">30 phút qua</span>
                         </div>
                       </div>
                     </td>
@@ -463,9 +469,11 @@ export default function TourTable() {
                         <span className="bg-blue-100 text-blue-800 px-2 py-1 rounded-full text-xs">
                           +{areaData.recentlyBooked}
                         </span>
-                        <div className="text-xs text-green-600 flex items-center gap-1">
-                          <span>↗ +{areaData.recentlyBooked30min || 0}</span>
-                          <span className="text-gray-400">30 phút qua</span>
+                        <div className="flex flex-col items-center">
+                          <div className="text-xs text-green-600 flex items-center gap-1">
+                            <span>📈 +{areaData.recentlyBooked30min || 0}</span>
+                          </div>
+                          <span className="text-xs text-gray-400">30 phút qua</span>
                         </div>
                       </div>
                     </td>
@@ -507,9 +515,11 @@ export default function TourTable() {
                         <span className="bg-green-100 text-green-800 px-2 py-1 rounded-full text-xs blink">
                           +{tourData.recentlyBooked}
                         </span>
-                        <div className="text-xs text-green-600 flex items-center gap-1">
-                          <span>↗ +{tourData.recentlyBooked30min || 0}</span>
-                          <span className="text-gray-400">30 phút qua</span>
+                        <div className="flex flex-col items-center">
+                          <div className="text-xs text-green-600 flex items-center gap-1">
+                            <span>📈 +{tourData.recentlyBooked30min || 0}</span>
+                          </div>
+                          <span className="text-xs text-gray-400">30 phút qua</span>
                         </div>
                       </div>
                     </td>
