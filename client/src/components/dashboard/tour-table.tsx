@@ -328,10 +328,9 @@ export default function TourTable() {
                         <span className={`${isDomestic ? 'bg-brand-green' : 'bg-brand-blue'} text-white px-2 py-1 rounded-full text-xs font-medium blink`}>
                           +{sectionData.recentlyBooked}
                         </span>
-                        <div className="flex items-center text-xs text-green-600">
-                          <span className="mr-1">↗</span>
-                          <span>+{sectionData.recentlyBooked30min || 0}</span>
-                          <span className="ml-1 text-gray-400">30 phút qua</span>
+                        <div className="text-xs text-green-600 text-center">
+                          <span>↗ +{sectionData.recentlyBooked30min || 0} </span>
+                          <span className="text-gray-400">30 phút qua</span>
                         </div>
                       </div>
                     </td>
@@ -375,10 +374,9 @@ export default function TourTable() {
                         <span className="bg-blue-100 text-blue-800 px-2 py-1 rounded-full text-xs font-medium">
                           +{continentData.recentlyBooked}
                         </span>
-                        <div className="flex items-center text-xs text-green-600">
-                          <span className="mr-1">↗</span>
-                          <span>+{continentData.recentlyBooked30min || 0}</span>
-                          <span className="ml-1 text-gray-400">30 phút qua</span>
+                        <div className="text-xs text-green-600 text-center">
+                          <span>↗ +{continentData.recentlyBooked30min || 0} </span>
+                          <span className="text-gray-400">30 phút qua</span>
                         </div>
                       </div>
                     </td>
@@ -418,10 +416,9 @@ export default function TourTable() {
                         <span className="bg-blue-100 text-blue-800 px-2 py-1 rounded-full text-xs font-medium">
                           +{regionData.recentlyBooked}
                         </span>
-                        <div className="flex items-center text-xs text-green-600">
-                          <span className="mr-1">↗</span>
-                          <span>+{regionData.recentlyBooked30min || 0}</span>
-                          <span className="ml-1 text-gray-400">30 phút qua</span>
+                        <div className="text-xs text-green-600 text-center">
+                          <span>↗ +{regionData.recentlyBooked30min || 0} </span>
+                          <span className="text-gray-400">30 phút qua</span>
                         </div>
                       </div>
                     </td>
@@ -466,10 +463,9 @@ export default function TourTable() {
                         <span className="bg-blue-100 text-blue-800 px-2 py-1 rounded-full text-xs">
                           +{areaData.recentlyBooked}
                         </span>
-                        <div className="flex items-center text-xs text-green-600">
-                          <span className="mr-1">↗</span>
-                          <span>+{areaData.recentlyBooked30min || 0}</span>
-                          <span className="ml-1 text-gray-400">30 phút qua</span>
+                        <div className="text-xs text-green-600 text-center">
+                          <span>↗ +{areaData.recentlyBooked30min || 0} </span>
+                          <span className="text-gray-400">30 phút qua</span>
                         </div>
                       </div>
                     </td>
@@ -511,10 +507,9 @@ export default function TourTable() {
                         <span className="bg-green-100 text-green-800 px-2 py-1 rounded-full text-xs blink">
                           +{tourData.recentlyBooked}
                         </span>
-                        <div className="flex items-center text-xs text-green-600">
-                          <span className="mr-1">↗</span>
-                          <span>+{tourData.recentlyBooked30min || 0}</span>
-                          <span className="ml-1 text-gray-400">30 phút qua</span>
+                        <div className="text-xs text-green-600 text-center">
+                          <span>↗ +{tourData.recentlyBooked30min || 0} </span>
+                          <span className="text-gray-400">30 phút qua</span>
                         </div>
                       </div>
                     </td>
