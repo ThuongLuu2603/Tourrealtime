@@ -387,11 +387,12 @@ export default function TourTable() {
           });
         });
       } else if (!shouldShowLevel1 && !shouldShowLevel2 && shouldShowLevel3) {
-        const internationalTours = filteredTours.filter(tour => tour.category === 'international');
-        internationalTours.forEach(tour => {
+        // Level 3 international: Show countries (areas) not tours
+        internationalAreas.forEach(area => {
           allRows.push({
-            type: 'tour',
-            data: tour
+            type: 'area',
+            data: area,
+            isExpanded: false
           });
         });
       } else if (shouldShowLevel1 && shouldShowLevel2 && !shouldShowLevel3) {
@@ -412,6 +413,7 @@ export default function TourTable() {
           });
         });
       } else if (!shouldShowLevel1 && shouldShowLevel2 && shouldShowLevel3) {
+        // Level 2 + 3 international: Show regions with countries (areas) inside
         internationalRegions.forEach(region => {
           allRows.push({
             type: 'region',
