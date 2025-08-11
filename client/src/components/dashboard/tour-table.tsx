@@ -248,75 +248,92 @@ export default function TourTable() {
       return;
     }
 
-    // Show filtered content based on active levels - only show relevant level for this category
+    // Show filtered content with proper hierarchy structure maintained
     if (category === 'domestic') {
-      // For domestic tours
-      if (activeLevels.includes('level1')) {
-        // Level 1: Show only regions under domestic
-        domesticRegions.forEach(region => {
+      // For domestic tours - build hierarchy based on active levels
+      const shouldShowLevel1 = activeLevels.includes('level1');
+      const shouldShowLevel2 = activeLevels.includes('level2');
+      const shouldShowLevel3 = activeLevels.includes('level3');
+
+      // Always start with regions if any level is active
+      domesticRegions.forEach(region => {
+        // Show region if level1 is active, or if level2/3 need to show their parent
+        const shouldShowRegion = shouldShowLevel1 || shouldShowLevel2 || shouldShowLevel3;
+        
+        if (shouldShowRegion) {
           allRows.push({
             type: 'region',
             data: region,
-            isExpanded: false
+            isExpanded: shouldShowLevel1 ? false : (expandedRegions[region.code] ?? true)
           });
-        });
-      }
-      
-      if (activeLevels.includes('level2')) {
-        // Level 2: Show only areas under domestic
-        domesticAreas.forEach(area => {
-          allRows.push({
-            type: 'area',
-            data: area,
-            isExpanded: false
-          });
-        });
-      }
-      
-      if (activeLevels.includes('level3')) {
-        // Level 3: Show only tours under domestic
-        const domesticTours = filteredTours.filter(tour => tour.category === 'domestic');
-        domesticTours.forEach(tour => {
-          allRows.push({
-            type: 'tour',
-            data: tour
-          });
-        });
-      }
+
+          // If level2 or level3 is active, show areas under this region
+          if ((shouldShowLevel2 || shouldShowLevel3) && (shouldShowLevel1 ? false : (expandedRegions[region.code] ?? true))) {
+            const regionAreas = domesticAreas.filter(area => area.parentCode === region.code);
+            regionAreas.forEach(area => {
+              allRows.push({
+                type: 'area',
+                data: area,
+                isExpanded: shouldShowLevel2 ? false : (expandedAreas[area.code] ?? true)
+              });
+
+              // If level3 is active, show tours under this area
+              if (shouldShowLevel3 && (shouldShowLevel2 ? false : (expandedAreas[area.code] ?? true))) {
+                const areaTours = toursByArea[area.code] || [];
+                areaTours.forEach(tour => {
+                  allRows.push({
+                    type: 'tour',
+                    data: tour
+                  });
+                });
+              }
+            });
+          }
+        }
+      });
     } else {
-      // For international tours
-      if (activeLevels.includes('level1')) {
-        // Level 1: Show only continents under international
-        internationalContinents.forEach(continent => {
+      // For international tours - build hierarchy based on active levels
+      const shouldShowLevel1 = activeLevels.includes('level1');
+      const shouldShowLevel2 = activeLevels.includes('level2');
+      const shouldShowLevel3 = activeLevels.includes('level3');
+
+      // Always start with continents if any level is active
+      internationalContinents.forEach(continent => {
+        const shouldShowContinent = shouldShowLevel1 || shouldShowLevel2 || shouldShowLevel3;
+        
+        if (shouldShowContinent) {
           allRows.push({
             type: 'continent',
             data: continent,
-            isExpanded: false
+            isExpanded: shouldShowLevel1 ? false : (expandedContinents[continent.code] ?? true)
           });
-        });
-      }
-      
-      if (activeLevels.includes('level2')) {
-        // Level 2: Show only regions under international
-        internationalRegions.forEach(region => {
-          allRows.push({
-            type: 'region',
-            data: region,
-            isExpanded: false
-          });
-        });
-      }
-      
-      if (activeLevels.includes('level3')) {
-        // Level 3: Show only tours under international
-        const internationalTours = filteredTours.filter(tour => tour.category === 'international');
-        internationalTours.forEach(tour => {
-          allRows.push({
-            type: 'tour',
-            data: tour
-          });
-        });
-      }
+
+          // If level2 or level3 is active, show regions under this continent
+          if ((shouldShowLevel2 || shouldShowLevel3) && (shouldShowLevel1 ? false : (expandedContinents[continent.code] ?? true))) {
+            const continentRegions = internationalRegions.filter(region => region.parentCode === continent.code);
+            
+            continentRegions.forEach(region => {
+              allRows.push({
+                type: 'region',
+                data: region,
+                isExpanded: shouldShowLevel2 ? false : (expandedRegions[region.code] ?? true)
+              });
+
+              // If level3 is active, show areas under this region
+              if (shouldShowLevel3 && (shouldShowLevel2 ? false : (expandedRegions[region.code] ?? true))) {
+                const regionAreas = internationalAreas.filter(area => area.parentCode === region.code);
+                regionAreas.forEach(area => {
+                  allRows.push({
+                    type: 'area',
+                    data: area,
+                    isExpanded: false
+                  });
+                });
+              }
+            });
+          }
+        }
+      });
     }
   };
 
