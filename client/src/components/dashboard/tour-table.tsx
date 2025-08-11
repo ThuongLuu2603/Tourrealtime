@@ -330,9 +330,9 @@ export default function TourTable() {
                         </span>
                         <div className="flex flex-col items-center">
                           <div className="text-xs text-green-600 flex items-center gap-1">
-                            <span>📈 +{sectionData.recentlyBooked30min || 0}</span>
+                            <span>▲ +{sectionData.recentlyBooked30min || 0}</span>
+                            <span className="text-[10px] text-gray-400">30 phút qua</span>
                           </div>
-                          <span className="text-xs text-gray-400">30 phút qua</span>
                         </div>
                       </div>
                     </td>
@@ -378,9 +378,9 @@ export default function TourTable() {
                         </span>
                         <div className="flex flex-col items-center">
                           <div className="text-xs text-green-600 flex items-center gap-1">
-                            <span>📈 +{continentData.recentlyBooked30min || 0}</span>
+                            <span>▲ +{continentData.recentlyBooked30min || 0}</span>
+                            <span className="text-[10px] text-gray-400">30 phút qua</span>
                           </div>
-                          <span className="text-xs text-gray-400">30 phút qua</span>
                         </div>
                       </div>
                     </td>
@@ -422,9 +422,9 @@ export default function TourTable() {
                         </span>
                         <div className="flex flex-col items-center">
                           <div className="text-xs text-green-600 flex items-center gap-1">
-                            <span>📈 +{regionData.recentlyBooked30min || 0}</span>
+                            <span>▲ +{regionData.recentlyBooked30min || 0}</span>
+                            <span className="text-[10px] text-gray-400">30 phút qua</span>
                           </div>
-                          <span className="text-xs text-gray-400">30 phút qua</span>
                         </div>
                       </div>
                     </td>
@@ -471,9 +471,9 @@ export default function TourTable() {
                         </span>
                         <div className="flex flex-col items-center">
                           <div className="text-xs text-green-600 flex items-center gap-1">
-                            <span>📈 +{areaData.recentlyBooked30min || 0}</span>
+                            <span>▲ +{areaData.recentlyBooked30min || 0}</span>
+                            <span className="text-[10px] text-gray-400">30 phút qua</span>
                           </div>
-                          <span className="text-xs text-gray-400">30 phút qua</span>
                         </div>
                       </div>
                     </td>
@@ -517,9 +517,9 @@ export default function TourTable() {
                         </span>
                         <div className="flex flex-col items-center">
                           <div className="text-xs text-green-600 flex items-center gap-1">
-                            <span>📈 +{tourData.recentlyBooked30min || 0}</span>
+                            <span>▲ +{tourData.recentlyBooked30min || 0}</span>
+                            <span className="text-[10px] text-gray-400">30 phút qua</span>
                           </div>
-                          <span className="text-xs text-gray-400">30 phút qua</span>
                         </div>
                       </div>
                     </td>
