@@ -111,15 +111,15 @@ export class MemStorage implements IStorage {
       { name: "Indonesia", code: "indonesia", category: "international", level: "area", parentCode: "dong_nam_a", planned: 1494, sold: 716, remaining: 778, recentlyBooked: 2,
         recentlyBooked30min: 2, completionRate: "47.9", revenue: "56365000000", targetPercentage: "8.7" },
       
-      // Domestic - Geographic Regions (Level 1)  
+      // Domestic - Geographic Regions (Level 1) - Tổng 30min = 6+4+2 = 12
       { name: "Nội Địa", code: "noi_dia", category: "domestic", level: "geo_region", parentCode: null, planned: 15467, sold: 11245, remaining: 4222, recentlyBooked: 32,
-        recentlyBooked30min: 2, completionRate: "72.7", revenue: "355680000000", targetPercentage: "5.2" },
+        recentlyBooked30min: 12, completionRate: "72.7", revenue: "355680000000", targetPercentage: "5.2" },
       
-      // Domestic - Regional Areas (Level 2) - Tổng = 15+12+5 = 32 recently booked
+      // Domestic - Regional Areas (Level 2) - 30min: Miền Bắc = 2+2+2 = 6, Miền Trung = 2+2 = 4, Miền Nam = 1+1 = 2
       { name: "Miền Bắc", code: "mien_bac", category: "domestic", level: "region", parentCode: "noi_dia", planned: 8000, sold: 6200, remaining: 1800, recentlyBooked: 15,
-        recentlyBooked30min: 2, completionRate: "77.5", revenue: "153000000000", targetPercentage: "9.2" },
+        recentlyBooked30min: 6, completionRate: "77.5", revenue: "153000000000", targetPercentage: "9.2" },
       { name: "Miền Trung", code: "mien_trung", category: "domestic", level: "region", parentCode: "noi_dia", planned: 4268, sold: 3156, remaining: 1112, recentlyBooked: 12,
-        recentlyBooked30min: 2, completionRate: "74.0", revenue: "98700000000", targetPercentage: "6.3" },
+        recentlyBooked30min: 4, completionRate: "74.0", revenue: "98700000000", targetPercentage: "6.3" },
       { name: "Miền Nam", code: "mien_nam", category: "domestic", level: "region", parentCode: "noi_dia", planned: 3199, sold: 1889, remaining: 1310, recentlyBooked: 5,
         recentlyBooked30min: 2, completionRate: "59.1", revenue: "104000000000", targetPercentage: "2.8" },
       
@@ -136,11 +136,11 @@ export class MemStorage implements IStorage {
         recentlyBooked30min: 2, completionRate: "75.0", revenue: "48500000000", targetPercentage: "5.8" },
       { name: "Miền Trung Duyên Hải", code: "mt_duyen_hai", category: "domestic", level: "area", parentCode: "mien_trung", planned: 2068, sold: 1506, remaining: 562, recentlyBooked: 6,
         recentlyBooked30min: 2, completionRate: "72.8", revenue: "50200000000", targetPercentage: "6.8" },
-      // Miền Nam: 3.199 (kế hoạch) = 1.665 + 1.534 = 3.199, 1.889 (đã bán) = 998 + 891 = 1.889
+      // Miền Nam: 30min = 1+1 = 2
       { name: "Tây Nam Bộ", code: "tay_nam_bo", category: "domestic", level: "area", parentCode: "mien_nam", planned: 1665, sold: 998, remaining: 667, recentlyBooked: 3,
-        recentlyBooked30min: 2, completionRate: "59.9", revenue: "52000000000", targetPercentage: "3.1" },
+        recentlyBooked30min: 1, completionRate: "59.9", revenue: "52000000000", targetPercentage: "3.1" },
       { name: "Đông Nam Bộ", code: "dong_nam_bo", category: "domestic", level: "area", parentCode: "mien_nam", planned: 1534, sold: 891, remaining: 643, recentlyBooked: 2,
-        recentlyBooked30min: 2, completionRate: "58.1", revenue: "52000000000", targetPercentage: "4.2" },
+        recentlyBooked30min: 1, completionRate: "58.1", revenue: "52000000000", targetPercentage: "4.2" },
     ];
 
     hierarchyData.forEach(levelData => {
