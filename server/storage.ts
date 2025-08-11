@@ -71,21 +71,21 @@ export class MemStorage implements IStorage {
 
     // Initialize Hierarchy Levels
     const hierarchyData: InsertHierarchyLevel[] = [
-      // International - Level 1: Tour Quốc tế - Tổng recently booked = 22+13+2 = 37 từ các khu vực
+      // International - Level 1: Tour Quốc tế - Tổng 30min = 8+10+2+1 = 21 
       { name: "TOUR QUỐC TẾ", code: "tour_quoc_te", category: "international", level: "tour_category", parentCode: null, planned: 18935, sold: 14267, remaining: 4668, recentlyBooked: 37,
-        recentlyBooked30min: 5, completionRate: "75.3", revenue: "789480000000", targetPercentage: "12.4" },
+        recentlyBooked30min: 21, completionRate: "75.3", revenue: "789480000000", targetPercentage: "12.4" },
       
-      // International - Level 2: Châu lục - Châu Á tổng = 22+13+2 = 37 recently booked  
+      // International - Level 2: Châu lục - Châu Á 30min = 8+10+2 = 20, Châu Âu = 1  
       { name: "Châu Á", code: "chau_a", category: "international", level: "continent", parentCode: "tour_quoc_te", planned: 18935, sold: 14267, remaining: 4668, recentlyBooked: 37,
-        recentlyBooked30min: 5, completionRate: "75.3", revenue: "789480000000", targetPercentage: "12.4" },
+        recentlyBooked30min: 20, completionRate: "75.3", revenue: "789480000000", targetPercentage: "12.4" },
       { name: "Châu Âu", code: "chau_au", category: "international", level: "continent", parentCode: "tour_quoc_te", planned: 2401, sold: 1550, remaining: 851, recentlyBooked: 3,
         recentlyBooked30min: 1, completionRate: "64.5", revenue: "245000000000", targetPercentage: "8.5" },
       
-      // International - Level 3: Khu vực trong châu lục - Đã sửa recently booked 
+      // International - Level 3: Khu vực - 30min: Đông Bắc Á = 2+2+2+2 = 8, Đông Nam Á = 2+2+2+2+2 = 10, Nam Á = 2
       { name: "Đông Bắc Á", code: "dong_bac_a", category: "international", level: "region", parentCode: "chau_a", planned: 8753, sold: 6592, remaining: 2161, recentlyBooked: 22,
-        recentlyBooked30min: 3, completionRate: "75.3", revenue: "464936000000", targetPercentage: "10.7" },
+        recentlyBooked30min: 8, completionRate: "75.3", revenue: "464936000000", targetPercentage: "10.7" },
       { name: "Đông Nam Á", code: "dong_nam_a", category: "international", level: "region", parentCode: "chau_a", planned: 7781, sold: 5550, remaining: 2231, recentlyBooked: 13,
-        recentlyBooked30min: 2, completionRate: "71.3", revenue: "275065000000", targetPercentage: "11.2" },
+        recentlyBooked30min: 10, completionRate: "71.3", revenue: "275065000000", targetPercentage: "11.2" },
       { name: "Nam Á", code: "nam_a", category: "international", level: "region", parentCode: "chau_a", planned: 2401, sold: 2125, remaining: 276, recentlyBooked: 2,
         recentlyBooked30min: 2, completionRate: "88.5", revenue: "49479000000", targetPercentage: "14.2" },
       
