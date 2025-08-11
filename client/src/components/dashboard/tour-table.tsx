@@ -329,10 +329,10 @@ export default function TourTable() {
                           +{sectionData.recentlyBooked}
                         </span>
                         <div className="flex flex-col items-center">
-                          <div className="text-xs text-green-600 flex items-center gap-1">
+                          <div className="text-xs text-green-600">
                             <span>▲ +{sectionData.recentlyBooked30min || 0}</span>
-                            <span className="text-[10px] text-gray-400">30 phút qua</span>
                           </div>
+                          <span className="text-[8px] text-gray-400">30 phút qua</span>
                         </div>
                       </div>
                     </td>
@@ -377,10 +377,10 @@ export default function TourTable() {
                           +{continentData.recentlyBooked}
                         </span>
                         <div className="flex flex-col items-center">
-                          <div className="text-xs text-green-600 flex items-center gap-1">
+                          <div className="text-xs text-green-600">
                             <span>▲ +{continentData.recentlyBooked30min || 0}</span>
-                            <span className="text-[10px] text-gray-400">30 phút qua</span>
                           </div>
+                          <span className="text-[8px] text-gray-400">30 phút qua</span>
                         </div>
                       </div>
                     </td>
@@ -421,10 +421,10 @@ export default function TourTable() {
                           +{regionData.recentlyBooked}
                         </span>
                         <div className="flex flex-col items-center">
-                          <div className="text-xs text-green-600 flex items-center gap-1">
+                          <div className="text-xs text-green-600">
                             <span>▲ +{regionData.recentlyBooked30min || 0}</span>
-                            <span className="text-[10px] text-gray-400">30 phút qua</span>
                           </div>
+                          <span className="text-[8px] text-gray-400">30 phút qua</span>
                         </div>
                       </div>
                     </td>
@@ -470,10 +470,10 @@ export default function TourTable() {
                           +{areaData.recentlyBooked}
                         </span>
                         <div className="flex flex-col items-center">
-                          <div className="text-xs text-green-600 flex items-center gap-1">
+                          <div className="text-xs text-green-600">
                             <span>▲ +{areaData.recentlyBooked30min || 0}</span>
-                            <span className="text-[10px] text-gray-400">30 phút qua</span>
                           </div>
+                          <span className="text-[8px] text-gray-400">30 phút qua</span>
                         </div>
                       </div>
                     </td>
@@ -516,10 +516,10 @@ export default function TourTable() {
                           +{tourData.recentlyBooked}
                         </span>
                         <div className="flex flex-col items-center">
-                          <div className="text-xs text-green-600 flex items-center gap-1">
+                          <div className="text-xs text-green-600">
                             <span>▲ +{tourData.recentlyBooked30min || 0}</span>
-                            <span className="text-[10px] text-gray-400">30 phút qua</span>
                           </div>
+                          <span className="text-[8px] text-gray-400">30 phút qua</span>
                         </div>
                       </div>
                     </td>
