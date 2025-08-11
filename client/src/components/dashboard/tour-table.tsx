@@ -269,7 +269,7 @@ export default function TourTable() {
                 SL KH Còn Lại
               </th>
               <th className="px-2 py-2 text-center text-xs font-medium text-gray-500 uppercase tracking-wider" style={{width: '10%'}}>
-                Số Chỗ Vừa Bán
+                Số Chỗ Bán Hôm Nay
               </th>
               <th className="px-2 py-2 text-center text-xs font-medium text-gray-500 uppercase tracking-wider" style={{width: '9%'}}>
                 % Hoàn Thành
@@ -324,9 +324,16 @@ export default function TourTable() {
                       {sectionData.remaining.toLocaleString()}
                     </td>
                     <td className="px-2 py-3 text-center">
-                      <span className={`${isDomestic ? 'bg-brand-green' : 'bg-brand-blue'} text-white px-2 py-1 rounded-full text-xs font-medium blink`}>
-                        +{sectionData.recentlyBooked}
-                      </span>
+                      <div className="flex flex-col items-center gap-1">
+                        <span className={`${isDomestic ? 'bg-brand-green' : 'bg-brand-blue'} text-white px-2 py-1 rounded-full text-xs font-medium blink`}>
+                          +{sectionData.recentlyBooked}
+                        </span>
+                        <div className="flex items-center text-xs text-green-600">
+                          <span className="mr-1">↗</span>
+                          <span>+{sectionData.recentlyBooked30min || 0}</span>
+                          <span className="ml-1 text-gray-400">30 phút qua</span>
+                        </div>
+                      </div>
                     </td>
                     <td className="px-2 py-3 text-center text-sm font-semibold text-brand-green">
                       {parseFloat(sectionData.completionRate).toFixed(1)}%
@@ -364,9 +371,16 @@ export default function TourTable() {
                     <td className="px-2 py-2 text-center text-sm font-medium text-blue-700">{continentData.sold.toLocaleString()}</td>
                     <td className="px-2 py-2 text-center text-sm text-brand-amber font-medium">{continentData.remaining.toLocaleString()}</td>
                     <td className="px-2 py-2 text-center">
-                      <span className="bg-blue-100 text-blue-800 px-2 py-1 rounded-full text-xs font-medium">
-                        +{continentData.recentlyBooked}
-                      </span>
+                      <div className="flex flex-col items-center gap-1">
+                        <span className="bg-blue-100 text-blue-800 px-2 py-1 rounded-full text-xs font-medium">
+                          +{continentData.recentlyBooked}
+                        </span>
+                        <div className="flex items-center text-xs text-green-600">
+                          <span className="mr-1">↗</span>
+                          <span>+{continentData.recentlyBooked30min || 0}</span>
+                          <span className="ml-1 text-gray-400">30 phút qua</span>
+                        </div>
+                      </div>
                     </td>
                     <td className={`px-2 py-2 text-center text-sm font-semibold ${getCompletionRateColor(continentData.completionRate)}`}>
                       {parseFloat(continentData.completionRate).toFixed(1)}%
@@ -400,9 +414,16 @@ export default function TourTable() {
                     <td className="px-2 py-2 text-center text-sm font-medium text-gray-700">{regionData.sold.toLocaleString()}</td>
                     <td className="px-2 py-2 text-center text-sm text-brand-amber font-medium">{regionData.remaining.toLocaleString()}</td>
                     <td className="px-2 py-2 text-center">
-                      <span className="bg-blue-100 text-blue-800 px-2 py-1 rounded-full text-xs font-medium">
-                        +{regionData.recentlyBooked}
-                      </span>
+                      <div className="flex flex-col items-center gap-1">
+                        <span className="bg-blue-100 text-blue-800 px-2 py-1 rounded-full text-xs font-medium">
+                          +{regionData.recentlyBooked}
+                        </span>
+                        <div className="flex items-center text-xs text-green-600">
+                          <span className="mr-1">↗</span>
+                          <span>+{regionData.recentlyBooked30min || 0}</span>
+                          <span className="ml-1 text-gray-400">30 phút qua</span>
+                        </div>
+                      </div>
                     </td>
                     <td className={`px-2 py-2 text-center text-sm font-semibold ${getCompletionRateColor(regionData.completionRate)}`}>
                       {parseFloat(regionData.completionRate).toFixed(1)}%
@@ -441,9 +462,16 @@ export default function TourTable() {
                     <td className="px-2 py-2 text-center text-sm text-gray-600">{areaData.sold.toLocaleString()}</td>
                     <td className="px-2 py-2 text-center text-sm text-brand-amber">{areaData.remaining.toLocaleString()}</td>
                     <td className="px-2 py-2 text-center">
-                      <span className="bg-blue-100 text-blue-800 px-2 py-1 rounded-full text-xs">
-                        +{areaData.recentlyBooked}
-                      </span>
+                      <div className="flex flex-col items-center gap-1">
+                        <span className="bg-blue-100 text-blue-800 px-2 py-1 rounded-full text-xs">
+                          +{areaData.recentlyBooked}
+                        </span>
+                        <div className="flex items-center text-xs text-green-600">
+                          <span className="mr-1">↗</span>
+                          <span>+{areaData.recentlyBooked30min || 0}</span>
+                          <span className="ml-1 text-gray-400">30 phút qua</span>
+                        </div>
+                      </div>
                     </td>
                     <td className={`px-2 py-2 text-center text-sm font-medium ${getCompletionRateColor(areaData.completionRate)}`}>
                       {parseFloat(areaData.completionRate).toFixed(1)}%
@@ -479,9 +507,16 @@ export default function TourTable() {
                     <td className="px-2 py-2 text-center text-sm text-gray-500">{tourData.sold.toLocaleString()}</td>
                     <td className="px-2 py-2 text-center text-sm text-gray-500">{tourData.remaining.toLocaleString()}</td>
                     <td className="px-2 py-2 text-center">
-                      <span className="bg-green-100 text-green-800 px-2 py-1 rounded-full text-xs blink">
-                        +{tourData.recentlyBooked}
-                      </span>
+                      <div className="flex flex-col items-center gap-1">
+                        <span className="bg-green-100 text-green-800 px-2 py-1 rounded-full text-xs blink">
+                          +{tourData.recentlyBooked}
+                        </span>
+                        <div className="flex items-center text-xs text-green-600">
+                          <span className="mr-1">↗</span>
+                          <span>+{tourData.recentlyBooked30min || 0}</span>
+                          <span className="ml-1 text-gray-400">30 phút qua</span>
+                        </div>
+                      </div>
                     </td>
                     <td className="px-2 py-2 text-center text-sm text-gray-500">
                       {parseFloat(tourData.completionRate).toFixed(1)}%
