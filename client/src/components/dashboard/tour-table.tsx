@@ -86,50 +86,48 @@ export default function TourTable() {
     ? tours 
     : tours.filter(tour => tour.topSalesUnit === selectedSalesUnit);
 
-  // Filter data based on selected level
+  // Filter data based on selected level - always keep main categories visible
   const getFilteredData = () => {
     if (selectedLevel === "all") {
       return {
         hierarchyLevels: hierarchyLevels,
         tours: filteredTours,
         showSections: ['domestic', 'international'],
-        showLevels: ['geo_region', 'tour_category', 'continent', 'region', 'area']
+        showLevels: ['geo_region', 'tour_category', 'continent', 'region', 'area'],
+        filterLevel: 'all'
       };
     }
 
-    // Level 1 - Chỉ hiển thị vùng miền
+    // Level 1 - Hiển thị main categories + vùng miền khi expand
     if (selectedLevel === "level1") {
       return {
-        hierarchyLevels: hierarchyLevels.filter(h => 
-          (h.category === 'domestic' && h.level === 'region') ||
-          (h.category === 'international' && h.level === 'continent')
-        ),
-        tours: [],
+        hierarchyLevels: hierarchyLevels,
+        tours: filteredTours,
         showSections: ['domestic', 'international'], 
-        showLevels: ['region', 'continent']
+        showLevels: ['geo_region', 'tour_category', 'region', 'continent'],
+        filterLevel: 'level1'
       };
     }
 
-    // Level 2 - Chỉ hiển thị khu vực
+    // Level 2 - Hiển thị main categories + khu vực khi expand
     if (selectedLevel === "level2") {
       return {
-        hierarchyLevels: hierarchyLevels.filter(h => 
-          (h.category === 'domestic' && h.level === 'area') ||
-          (h.category === 'international' && h.level === 'region')
-        ),
-        tours: [],
+        hierarchyLevels: hierarchyLevels,
+        tours: filteredTours,
         showSections: ['domestic', 'international'],
-        showLevels: ['area', 'region']
+        showLevels: ['geo_region', 'tour_category', 'area', 'region'],
+        filterLevel: 'level2'
       };
     }
 
-    // Level 3 - Chỉ hiển thị tuyến tour (tours thực tế)
+    // Level 3 - Hiển thị main categories + tuyến tour khi expand
     if (selectedLevel === "level3") {
       return {
-        hierarchyLevels: [],
+        hierarchyLevels: hierarchyLevels,
         tours: filteredTours,
         showSections: ['domestic', 'international'],
-        showLevels: ['tour']
+        showLevels: ['geo_region', 'tour_category', 'tour'],
+        filterLevel: 'level3'
       };
     }
 
@@ -137,11 +135,12 @@ export default function TourTable() {
       hierarchyLevels: hierarchyLevels,
       tours: filteredTours,
       showSections: ['domestic', 'international'],
-      showLevels: ['geo_region', 'tour_category', 'continent', 'region', 'area']
+      showLevels: ['geo_region', 'tour_category', 'continent', 'region', 'area'],
+      filterLevel: 'all'
     };
   };
 
-  const { hierarchyLevels: displayHierarchyLevels, tours: displayTours, showSections, showLevels } = getFilteredData();
+  const { hierarchyLevels: displayHierarchyLevels, tours: displayTours, showSections, showLevels, filterLevel } = getFilteredData();
 
   // Group hierarchy levels by category and level (using filtered data)
   const domesticLevels = displayHierarchyLevels.filter(level => level.category === 'domestic');
@@ -186,56 +185,141 @@ export default function TourTable() {
     );
   }
 
-  // Create rows data based on filter level
+  // Create rows data based on filter level - always show main categories first
   const allRows: any[] = [];
 
-  // Fill rows based on filter level
-  if (selectedLevel === "level1") {
-    // Level 1: Chỉ hiển thị các region/continent
-    domesticRegions.forEach(region => {
-      allRows.push({
-        type: 'region',
-        data: region,
-        isExpanded: false
-      });
-    });
-    
-    internationalContinents.forEach(continent => {
-      allRows.push({
-        type: 'continent',
-        data: continent,
-        isExpanded: false
-      });
-    });
-  } else if (selectedLevel === "level2") {
-    // Level 2: Chỉ hiển thị các area
-    domesticAreas.forEach(area => {
-      allRows.push({
-        type: 'area',
-        data: area,
-        isExpanded: false
-      });
-    });
-    
-    internationalRegions.forEach(region => {
-      allRows.push({
-        type: 'region',
-        data: region,
-        isExpanded: false
-      });
-    });
-  } else if (selectedLevel === "level3") {
-    // Level 3: Chỉ hiển thị tours
-    displayTours.forEach(tour => {
-      allRows.push({
-        type: 'tour',
-        data: tour
-      });
-    });
-  } else {
-    // Default: Hiển thị full hierarchy
-    // Add domestic section with 3 levels (only if domestic should be shown)
-    if (domesticRoot && showSections.includes('domestic')) {
+  // Helper function to add content based on filter level when expanded
+  const addExpandedContent = (category: 'domestic' | 'international') => {
+    if (category === 'domestic' && expandedSections.domestic) {
+      if (filterLevel === "level1") {
+        // Level 1: Show regions only
+        domesticRegions.forEach(region => {
+          allRows.push({
+            type: 'region',
+            data: region,
+            isExpanded: false
+          });
+        });
+      } else if (filterLevel === "level2") {
+        // Level 2: Show areas only
+        domesticAreas.forEach(area => {
+          allRows.push({
+            type: 'area',
+            data: area,
+            isExpanded: false
+          });
+        });
+      } else if (filterLevel === "level3") {
+        // Level 3: Show tours only
+        const domesticTours = displayTours.filter(tour => tour.category === 'domestic');
+        domesticTours.forEach(tour => {
+          allRows.push({
+            type: 'tour',
+            data: tour
+          });
+        });
+      } else {
+        // Default: Show full hierarchy
+        domesticRegions.forEach(region => {
+          allRows.push({
+            type: 'region',
+            data: region,
+            isExpanded: expandedRegions[region.code] ?? true
+          });
+
+          // Show areas under this region only if region is expanded
+          if (expandedRegions[region.code] !== false) {
+            const regionAreas = domesticAreas.filter(area => area.parentCode === region.code);
+            regionAreas.forEach(area => {
+              allRows.push({
+                type: 'area',
+                data: area,
+                isExpanded: expandedAreas[area.code] ?? true
+              });
+
+              // Show tours under this area only if area is expanded
+              if (expandedAreas[area.code] !== false) {
+                const areaTours = toursByArea[area.code] || [];
+                areaTours.forEach(tour => {
+                  allRows.push({
+                    type: 'tour',
+                    data: tour
+                  });
+                });
+              }
+            });
+          }
+        });
+      }
+    } else if (category === 'international' && expandedSections.international) {
+      if (filterLevel === "level1") {
+        // Level 1: Show continents only
+        internationalContinents.forEach(continent => {
+          allRows.push({
+            type: 'continent',
+            data: continent,
+            isExpanded: false
+          });
+        });
+      } else if (filterLevel === "level2") {
+        // Level 2: Show regions only  
+        internationalRegions.forEach(region => {
+          allRows.push({
+            type: 'region',
+            data: region,
+            isExpanded: false
+          });
+        });
+      } else if (filterLevel === "level3") {
+        // Level 3: Show tours only
+        const internationalTours = displayTours.filter(tour => tour.category === 'international');
+        internationalTours.forEach(tour => {
+          allRows.push({
+            type: 'tour',
+            data: tour
+          });
+        });
+      } else {
+        // Default: Show full hierarchy
+        internationalContinents.forEach(continent => {
+          allRows.push({
+            type: 'continent',
+            data: continent,
+            isExpanded: expandedContinents[continent.code] ?? true
+          });
+
+          // Show regions under this continent only if continent is expanded
+          if (expandedContinents[continent.code] !== false) {
+            const continentRegions = internationalRegions.filter(region => region.parentCode === continent.code);
+            
+            continentRegions.forEach(region => {
+              allRows.push({
+                type: 'region',
+                data: region,
+                isExpanded: expandedRegions[region.code] ?? true
+              });
+
+              // Show areas under this region only if region is expanded
+              if (expandedRegions[region.code] !== false) {
+                const regionAreas = internationalAreas.filter(area => area.parentCode === region.code);
+                
+                regionAreas.forEach(area => {
+                  allRows.push({
+                    type: 'area',
+                    data: area,
+                    isExpanded: false
+                  });
+                });
+              }
+            });
+          }
+        });
+      }
+    }
+  };
+
+  // Always add main categories first, then their content when expanded
+  if (domesticRoot && showSections.includes('domestic')) {
     allRows.push({
       type: 'section',
       section: 'domestic',
@@ -243,43 +327,11 @@ export default function TourTable() {
       isExpanded: expandedSections.domestic
     });
 
-    if (expandedSections.domestic) {
-      // Level 2: Regions (Miền Bắc, Miền Trung, Miền Nam)
-      domesticRegions.forEach(region => {
-        allRows.push({
-          type: 'region',
-          data: region,
-          isExpanded: expandedRegions[region.code] ?? true
-        });
-
-        // Show areas under this region only if region is expanded
-        if (expandedRegions[region.code] !== false) {
-          const regionAreas = domesticAreas.filter(area => area.parentCode === region.code);
-          regionAreas.forEach(area => {
-            allRows.push({
-              type: 'area',
-              data: area,
-              isExpanded: expandedAreas[area.code] ?? true
-            });
-
-            // Show tours under this area only if area is expanded
-            if (expandedAreas[area.code] !== false) {
-              const areaTours = toursByArea[area.code] || [];
-              areaTours.forEach(tour => {
-                allRows.push({
-                  type: 'tour',
-                  data: tour
-                });
-              });
-            }
-          });
-        }
-      });
-    }
+    // Add content when expanded
+    addExpandedContent('domestic');
   }
 
-    // Add international section with 3 levels (only if international should be shown)  
-    if (internationalRoot && showSections.includes('international')) {
+  if (internationalRoot && showSections.includes('international')) {
     allRows.push({
       type: 'section',
       section: 'international',
@@ -287,46 +339,8 @@ export default function TourTable() {
       isExpanded: expandedSections.international
     });
 
-    if (expandedSections.international) {
-      // Level 2: Continents (Châu Á)
-      internationalContinents.forEach(continent => {
-        allRows.push({
-          type: 'continent',
-          data: continent,
-          isExpanded: expandedContinents[continent.code] ?? true
-        });
-
-        // Show regions under this continent only if continent is expanded
-        if (expandedContinents[continent.code] !== false) {
-          const continentRegions = internationalRegions.filter(region => region.parentCode === continent.code);
-          
-          // Level 3: Regions (Đông Bắc Á, Đông Nam Á)
-          continentRegions.forEach(region => {
-            allRows.push({
-              type: 'region',
-              data: region,
-              isExpanded: expandedRegions[region.code] ?? true
-            });
-
-            // Show areas under this region only if region is expanded
-            if (expandedRegions[region.code] !== false) {
-              const regionAreas = internationalAreas.filter(area => area.parentCode === region.code);
-              
-              // Level 4: Areas (Countries) - Final level for international
-              regionAreas.forEach(area => {
-                allRows.push({
-                  type: 'area',
-                  data: area,
-                  isExpanded: false // No tours to expand for international
-                });
-                // No tours displayed for international areas - they are the final level
-              });
-            }
-          });
-        }
-      });
-    }
-  }
+    // Add content when expanded
+    addExpandedContent('international');
   }
 
   return (
