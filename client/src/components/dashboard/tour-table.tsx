@@ -4,6 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { ChevronDown, ChevronRight, Filter } from "lucide-react";
 import type { Tour, HierarchyLevel, SalesUnit } from "@shared/schema";
+import { LevelFilter, type FilterLevel } from "./level-filter";
 
 export default function TourTable() {
   const [expandedSections, setExpandedSections] = useState<Record<string, boolean>>({
@@ -14,6 +15,7 @@ export default function TourTable() {
   const [expandedRegions, setExpandedRegions] = useState<Record<string, boolean>>({});
   const [expandedAreas, setExpandedAreas] = useState<Record<string, boolean>>({});
   const [selectedSalesUnit, setSelectedSalesUnit] = useState<string>("all");
+  const [selectedLevel, setSelectedLevel] = useState<FilterLevel>("all");
 
   const { data: tours = [], isLoading: toursLoading } = useQuery<Tour[]>({
     queryKey: ["/api/tours"],
@@ -84,9 +86,84 @@ export default function TourTable() {
     ? tours 
     : tours.filter(tour => tour.topSalesUnit === selectedSalesUnit);
 
-  // Group hierarchy levels by category and level
-  const domesticLevels = hierarchyLevels.filter(level => level.category === 'domestic');
-  const internationalLevels = hierarchyLevels.filter(level => level.category === 'international');
+  // Filter data based on selected level
+  const getFilteredData = () => {
+    if (selectedLevel === "all") {
+      return {
+        hierarchyLevels: hierarchyLevels,
+        tours: filteredTours,
+        showSections: ['domestic', 'international'],
+        showLevels: ['geo_region', 'tour_category', 'continent', 'region', 'area']
+      };
+    }
+
+    // Level 1 filters
+    if (selectedLevel === "level1_domestic") {
+      return {
+        hierarchyLevels: hierarchyLevels.filter(h => h.category === 'domestic' && h.level === 'geo_region'),
+        tours: filteredTours.filter(t => t.category === 'domestic'),
+        showSections: ['domestic'],
+        showLevels: ['geo_region']
+      };
+    }
+    if (selectedLevel === "level1_international") {
+      return {
+        hierarchyLevels: hierarchyLevels.filter(h => h.category === 'international' && (h.level === 'tour_category' || h.level === 'continent')),
+        tours: filteredTours.filter(t => t.category === 'international'),
+        showSections: ['international'],
+        showLevels: ['tour_category', 'continent']
+      };
+    }
+
+    // Level 2 filters
+    if (selectedLevel === "level2_domestic") {
+      return {
+        hierarchyLevels: hierarchyLevels.filter(h => h.category === 'domestic' && h.level === 'region'),
+        tours: filteredTours.filter(t => t.category === 'domestic'),
+        showSections: ['domestic'],
+        showLevels: ['region']
+      };
+    }
+    if (selectedLevel === "level2_international") {
+      return {
+        hierarchyLevels: hierarchyLevels.filter(h => h.category === 'international' && h.level === 'region'),
+        tours: filteredTours.filter(t => t.category === 'international'),
+        showSections: ['international'],
+        showLevels: ['region']
+      };
+    }
+
+    // Level 3 filters  
+    if (selectedLevel === "level3_domestic") {
+      return {
+        hierarchyLevels: hierarchyLevels.filter(h => h.category === 'domestic' && h.level === 'area'),
+        tours: filteredTours.filter(t => t.category === 'domestic'),
+        showSections: ['domestic'],
+        showLevels: ['area']
+      };
+    }
+    if (selectedLevel === "level3_international") {
+      return {
+        hierarchyLevels: hierarchyLevels.filter(h => h.category === 'international' && h.level === 'area'),
+        tours: filteredTours.filter(t => t.category === 'international'),
+        showSections: ['international'],
+        showLevels: ['area']
+      };
+    }
+
+    return {
+      hierarchyLevels: hierarchyLevels,
+      tours: filteredTours,
+      showSections: ['domestic', 'international'],
+      showLevels: ['geo_region', 'tour_category', 'continent', 'region', 'area']
+    };
+  };
+
+  const { hierarchyLevels: displayHierarchyLevels, tours: displayTours, showSections, showLevels } = getFilteredData();
+
+  // Group hierarchy levels by category and level (using filtered data)
+  const domesticLevels = displayHierarchyLevels.filter(level => level.category === 'domestic');
+  const internationalLevels = displayHierarchyLevels.filter(level => level.category === 'international');
   
   // Get top-level categories
   const domesticRoot = domesticLevels.find(level => level.level === 'geo_region');
@@ -101,8 +178,8 @@ export default function TourTable() {
   const internationalRegions = internationalLevels.filter(level => level.level === 'region');
   const internationalAreas = internationalLevels.filter(level => level.level === 'area');
 
-  // Group tours by area
-  const toursByArea = filteredTours.reduce((acc, tour) => {
+  // Group tours by area (using filtered data)
+  const toursByArea = displayTours.reduce((acc, tour) => {
     if (!acc[tour.area]) {
       acc[tour.area] = [];
     }
@@ -130,8 +207,8 @@ export default function TourTable() {
   // Create rows data
   const allRows: any[] = [];
 
-  // Add domestic section with 3 levels
-  if (domesticRoot) {
+  // Add domestic section with 3 levels (only if domestic should be shown)
+  if (domesticRoot && showSections.includes('domestic')) {
     allRows.push({
       type: 'section',
       section: 'domestic',
@@ -174,8 +251,8 @@ export default function TourTable() {
     }
   }
 
-  // Add international section with 3 levels
-  if (internationalRoot) {
+  // Add international section with 3 levels (only if international should be shown)  
+  if (internationalRoot && showSections.includes('international')) {
     allRows.push({
       type: 'section',
       section: 'international',
@@ -232,22 +309,30 @@ export default function TourTable() {
             Bảng Theo Dõi Tour Realtime
           </CardTitle>
           
-          {/* Sales Unit Filter */}
-          <div className="flex items-center space-x-2">
-            <Filter className="w-4 h-4 text-gray-500" />
-            <Select value={selectedSalesUnit} onValueChange={setSelectedSalesUnit}>
-              <SelectTrigger className="w-48" data-testid="sales-unit-filter">
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">Tất cả đơn vị</SelectItem>
-                {salesUnits.map(unit => (
-                  <SelectItem key={unit.id} value={unit.code}>
-                    {unit.name}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+          <div className="flex items-center space-x-4">
+            {/* Level Filter */}
+            <LevelFilter 
+              value={selectedLevel} 
+              onChange={setSelectedLevel} 
+            />
+            
+            {/* Sales Unit Filter */}
+            <div className="flex items-center space-x-2">
+              <Filter className="w-4 h-4 text-gray-500" />
+              <Select value={selectedSalesUnit} onValueChange={setSelectedSalesUnit}>
+                <SelectTrigger className="w-48" data-testid="sales-unit-filter">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">Tất cả đơn vị</SelectItem>
+                  {salesUnits.map(unit => (
+                    <SelectItem key={unit.id} value={unit.code}>
+                      {unit.name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
           </div>
         </div>
       </CardHeader>
