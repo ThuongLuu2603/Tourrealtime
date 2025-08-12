@@ -369,7 +369,7 @@ export default function TourTable() {
       case 'completionRate':
         const rate = parseFloat(rowData.data.completionRate);
         return (
-          <div className={`text-center ${getCompletionRateBackground(rowData.data.completionRate)} rounded px-2 py-1`}>
+          <div className="text-center">
             <span className={`text-sm font-semibold ${getCompletionRateColor(rowData.data.completionRate)}`}>
               {rate.toFixed(1)}%
             </span>
@@ -385,13 +385,13 @@ export default function TourTable() {
           );
         } else if (isContinent || isRegion || isArea) {
           return (
-            <span className={`text-center text-sm ${getDataTextColor(rowType, true)} text-blue-600`}>
+            <span className={`text-center text-sm ${getDataTextColor(rowData.type, true)} text-blue-600`}>
               {formatCurrency(calculateDailyRevenueForLevel(rowData.data.code, rowData.data.level, rowData.data.category))}
             </span>
           );
         } else if (isTour) {
           return (
-            <span className="text-center text-sm text-blue-600 font-medium">
+            <span className={`text-center text-sm ${getDataTextColor(rowData.type, true)} text-blue-600`}>
               {formatCurrency(rowData.data.dailyRevenue || "0")}
             </span>
           );
@@ -400,7 +400,7 @@ export default function TourTable() {
         
       case 'revenue':
         return (
-          <span className={`text-center text-sm ${getDataTextColor(rowType, true)}`}>
+          <span className={`text-center text-sm ${getDataTextColor(rowData.type, true)} text-green-600`}>
             {formatCurrency(rowData.data.revenue)}
           </span>
         );
@@ -414,13 +414,13 @@ export default function TourTable() {
           );
         } else if (isTour) {
           return (
-            <span className="text-center text-sm text-purple-600 font-medium">
+            <span className={`text-center text-sm ${getDataTextColor(rowData.type, true)} text-purple-600`}>
               {formatCurrency(rowData.data.plannedRevenue || "0")}
             </span>
           );
         } else {
           return (
-            <span className="text-center text-sm font-medium text-purple-600">
+            <span className={`text-center text-sm ${getDataTextColor(rowData.type, true)} text-purple-600`}>
               {formatCurrency(rowData.data.plannedRevenue)}
             </span>
           );
@@ -429,7 +429,7 @@ export default function TourTable() {
       case 'targetPercentage':
         const completionRate = parseFloat(rowData.data.completionRate);
         return (
-          <div className={`flex flex-col items-center ${getCompletionRateBackground(rowData.data.completionRate)} rounded px-2 py-1`}>
+          <div className="flex flex-col items-center">
             <span className="text-xs text-green-600 leading-tight">
               +{(completionRate * 0.1).toFixed(1)}%
             </span>
