@@ -56,6 +56,10 @@
   --gray-600: hsl(218 11% 45%);
   --gray-700: hsl(217 19% 35%);
   --gray-900: hsl(222 84% 5%);
+  
+  /* Level background colors */
+  --blue-25: hsl(217 88% 97%);
+  --gray-25: hsl(210 20% 97%);
 }
 
 .dark {
@@ -180,4 +184,13 @@
   .table-responsive td {
     padding: 0.25rem 0.125rem !important;
   }
+}
+
+/* Custom background colors for hierarchy levels */
+.bg-blue-25 {
+  background-color: var(--blue-25);
+}
+
+.bg-gray-25 {
+  background-color: var(--gray-25);
 }
