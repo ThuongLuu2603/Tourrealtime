@@ -497,6 +497,9 @@ export class MemStorage implements IStorage {
     const totalRevenue = hierarchyLevels.reduce((sum, level) => sum + parseFloat(level.revenue), 0);
     const totalDailyBookings = hierarchyLevels.reduce((sum, level) => sum + level.recentlyBooked30min, 0);
     
+    // Calculate total daily revenue from all tours
+    const totalDailyRevenue = tours.reduce((sum, tour) => sum + parseFloat(tour.dailyRevenue || "0"), 0);
+    
     // Calculate percentage vs plan for tours sold
     const toursSoldPlanPercentage = totalPlanned > 0 ? parseFloat(((totalSold / totalPlanned) * 100).toFixed(1)) : 0;
     
@@ -513,7 +516,7 @@ export class MemStorage implements IStorage {
       totalActiveToursChange: 12.5,
       dailyBookings: totalDailyBookings, // Tổng từ cột "Số Chỗ Bán Hôm Nay"
       dailyBookingsChange: dailyBookingsChange,
-      dailyRevenue: (totalRevenue / 1000000000).toFixed(1) + "B VND",
+      dailyRevenue: (totalDailyRevenue / 1000000000).toFixed(1) + "B VND", // Tổng từ cột "Doanh thư hôm nay"
       dailyRevenueChange: 8.3,
       toursSold: totalSold, // Tổng từ cột "Đã bán"
       toursSoldChange: -3.2, // Keep for compatibility, but will show percentage instead
