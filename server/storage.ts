@@ -186,7 +186,7 @@ export class MemStorage implements IStorage {
       },
       // Domestic Tours - Miền Nam  
       {
-        name: "Phú Quốc Nghỉ Dưỡng 4N3D",
+        name: "Phú Quốc",
         category: "domestic",
         continent: null,
         geoRegion: "noi_dia",
@@ -205,7 +205,7 @@ export class MemStorage implements IStorage {
       },
       // International Tours - Đông Bắc Á
       {
-        name: "Nhật Bản Tokyo - Osaka 6N5D", 
+        name: "Nhật Bản", 
         category: "international",
         continent: "chau_a",
         geoRegion: null,
@@ -481,25 +481,40 @@ export class MemStorage implements IStorage {
 
   async getDashboardMetrics(): Promise<DashboardMetrics> {
     const tours = Array.from(this.tours.values());
-    const totalActiveTours = tours.length;
-    const totalSold = tours.reduce((sum, tour) => sum + tour.sold, 0);
-    const totalRevenue = tours.reduce((sum, tour) => sum + parseFloat(tour.revenue), 0);
-    const totalPlanned = tours.reduce((sum, tour) => sum + tour.planned, 0);
+    const hierarchyLevels = Array.from(this.hierarchyLevels.values());
     
-    // Daily bookings (số lượng khách đặt hôm nay)
-    const dailyBookings = Math.floor(Math.random() * 20) + 5; // 5-24 khách mỗi ngày
-    const yesterdayBookings = Math.floor(Math.random() * 20) + 5;
-    const dailyBookingsChange = dailyBookings - yesterdayBookings;
+    const totalActiveTours = tours.length;
+    
+    // Calculate from hierarchy levels data (more comprehensive than tours data)
+    const totalSold = hierarchyLevels.reduce((sum, level) => sum + level.sold, 0);
+    const totalPlanned = hierarchyLevels.reduce((sum, level) => sum + level.planned, 0);
+    const totalRevenue = hierarchyLevels.reduce((sum, level) => sum + parseFloat(level.revenue), 0);
+    const totalDailyBookings = hierarchyLevels.reduce((sum, level) => sum + level.recentlyBooked30min, 0);
+    
+    // Calculate percentage vs plan for tours sold
+    const toursSoldPlanPercentage = totalPlanned > 0 ? parseFloat(((totalSold / totalPlanned) * 100).toFixed(1)) : 0;
+    
+    // For revenue, calculate percentage vs a target (assuming target is 1.2 trillion VND)
+    const revenueTargetVND = 1200000000000; // 1.2 trillion VND target
+    const revenuePlanPercentage = parseFloat(((totalRevenue / revenueTargetVND) * 100).toFixed(1));
+    
+    // Previous values for change calculation
+    const yesterdayBookings = Math.floor(Math.random() * 5) + 2;
+    const dailyBookingsChange = totalDailyBookings - yesterdayBookings;
     
     return {
       totalActiveTours: totalActiveTours,
       totalActiveToursChange: 12.5,
-      dailyBookings: dailyBookings,
+      dailyBookings: totalDailyBookings, // Tổng từ cột "Số Chỗ Bán Hôm Nay"
       dailyBookingsChange: dailyBookingsChange,
       dailyRevenue: (totalRevenue / 1000000000).toFixed(1) + "B VND",
       dailyRevenueChange: 8.3,
-      toursSold: totalSold,
-      toursSoldChange: -3.2,
+      toursSold: totalSold, // Tổng từ cột "Đã bán"
+      toursSoldChange: -3.2, // Keep for compatibility, but will show percentage instead
+      toursSoldPlanPercentage: toursSoldPlanPercentage, // % so với kế hoạch
+      revenue: (totalRevenue / 1000000000).toFixed(1) + "B VND", // Tổng từ cột "Doanh số"
+      revenueChange: 5.2, // Revenue change percentage
+      revenuePlanPercentage: revenuePlanPercentage, // % so với kế hoạch cho doanh số
       completionRate: totalPlanned > 0 ? parseFloat(((totalSold / totalPlanned) * 100).toFixed(1)) : 0,
     };
   }

@@ -54,20 +54,20 @@ export default function MetricsCards() {
     {
       title: "SL Đã Bán",
       value: metrics.toursSold.toLocaleString(),
-      change: metrics.toursSoldChange,
-      changeType: "percentage",
+      change: metrics.toursSoldPlanPercentage || 0,
+      changeType: "plan_percentage", // Hiển thị % kế hoạch
       icon: ShoppingCart,
       color: "amber",
       testId: "metric-tours-sold"
     },
     {
-      title: "Tỷ Lệ Hoàn Thành",
-      value: `${metrics.completionRate}%`,
-      change: null,
-      changeType: "none",
+      title: "Doanh số",
+      value: metrics.revenue || metrics.dailyRevenue,
+      change: metrics.revenuePlanPercentage || 0,
+      changeType: "plan_percentage", // Hiển thị % kế hoạch
       icon: PieChart,
       color: "purple",
-      testId: "metric-completion-rate"
+      testId: "metric-revenue"
     },
   ];
 
@@ -105,6 +105,8 @@ export default function MetricsCards() {
                       }`}>
                         {card.changeType === "customers" ? (
                           `${isPositive ? '+' : ''}${card.change} khách so với hôm qua`
+                        ) : card.changeType === "plan_percentage" ? (
+                          `= ${card.change}% kế hoạch`
                         ) : (
                           `${isPositive ? '+' : ''}${card.change}% so với kế hoạch`
                         )}
