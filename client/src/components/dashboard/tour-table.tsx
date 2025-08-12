@@ -5,6 +5,22 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { ChevronDown, ChevronRight, Filter } from "lucide-react";
 import type { Tour, HierarchyLevel, SalesUnit } from "@shared/schema";
 import { LevelFilter, type LevelFilters } from "./level-filter";
+import ColumnCustomizer, { type ColumnConfig } from "./column-customizer";
+
+// Cấu hình cột mặc định
+const DEFAULT_COLUMNS: ColumnConfig[] = [
+  { id: 'tourName', label: 'Tuyến Tour', visible: true, width: '25%', fixed: true },
+  { id: 'planned', label: 'Kế Hoạch', visible: true, width: '8%' },
+  { id: 'sold', label: 'Đã Bán', visible: true, width: '8%' },
+  { id: 'remaining', label: 'SL KH Còn Lại', visible: true, width: '10%' },
+  { id: 'recentlyBooked', label: 'Số Chỗ Bán Hôm Nay', visible: true, width: '10%' },
+  { id: 'completionRate', label: '% LK Hoàn Thành', visible: true, width: '9%' },
+  { id: 'dailyRevenue', label: 'Doanh Thư Hôm Nay', visible: true, width: '10%' },
+  { id: 'revenue', label: 'Doanh Thu', visible: false, width: '10%' }, // Mặc định ẩn
+  { id: 'plannedRevenue', label: 'Doanh Thu Kế Hoạch', visible: false, width: '10%' }, // Mặc định ẩn
+  { id: 'targetPercentage', label: '% DS KH', visible: true, width: '8%' },
+  { id: 'topSalesUnit', label: 'Đơn Vị Top 1', visible: true, width: '12%' },
+];
 
 export default function TourTable() {
   const [expandedSections, setExpandedSections] = useState<Record<string, boolean>>({
@@ -20,6 +36,7 @@ export default function TourTable() {
     level2: { domestic: false, international: false },
     level3: { domestic: false, international: false }
   });
+  const [columns, setColumns] = useState<ColumnConfig[]>(DEFAULT_COLUMNS);
 
   const { data: tours = [], isLoading: toursLoading } = useQuery<Tour[]>({
     queryKey: ["/api/tours"],
@@ -135,6 +152,271 @@ export default function TourTable() {
   const getSalesUnitName = (code: string) => {
     const unit = salesUnits.find(u => u.code === code);
     return unit ? unit.name : code;
+  };
+
+  // Helper function to render cell content based on column type and data
+  const renderCellContent = (columnId: string, rowData: any, rowType: string, isDomestic?: boolean) => {
+    const isSection = rowType === 'section';
+    const isContinent = rowType === 'continent';
+    const isRegion = rowType === 'region';
+    const isArea = rowType === 'area';
+    const isTour = rowType === 'tour';
+
+    switch (columnId) {
+      case 'tourName':
+        if (isSection) {
+          return (
+            <div className="flex items-center">
+              {rowData.isExpanded ? (
+                <ChevronDown className="w-4 h-4 text-gray-400 mr-2" />
+              ) : (
+                <ChevronRight className="w-4 h-4 text-gray-400 mr-2" />
+              )}
+              <div className="flex items-center">
+                <div className={`w-2 h-2 ${isDomestic ? 'bg-brand-green' : 'bg-brand-blue'} rounded-full mr-2`}></div>
+                <span className="font-semibold text-gray-900 text-sm">
+                  {isDomestic ? `TOUR ${rowData.data.name.toUpperCase()}` : 'TOUR QUỐC TẾ'}
+                </span>
+              </div>
+            </div>
+          );
+        } else if (isContinent) {
+          return (
+            <div className="flex items-center pl-4">
+              {rowData.isExpanded ? (
+                <ChevronDown className="w-3 h-3 text-blue-600 mr-2" />
+              ) : (
+                <ChevronRight className="w-3 h-3 text-blue-400 mr-2" />
+              )}
+              <span className="font-semibold text-blue-800 text-sm">{rowData.data.name}</span>
+            </div>
+          );
+        } else if (isRegion) {
+          return (
+            <div className="flex items-center pl-8">
+              {rowData.isExpanded ? (
+                <ChevronDown className="w-3 h-3 text-gray-600 mr-2" />
+              ) : (
+                <ChevronRight className="w-3 h-3 text-gray-400 mr-2" />
+              )}
+              <span className="font-semibold text-gray-800 text-sm">{rowData.data.name}</span>
+            </div>
+          );
+        } else if (isArea) {
+          const isInternational = rowData.data.category === 'international';
+          return (
+            <div className="flex items-center pl-12">
+              {!isInternational && (
+                rowData.isExpanded ? (
+                  <ChevronDown className="w-3 h-3 text-gray-500 mr-2" />
+                ) : (
+                  <ChevronRight className="w-3 h-3 text-gray-300 mr-2" />
+                )
+              )}
+              {isInternational && <div className="w-3 h-3 mr-2"></div>}
+              <span className="font-medium text-gray-700 text-sm">{rowData.data.name}</span>
+            </div>
+          );
+        } else if (isTour) {
+          return (
+            <div className="flex items-center pl-20">
+              {rowData.data.imageUrl && (
+                <img 
+                  src={rowData.data.imageUrl} 
+                  alt={rowData.data.name}
+                  className="w-6 h-6 rounded mr-2 object-cover"
+                />
+              )}
+              <span className="text-sm text-gray-600">{rowData.data.name}</span>
+            </div>
+          );
+        }
+        break;
+        
+      case 'planned':
+        return (
+          <span className={`text-center text-sm ${
+            isSection ? 'font-semibold text-gray-900' : 
+            isContinent ? 'font-medium text-blue-700' :
+            isRegion ? 'font-medium text-gray-700' :
+            isArea ? 'text-gray-600' : 'text-gray-500'
+          }`}>
+            {rowData.data.planned.toLocaleString()}
+          </span>
+        );
+        
+      case 'sold':
+        return (
+          <span className={`text-center text-sm ${
+            isSection ? 'font-semibold text-gray-900' : 
+            isContinent ? 'font-medium text-blue-700' :
+            isRegion ? 'font-medium text-gray-700' :
+            isArea ? 'text-gray-600' : 'text-gray-500'
+          }`}>
+            {rowData.data.sold.toLocaleString()}
+          </span>
+        );
+        
+      case 'remaining':
+        return (
+          <span className={`text-center text-sm font-medium text-brand-amber`}>
+            {rowData.data.remaining.toLocaleString()}
+          </span>
+        );
+        
+      case 'recentlyBooked':
+        if (isSection) {
+          return (
+            <div className="flex items-center justify-center gap-2">
+              <span className={`${isDomestic ? 'bg-brand-green' : 'bg-brand-blue'} text-white px-2 py-1 rounded-full text-xs font-medium blink`}>
+                +{rowData.data.recentlyBooked}
+              </span>
+              <div className="flex flex-col items-center">
+                <div className="text-xs text-green-600">
+                  <span>▲ +{rowData.data.recentlyBooked30min || 0}</span>
+                </div>
+                <span className="text-[8px] text-gray-400">30 phút qua</span>
+              </div>
+            </div>
+          );
+        } else if (isTour) {
+          return (
+            <div className="flex items-center justify-center gap-2">
+              <span className="bg-green-100 text-green-800 px-2 py-1 rounded-full text-xs blink">
+                +{rowData.data.recentlyBooked}
+              </span>
+              <div className="flex flex-col items-center">
+                <div className="text-xs text-green-600">
+                  <span>▲ +{rowData.data.recentlyBooked30min || 0}</span>
+                </div>
+                <span className="text-[8px] text-gray-400">30 phút qua</span>
+              </div>
+            </div>
+          );
+        } else {
+          return (
+            <div className="flex items-center justify-center gap-2">
+              <span className="bg-blue-100 text-blue-800 px-2 py-1 rounded-full text-xs font-medium">
+                +{rowData.data.recentlyBooked}
+              </span>
+              <div className="flex flex-col items-center">
+                <div className="text-xs text-green-600">
+                  <span>▲ +{rowData.data.recentlyBooked30min || 0}</span>
+                </div>
+                <span className="text-[8px] text-gray-400">30 phút qua</span>
+              </div>
+            </div>
+          );
+        }
+        
+      case 'completionRate':
+        const rate = parseFloat(rowData.data.completionRate);
+        return (
+          <span className={`text-center text-sm font-semibold ${
+            isSection ? 'text-brand-green' : getCompletionRateColor(rowData.data.completionRate)
+          }`}>
+            {rate.toFixed(1)}%
+          </span>
+        );
+        
+      case 'dailyRevenue':
+        if (isSection) {
+          return (
+            <span className="text-center text-sm font-semibold text-blue-600">
+              {formatCurrency(calculateSectionDailyRevenue(rowData.section))}
+            </span>
+          );
+        } else if (isContinent || isRegion || isArea) {
+          return (
+            <span className={`text-center text-sm font-medium ${
+              isContinent ? 'text-blue-600' : isRegion ? 'text-gray-600' : 'text-gray-500'
+            }`}>
+              {formatCurrency(calculateDailyRevenueForLevel(rowData.data.code, rowData.data.level, rowData.data.category))}
+            </span>
+          );
+        } else if (isTour) {
+          return (
+            <span className="text-center text-sm text-blue-600 font-medium">
+              {formatCurrency(rowData.data.dailyRevenue || "0")}
+            </span>
+          );
+        }
+        break;
+        
+      case 'revenue':
+        return (
+          <span className={`text-center text-sm font-medium ${
+            isSection ? 'text-gray-900' : 
+            isContinent ? 'text-blue-700' :
+            isRegion ? 'text-gray-700' :
+            isArea ? 'text-gray-600' : 'text-gray-500'
+          }`}>
+            {formatCurrency(rowData.data.revenue)}
+          </span>
+        );
+        
+      case 'plannedRevenue':
+        if (isSection) {
+          return (
+            <span className="text-center text-sm font-semibold text-purple-600">
+              {formatCurrency(calculateSectionPlannedRevenue(rowData.section))}
+            </span>
+          );
+        } else if (isTour) {
+          return (
+            <span className="text-center text-sm text-purple-600 font-medium">
+              {formatCurrency(rowData.data.plannedRevenue || "0")}
+            </span>
+          );
+        } else {
+          return (
+            <span className="text-center text-sm font-medium text-purple-600">
+              {formatCurrency(rowData.data.plannedRevenue)}
+            </span>
+          );
+        }
+        
+      case 'targetPercentage':
+        const completionRate = parseFloat(rowData.data.completionRate);
+        return (
+          <div className="flex flex-col items-center">
+            <span className="text-xs text-brand-green leading-tight">
+              +{(completionRate * 0.1).toFixed(1)}%
+            </span>
+            <span className={`text-sm font-medium ${
+              isSection ? 'text-gray-700' : 'text-gray-700'
+            }`}>
+              {completionRate.toFixed(1)}%
+            </span>
+          </div>
+        );
+        
+      case 'topSalesUnit':
+        if (selectedSalesUnit === "all") {
+          if (isTour) {
+            return (
+              <span 
+                className="text-xs font-medium text-blue-600 bg-blue-100 px-2 py-1 rounded cursor-pointer hover:bg-blue-200 transition-colors"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleSalesUnitClick(rowData.data.topSalesUnit);
+                }}
+                data-testid={`sales-unit-${rowData.data.topSalesUnit}`}
+              >
+                {getSalesUnitName(rowData.data.topSalesUnit)}
+              </span>
+            );
+          } else {
+            return (
+              <div className={`w-${isSection ? '3' : '2'} h-${isSection ? '3' : '2'} bg-brand-green rounded-full mx-auto`}></div>
+            );
+          }
+        }
+        return null;
+        
+      default:
+        return null;
+    }
   };
 
   const handleSalesUnitClick = (unitCode: string) => {
@@ -550,6 +832,12 @@ export default function TourTable() {
           </CardTitle>
           
           <div className="flex items-center space-x-4">
+            {/* Column Customizer */}
+            <ColumnCustomizer 
+              columns={columns}
+              onColumnsChange={setColumns}
+            />
+            
             {/* Level Filter */}
             <LevelFilter 
               filters={levelFilters} 
@@ -581,340 +869,91 @@ export default function TourTable() {
         <table className="w-full table-responsive">
           <thead className="bg-gray-50">
             <tr>
-              <th className="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider" style={{width: '25%'}}>
-                Tuyến Tour
-              </th>
-              <th className="px-2 py-2 text-center text-xs font-medium text-gray-500 uppercase tracking-wider" style={{width: '8%'}}>
-                Kế Hoạch
-              </th>
-              <th className="px-2 py-2 text-center text-xs font-medium text-gray-500 uppercase tracking-wider" style={{width: '8%'}}>
-                Đã Bán
-              </th>
-              <th className="px-2 py-2 text-center text-xs font-medium text-gray-500 uppercase tracking-wider" style={{width: '10%'}}>
-                SL KH Còn Lại
-              </th>
-              <th className="px-2 py-2 text-center text-xs font-medium text-gray-500 uppercase tracking-wider" style={{width: '10%'}}>
-                Số Chỗ Bán Hôm Nay
-              </th>
-              <th className="px-2 py-2 text-center text-xs font-medium text-gray-500 uppercase tracking-wider" style={{width: '9%'}}>
-                % LK Hoàn Thành
-              </th>
-              <th className="px-2 py-2 text-center text-xs font-medium text-gray-500 uppercase tracking-wider" style={{width: '10%'}}>
-                Doanh Thư Hôm Nay
-              </th>
-              <th className="px-2 py-2 text-center text-xs font-medium text-gray-500 uppercase tracking-wider" style={{width: '10%'}}>
-                Doanh Thu
-              </th>
-              <th className="px-2 py-2 text-center text-xs font-medium text-gray-500 uppercase tracking-wider" style={{width: '10%'}}>
-                Doanh Thu Kế Hoạch
-              </th>
-              <th className="px-2 py-2 text-center text-xs font-medium text-gray-500 uppercase tracking-wider" style={{width: '8%'}}>
-                % DS KH
-              </th>
-              {selectedSalesUnit === "all" && (
-                <th className="px-3 py-2 text-center text-xs font-medium text-gray-500 uppercase tracking-wider" style={{width: '12%'}}>
-                  Đơn Vị Top 1
-                </th>
-              )}
+              {columns
+                .filter(col => col.visible && (col.id !== 'topSalesUnit' || selectedSalesUnit === "all"))
+                .map(column => (
+                  <th 
+                    key={column.id}
+                    className={`px-2 py-2 text-xs font-medium text-gray-500 uppercase tracking-wider ${
+                      column.id === 'tourName' ? 'text-left px-3' : 'text-center'
+                    }`}
+                    style={{ width: column.width }}
+                  >
+                    {column.label}
+                  </th>
+                ))}
             </tr>
           </thead>
           <tbody className="bg-white divide-y divide-gray-200">
             {allRows.map((row, index) => {
-              if (row.type === 'section') {
-                const sectionData = row.data;
-                const isDomestic = row.section === 'domestic';
-                return (
-                  <tr 
-                    key={`section-${row.section}`}
-                    className={`${isDomestic ? 'bg-green-50 hover:bg-green-100' : 'bg-blue-50 hover:bg-blue-100'} cursor-pointer table-row-hover`}
-                    onClick={() => toggleSection(row.section)}
-                    data-testid={`section-${row.section}`}
-                  >
-                    <td className="px-3 py-3 whitespace-nowrap">
-                      <div className="flex items-center">
-                        {row.isExpanded ? (
-                          <ChevronDown className="w-4 h-4 text-gray-400 mr-2" />
-                        ) : (
-                          <ChevronRight className="w-4 h-4 text-gray-400 mr-2" />
-                        )}
-                        <div className="flex items-center">
-                          <div className={`w-2 h-2 ${isDomestic ? 'bg-brand-green' : 'bg-brand-blue'} rounded-full mr-2`}></div>
-                          <span className="font-semibold text-gray-900 text-sm">
-                            {isDomestic ? `TOUR ${sectionData.name.toUpperCase()}` : 'TOUR QUỐC TẾ'}
-                          </span>
-                        </div>
-                      </div>
-                    </td>
-                    <td className="px-2 py-3 text-center text-sm font-semibold text-gray-900">
-                      {sectionData.planned.toLocaleString()}
-                    </td>
-                    <td className="px-2 py-3 text-center text-sm font-semibold text-gray-900">
-                      {sectionData.sold.toLocaleString()}
-                    </td>
-                    <td className="px-2 py-3 text-center text-sm font-semibold text-brand-amber">
-                      {sectionData.remaining.toLocaleString()}
-                    </td>
-                    <td className="px-2 py-3 text-center">
-                      <div className="flex items-center justify-center gap-2">
-                        <span className={`${isDomestic ? 'bg-brand-green' : 'bg-brand-blue'} text-white px-2 py-1 rounded-full text-xs font-medium blink`}>
-                          +{sectionData.recentlyBooked}
-                        </span>
-                        <div className="flex flex-col items-center">
-                          <div className="text-xs text-green-600">
-                            <span>▲ +{sectionData.recentlyBooked30min || 0}</span>
-                          </div>
-                          <span className="text-[8px] text-gray-400">30 phút qua</span>
-                        </div>
-                      </div>
-                    </td>
-                    <td className="px-2 py-3 text-center text-sm font-semibold text-brand-green">
-                      {parseFloat(sectionData.completionRate).toFixed(1)}%
-                    </td>
-                    <td className="px-2 py-3 text-center text-sm font-semibold text-blue-600">
-                      {formatCurrency(calculateSectionDailyRevenue(row.section))}
-                    </td>
-                    <td className="px-2 py-3 text-center text-sm font-semibold text-gray-900">
-                      {formatCurrency(sectionData.revenue)}
-                    </td>
-                    <td className="px-2 py-3 text-center text-sm font-semibold text-purple-600">
-                      {formatCurrency(calculateSectionPlannedRevenue(row.section))}
-                    </td>
-                    <td className="px-2 py-3 text-center">
-                      <div className="flex flex-col items-center">
-                        <span className="text-xs text-brand-green leading-tight">+{(parseFloat(sectionData.completionRate) * 0.1).toFixed(1)}%</span>
-                        <span className="text-sm font-semibold text-gray-700">{parseFloat(sectionData.completionRate).toFixed(1)}%</span>
-                      </div>
-                    </td>
-                    {selectedSalesUnit === "all" && (
-                      <td className="px-3 py-3 text-center">
-                        <div className="w-3 h-3 bg-brand-green rounded-full mx-auto"></div>
-                      </td>
-                    )}
-                  </tr>
-                );
-              }
+              const isDomestic = row.section === 'domestic';
+              const getRowClassName = () => {
+                if (row.type === 'section') {
+                  return `${isDomestic ? 'bg-green-50 hover:bg-green-100' : 'bg-blue-50 hover:bg-blue-100'} cursor-pointer table-row-hover`;
+                } else if (row.type === 'continent') {
+                  return "hover:bg-gray-50 table-row-hover bg-blue-25 cursor-pointer";
+                } else if (row.type === 'region') {
+                  return "hover:bg-gray-50 table-row-hover bg-gray-25 cursor-pointer";
+                } else if (row.type === 'area') {
+                  const isInternational = row.data.category === 'international';
+                  return `hover:bg-gray-50 table-row-hover ${!isInternational ? 'cursor-pointer' : ''}`;
+                } else if (row.type === 'tour') {
+                  return "hover:bg-gray-50 table-row-hover";
+                }
+                return "";
+              };
 
-              if (row.type === 'continent') {
-                const continentData = row.data;
-                return (
-                  <tr key={`continent-${continentData.id}`} className="hover:bg-gray-50 table-row-hover bg-blue-25 cursor-pointer" data-testid={`continent-${continentData.code}`} onClick={() => toggleContinent(continentData.code)}>
-                    <td className="px-3 py-2 whitespace-nowrap">
-                      <div className="flex items-center pl-4">
-                        {row.isExpanded ? (
-                          <ChevronDown className="w-3 h-3 text-blue-600 mr-2" />
-                        ) : (
-                          <ChevronRight className="w-3 h-3 text-blue-400 mr-2" />
-                        )}
-                        <span className="font-semibold text-blue-800 text-sm">{continentData.name}</span>
-                      </div>
-                    </td>
-                    <td className="px-2 py-2 text-center text-sm font-medium text-blue-700">{continentData.planned.toLocaleString()}</td>
-                    <td className="px-2 py-2 text-center text-sm font-medium text-blue-700">{continentData.sold.toLocaleString()}</td>
-                    <td className="px-2 py-2 text-center text-sm text-brand-amber font-medium">{continentData.remaining.toLocaleString()}</td>
-                    <td className="px-2 py-2 text-center">
-                      <div className="flex items-center justify-center gap-2">
-                        <span className="bg-blue-100 text-blue-800 px-2 py-1 rounded-full text-xs font-medium">
-                          +{continentData.recentlyBooked}
-                        </span>
-                        <div className="flex flex-col items-center">
-                          <div className="text-xs text-green-600">
-                            <span>▲ +{continentData.recentlyBooked30min || 0}</span>
-                          </div>
-                          <span className="text-[8px] text-gray-400">30 phút qua</span>
-                        </div>
-                      </div>
-                    </td>
-                    <td className={`px-2 py-2 text-center text-sm font-semibold ${getCompletionRateColor(continentData.completionRate)}`}>
-                      {parseFloat(continentData.completionRate).toFixed(1)}%
-                    </td>
-                    <td className="px-2 py-2 text-center text-sm font-medium text-blue-600">{formatCurrency(calculateDailyRevenueForLevel(continentData.code, continentData.level, continentData.category))}</td>
-                    <td className="px-2 py-2 text-center text-sm font-medium text-blue-700">{formatCurrency(continentData.revenue)}</td>
-                    <td className="px-2 py-2 text-center text-sm font-medium text-purple-600">{formatCurrency(continentData.plannedRevenue)}</td>
-                    <td className="px-2 py-2 text-center">
-                      <div className="flex flex-col items-center">
-                        <span className="text-xs text-brand-green leading-tight">+{(parseFloat(continentData.completionRate) * 0.1).toFixed(1)}%</span>
-                        <span className="text-sm font-medium text-gray-700">{parseFloat(continentData.completionRate).toFixed(1)}%</span>
-                      </div>
-                    </td>
-                    {selectedSalesUnit === "all" && (
-                      <td className="px-3 py-2 text-center">
-                        <div className="w-2 h-2 bg-brand-green rounded-full mx-auto"></div>
-                      </td>
-                    )}
-                  </tr>
-                );
-              }
+              const getOnClick = () => {
+                if (row.type === 'section') {
+                  return () => toggleSection(row.section);
+                } else if (row.type === 'continent') {
+                  return () => toggleContinent(row.data.code);
+                } else if (row.type === 'region') {
+                  return () => toggleRegion(row.data.code);
+                } else if (row.type === 'area' && row.data.category !== 'international') {
+                  return () => toggleArea(row.data.code);
+                }
+                return undefined;
+              };
 
-              if (row.type === 'region') {
-                const regionData = row.data;
-                return (
-                  <tr key={`region-${regionData.id}`} className="hover:bg-gray-50 table-row-hover bg-gray-25 cursor-pointer" data-testid={`region-${regionData.code}`} onClick={() => toggleRegion(regionData.code)}>
-                    <td className="px-3 py-2 whitespace-nowrap">
-                      <div className="flex items-center pl-8">
-                        {row.isExpanded ? (
-                          <ChevronDown className="w-3 h-3 text-gray-600 mr-2" />
-                        ) : (
-                          <ChevronRight className="w-3 h-3 text-gray-400 mr-2" />
-                        )}
-                        <span className="font-semibold text-gray-800 text-sm">{regionData.name}</span>
-                      </div>
-                    </td>
-                    <td className="px-2 py-2 text-center text-sm font-medium text-gray-700">{regionData.planned.toLocaleString()}</td>
-                    <td className="px-2 py-2 text-center text-sm font-medium text-gray-700">{regionData.sold.toLocaleString()}</td>
-                    <td className="px-2 py-2 text-center text-sm text-brand-amber font-medium">{regionData.remaining.toLocaleString()}</td>
-                    <td className="px-2 py-2 text-center">
-                      <div className="flex items-center justify-center gap-2">
-                        <span className="bg-blue-100 text-blue-800 px-2 py-1 rounded-full text-xs font-medium">
-                          +{regionData.recentlyBooked}
-                        </span>
-                        <div className="flex flex-col items-center">
-                          <div className="text-xs text-green-600">
-                            <span>▲ +{regionData.recentlyBooked30min || 0}</span>
-                          </div>
-                          <span className="text-[8px] text-gray-400">30 phút qua</span>
-                        </div>
-                      </div>
-                    </td>
-                    <td className={`px-2 py-2 text-center text-sm font-semibold ${getCompletionRateColor(regionData.completionRate)}`}>
-                      {parseFloat(regionData.completionRate).toFixed(1)}%
-                    </td>
-                    <td className="px-2 py-2 text-center text-sm font-medium text-gray-600">{formatCurrency(calculateDailyRevenueForLevel(regionData.code, regionData.level, regionData.category))}</td>
-                    <td className="px-2 py-2 text-center text-sm font-medium text-gray-700">{formatCurrency(regionData.revenue)}</td>
-                    <td className="px-2 py-2 text-center text-sm font-medium text-purple-600">{formatCurrency(regionData.plannedRevenue)}</td>
-                    <td className="px-2 py-2 text-center">
-                      <div className="flex flex-col items-center">
-                        <span className="text-xs text-brand-green leading-tight">+{(parseFloat(regionData.completionRate) * 0.1).toFixed(1)}%</span>
-                        <span className="text-sm font-medium text-gray-700">{parseFloat(regionData.completionRate).toFixed(1)}%</span>
-                      </div>
-                    </td>
-                    {selectedSalesUnit === "all" && (
-                      <td className="px-3 py-2 text-center">
-                        <div className="w-2 h-2 bg-brand-green rounded-full mx-auto"></div>
-                      </td>
-                    )}
-                  </tr>
-                );
-              }
+              const getTestId = () => {
+                if (row.type === 'section') {
+                  return `section-${row.section}`;
+                } else if (row.type === 'continent') {
+                  return `continent-${row.data.code}`;
+                } else if (row.type === 'region') {
+                  return `region-${row.data.code}`;
+                } else if (row.type === 'area') {
+                  return `area-${row.data.code}`;
+                } else if (row.type === 'tour') {
+                  return `tour-${row.data.id}`;
+                }
+                return undefined;
+              };
 
-              if (row.type === 'area') {
-                const areaData = row.data;
-                const isInternational = areaData.category === 'international';
-                
-                return (
-                  <tr key={`area-${areaData.id}`} className={`hover:bg-gray-50 table-row-hover ${!isInternational ? 'cursor-pointer' : ''}`} data-testid={`area-${areaData.code}`} onClick={!isInternational ? () => toggleArea(areaData.code) : undefined}>
-                    <td className="px-3 py-2 whitespace-nowrap">
-                      <div className="flex items-center pl-12">
-                        {!isInternational && (
-                          row.isExpanded ? (
-                            <ChevronDown className="w-3 h-3 text-gray-500 mr-2" />
-                          ) : (
-                            <ChevronRight className="w-3 h-3 text-gray-300 mr-2" />
-                          )
-                        )}
-                        {isInternational && <div className="w-3 h-3 mr-2"></div>}
-                        <span className="font-medium text-gray-700 text-sm">{areaData.name}</span>
-                      </div>
-                    </td>
-                    <td className="px-2 py-2 text-center text-sm text-gray-600">{areaData.planned.toLocaleString()}</td>
-                    <td className="px-2 py-2 text-center text-sm text-gray-600">{areaData.sold.toLocaleString()}</td>
-                    <td className="px-2 py-2 text-center text-sm text-brand-amber">{areaData.remaining.toLocaleString()}</td>
-                    <td className="px-2 py-2 text-center">
-                      <div className="flex items-center justify-center gap-2">
-                        <span className="bg-blue-100 text-blue-800 px-2 py-1 rounded-full text-xs">
-                          +{areaData.recentlyBooked}
-                        </span>
-                        <div className="flex flex-col items-center">
-                          <div className="text-xs text-green-600">
-                            <span>▲ +{areaData.recentlyBooked30min || 0}</span>
-                          </div>
-                          <span className="text-[8px] text-gray-400">30 phút qua</span>
-                        </div>
-                      </div>
-                    </td>
-                    <td className={`px-2 py-2 text-center text-sm font-medium ${getCompletionRateColor(areaData.completionRate)}`}>
-                      {parseFloat(areaData.completionRate).toFixed(1)}%
-                    </td>
-                    <td className="px-2 py-2 text-center text-sm text-gray-500">{formatCurrency(calculateDailyRevenueForLevel(areaData.code, areaData.level, areaData.category))}</td>
-                    <td className="px-2 py-2 text-center text-sm text-gray-600">{formatCurrency(areaData.revenue)}</td>
-                    <td className="px-2 py-2 text-center text-sm text-purple-600">{formatCurrency(areaData.plannedRevenue)}</td>
-                    <td className="px-2 py-2 text-center">
-                      <div className="flex flex-col items-center">
-                        <span className="text-xs text-brand-green leading-tight">+{(parseFloat(areaData.completionRate) * 0.1).toFixed(1)}%</span>
-                        <span className="text-sm font-medium text-gray-700">{parseFloat(areaData.completionRate).toFixed(1)}%</span>
-                      </div>
-                    </td>
-                    {selectedSalesUnit === "all" && (
-                      <td className="px-3 py-2 text-center">
-                        <div className="w-2 h-2 bg-brand-green rounded-full mx-auto"></div>
+              return (
+                <tr 
+                  key={`${row.type}-${row.section || row.data?.id || row.data?.code || index}`}
+                  className={getRowClassName()}
+                  onClick={getOnClick()}
+                  data-testid={getTestId()}
+                >
+                  {columns
+                    .filter(col => col.visible && (col.id !== 'topSalesUnit' || selectedSalesUnit === "all"))
+                    .map(column => (
+                      <td 
+                        key={column.id}
+                        className={`px-2 py-2 ${
+                          column.id === 'tourName' ? 'px-3 py-3 whitespace-nowrap' : 'text-center'
+                        } ${
+                          row.type === 'section' ? 'py-3' : 'py-2'
+                        }`}
+                      >
+                        {renderCellContent(column.id, row, row.type, isDomestic)}
                       </td>
-                    )}
-                  </tr>
-                );
-              }
-
-              if (row.type === 'tour') {
-                const tourData = row.data;
-                return (
-                  <tr key={`tour-${tourData.id}`} className="hover:bg-gray-50 table-row-hover" data-testid={`tour-${tourData.id}`}>
-                    <td className="px-3 py-2 whitespace-nowrap">
-                      <div className="flex items-center pl-20">
-                        {tourData.imageUrl && (
-                          <img 
-                            src={tourData.imageUrl} 
-                            alt={tourData.name}
-                            className="w-6 h-6 rounded mr-2 object-cover"
-                          />
-                        )}
-                        <span className="text-sm text-gray-600">{tourData.name}</span>
-                      </div>
-                    </td>
-                    <td className="px-2 py-2 text-center text-sm text-gray-500">{tourData.planned.toLocaleString()}</td>
-                    <td className="px-2 py-2 text-center text-sm text-gray-500">{tourData.sold.toLocaleString()}</td>
-                    <td className="px-2 py-2 text-center text-sm text-gray-500">{tourData.remaining.toLocaleString()}</td>
-                    <td className="px-2 py-2 text-center">
-                      <div className="flex items-center justify-center gap-2">
-                        <span className="bg-green-100 text-green-800 px-2 py-1 rounded-full text-xs blink">
-                          +{tourData.recentlyBooked}
-                        </span>
-                        <div className="flex flex-col items-center">
-                          <div className="text-xs text-green-600">
-                            <span>▲ +{tourData.recentlyBooked30min || 0}</span>
-                          </div>
-                          <span className="text-[8px] text-gray-400">30 phút qua</span>
-                        </div>
-                      </div>
-                    </td>
-                    <td className="px-2 py-2 text-center text-sm text-gray-500">
-                      {parseFloat(tourData.completionRate).toFixed(1)}%
-                    </td>
-                    <td className="px-2 py-2 text-center text-sm text-blue-600 font-medium">{formatCurrency(tourData.dailyRevenue || "0")}</td>
-                    <td className="px-2 py-2 text-center text-sm text-gray-500">{formatCurrency(tourData.revenue)}</td>
-                    <td className="px-2 py-2 text-center text-sm text-purple-600 font-medium">{formatCurrency(tourData.plannedRevenue || "0")}</td>
-                    <td className="px-2 py-2 text-center">
-                      <div className="flex flex-col items-center">
-                        <span className="text-xs text-brand-green leading-tight">+{(parseFloat(tourData.completionRate) * 0.1).toFixed(1)}%</span>
-                        <span className="text-sm font-medium text-gray-700">{parseFloat(tourData.completionRate).toFixed(1)}%</span>
-                      </div>
-                    </td>
-                    {selectedSalesUnit === "all" && (
-                      <td className="px-3 py-2 text-center">
-                        <span 
-                          className="text-xs font-medium text-blue-600 bg-blue-100 px-2 py-1 rounded cursor-pointer hover:bg-blue-200 transition-colors"
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            handleSalesUnitClick(tourData.topSalesUnit);
-                          }}
-                          data-testid={`sales-unit-${tourData.topSalesUnit}`}
-                        >
-                          {getSalesUnitName(tourData.topSalesUnit)}
-                        </span>
-                      </td>
-                    )}
-                  </tr>
-                );
-              }
-
-              return null;
+                    ))}
+                </tr>
+              );
             })}
           </tbody>
         </table>
