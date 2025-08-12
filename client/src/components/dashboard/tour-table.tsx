@@ -541,10 +541,10 @@ export default function TourTable() {
                 Số Chỗ Bán Hôm Nay
               </th>
               <th className="px-2 py-2 text-center text-xs font-medium text-gray-500 uppercase tracking-wider" style={{width: '9%'}}>
-                % Hoàn Thành
+                % LK Hoàn Thành
               </th>
               <th className="px-2 py-2 text-center text-xs font-medium text-gray-500 uppercase tracking-wider" style={{width: '10%'}}>
-                Doanh Số
+                Doanh Thu
               </th>
               <th className="px-2 py-2 text-center text-xs font-medium text-gray-500 uppercase tracking-wider" style={{width: '8%'}}>
                 % DS KH
