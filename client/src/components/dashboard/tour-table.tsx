@@ -547,7 +547,7 @@ export default function TourTable() {
                 Doanh Số
               </th>
               <th className="px-2 py-2 text-center text-xs font-medium text-gray-500 uppercase tracking-wider" style={{width: '8%'}}>
-                % Mục Tiêu
+                % DS KH
               </th>
               {selectedSalesUnit === "all" && (
                 <th className="px-3 py-2 text-center text-xs font-medium text-gray-500 uppercase tracking-wider" style={{width: '12%'}}>
@@ -612,7 +612,10 @@ export default function TourTable() {
                       {formatCurrency(sectionData.revenue)}
                     </td>
                     <td className="px-2 py-3 text-center">
-                      <span className="text-brand-green font-medium text-sm">+{parseFloat(sectionData.targetPercentage).toFixed(1)}%</span>
+                      <div className="flex flex-col items-center">
+                        <span className="text-xs text-brand-green">+{parseFloat(sectionData.targetPercentage).toFixed(1)}%</span>
+                        <span className="text-sm font-medium text-gray-700">{parseFloat(sectionData.targetPercentage).toFixed(1)}%</span>
+                      </div>
                     </td>
                     {selectedSalesUnit === "all" && (
                       <td className="px-3 py-3 text-center">
@@ -657,7 +660,12 @@ export default function TourTable() {
                       {parseFloat(continentData.completionRate).toFixed(1)}%
                     </td>
                     <td className="px-2 py-2 text-center text-sm font-medium text-blue-700">{formatCurrency(continentData.revenue)}</td>
-                    <td className="px-2 py-2 text-center text-sm text-brand-green font-medium">+{parseFloat(continentData.targetPercentage).toFixed(1)}%</td>
+                    <td className="px-2 py-2 text-center">
+                      <div className="flex flex-col items-center">
+                        <span className="text-xs text-brand-green">+{parseFloat(continentData.targetPercentage).toFixed(1)}%</span>
+                        <span className="text-sm font-medium text-gray-700">{parseFloat(continentData.targetPercentage).toFixed(1)}%</span>
+                      </div>
+                    </td>
                     {selectedSalesUnit === "all" && (
                       <td className="px-3 py-2 text-center">
                         <div className="w-2 h-2 bg-brand-green rounded-full mx-auto"></div>
@@ -701,7 +709,12 @@ export default function TourTable() {
                       {parseFloat(regionData.completionRate).toFixed(1)}%
                     </td>
                     <td className="px-2 py-2 text-center text-sm font-medium text-gray-700">{formatCurrency(regionData.revenue)}</td>
-                    <td className="px-2 py-2 text-center text-sm text-brand-green font-medium">+{parseFloat(regionData.targetPercentage).toFixed(1)}%</td>
+                    <td className="px-2 py-2 text-center">
+                      <div className="flex flex-col items-center">
+                        <span className="text-xs text-brand-green">+{parseFloat(regionData.targetPercentage).toFixed(1)}%</span>
+                        <span className="text-sm font-medium text-gray-700">{parseFloat(regionData.targetPercentage).toFixed(1)}%</span>
+                      </div>
+                    </td>
                     {selectedSalesUnit === "all" && (
                       <td className="px-3 py-2 text-center">
                         <div className="w-2 h-2 bg-brand-green rounded-full mx-auto"></div>
@@ -750,7 +763,12 @@ export default function TourTable() {
                       {parseFloat(areaData.completionRate).toFixed(1)}%
                     </td>
                     <td className="px-2 py-2 text-center text-sm text-gray-600">{formatCurrency(areaData.revenue)}</td>
-                    <td className="px-2 py-2 text-center text-sm text-brand-green">+{parseFloat(areaData.targetPercentage).toFixed(1)}%</td>
+                    <td className="px-2 py-2 text-center">
+                      <div className="flex flex-col items-center">
+                        <span className="text-xs text-brand-green">+{parseFloat(areaData.targetPercentage).toFixed(1)}%</span>
+                        <span className="text-sm font-medium text-gray-700">{parseFloat(areaData.targetPercentage).toFixed(1)}%</span>
+                      </div>
+                    </td>
                     {selectedSalesUnit === "all" && (
                       <td className="px-3 py-2 text-center">
                         <div className="w-2 h-2 bg-brand-green rounded-full mx-auto"></div>
@@ -796,8 +814,11 @@ export default function TourTable() {
                       {parseFloat(tourData.completionRate).toFixed(1)}%
                     </td>
                     <td className="px-2 py-2 text-center text-sm text-gray-500">{formatCurrency(tourData.revenue)}</td>
-                    <td className="px-2 py-2 text-center text-sm text-green-600">
-                      +{parseFloat(tourData.targetPercentage).toFixed(1)}%
+                    <td className="px-2 py-2 text-center">
+                      <div className="flex flex-col items-center">
+                        <span className="text-xs text-brand-green">+{parseFloat(tourData.targetPercentage).toFixed(1)}%</span>
+                        <span className="text-sm font-medium text-gray-700">{parseFloat(tourData.targetPercentage).toFixed(1)}%</span>
+                      </div>
                     </td>
                     {selectedSalesUnit === "all" && (
                       <td className="px-3 py-2 text-center">

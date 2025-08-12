@@ -43,7 +43,7 @@ export default function MetricsCards() {
       testId: "metric-daily-bookings"
     },
     {
-      title: "Doanh Thu Hôm Nay",
+      title: "Doanh Số Hôm Nay",
       value: metrics.dailyRevenue,
       change: metrics.dailyRevenueChange,
       changeType: "percentage",
