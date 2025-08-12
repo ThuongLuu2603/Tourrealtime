@@ -612,9 +612,9 @@ export default function TourTable() {
                       {formatCurrency(sectionData.revenue)}
                     </td>
                     <td className="px-2 py-3 text-center">
-                      <div className="relative inline-block">
-                        <span className="text-lg font-semibold text-gray-700">{parseFloat(sectionData.completionRate).toFixed(1)}%</span>
-                        <span className="absolute -top-1 -right-2 text-xs text-brand-green">+{(parseFloat(sectionData.completionRate) * 0.1).toFixed(1)}%</span>
+                      <div className="flex items-center justify-center space-x-2">
+                        <span className="text-sm font-semibold text-gray-700">{parseFloat(sectionData.completionRate).toFixed(1)}%</span>
+                        <span className="text-sm text-brand-green">+{(parseFloat(sectionData.completionRate) * 0.1).toFixed(1)}%</span>
                       </div>
                     </td>
                     {selectedSalesUnit === "all" && (
@@ -661,9 +661,9 @@ export default function TourTable() {
                     </td>
                     <td className="px-2 py-2 text-center text-sm font-medium text-blue-700">{formatCurrency(continentData.revenue)}</td>
                     <td className="px-2 py-2 text-center">
-                      <div className="relative inline-block">
+                      <div className="flex items-center justify-center space-x-2">
                         <span className="text-sm font-medium text-gray-700">{parseFloat(continentData.completionRate).toFixed(1)}%</span>
-                        <span className="absolute -top-1 -right-2 text-xs text-brand-green">+{(parseFloat(continentData.completionRate) * 0.1).toFixed(1)}%</span>
+                        <span className="text-sm text-brand-green">+{(parseFloat(continentData.completionRate) * 0.1).toFixed(1)}%</span>
                       </div>
                     </td>
                     {selectedSalesUnit === "all" && (
@@ -710,9 +710,9 @@ export default function TourTable() {
                     </td>
                     <td className="px-2 py-2 text-center text-sm font-medium text-gray-700">{formatCurrency(regionData.revenue)}</td>
                     <td className="px-2 py-2 text-center">
-                      <div className="relative inline-block">
+                      <div className="flex items-center justify-center space-x-2">
                         <span className="text-sm font-medium text-gray-700">{parseFloat(regionData.completionRate).toFixed(1)}%</span>
-                        <span className="absolute -top-1 -right-2 text-xs text-brand-green">+{(parseFloat(regionData.completionRate) * 0.1).toFixed(1)}%</span>
+                        <span className="text-sm text-brand-green">+{(parseFloat(regionData.completionRate) * 0.1).toFixed(1)}%</span>
                       </div>
                     </td>
                     {selectedSalesUnit === "all" && (
@@ -764,9 +764,9 @@ export default function TourTable() {
                     </td>
                     <td className="px-2 py-2 text-center text-sm text-gray-600">{formatCurrency(areaData.revenue)}</td>
                     <td className="px-2 py-2 text-center">
-                      <div className="relative inline-block">
+                      <div className="flex items-center justify-center space-x-2">
                         <span className="text-sm font-medium text-gray-700">{parseFloat(areaData.completionRate).toFixed(1)}%</span>
-                        <span className="absolute -top-1 -right-2 text-xs text-brand-green">+{(parseFloat(areaData.completionRate) * 0.1).toFixed(1)}%</span>
+                        <span className="text-sm text-brand-green">+{(parseFloat(areaData.completionRate) * 0.1).toFixed(1)}%</span>
                       </div>
                     </td>
                     {selectedSalesUnit === "all" && (
@@ -815,9 +815,9 @@ export default function TourTable() {
                     </td>
                     <td className="px-2 py-2 text-center text-sm text-gray-500">{formatCurrency(tourData.revenue)}</td>
                     <td className="px-2 py-2 text-center">
-                      <div className="relative inline-block">
+                      <div className="flex items-center justify-center space-x-2">
                         <span className="text-sm font-medium text-gray-700">{parseFloat(tourData.completionRate).toFixed(1)}%</span>
-                        <span className="absolute -top-1 -right-2 text-xs text-brand-green">+{(parseFloat(tourData.completionRate) * 0.1).toFixed(1)}%</span>
+                        <span className="text-sm text-brand-green">+{(parseFloat(tourData.completionRate) * 0.1).toFixed(1)}%</span>
                       </div>
                     </td>
                     {selectedSalesUnit === "all" && (
