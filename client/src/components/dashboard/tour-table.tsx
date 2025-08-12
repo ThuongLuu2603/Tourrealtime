@@ -76,6 +76,54 @@ export default function TourTable() {
     return `${num.toFixed(1)}B`;
   };
 
+  // Calculate total daily revenue for hierarchical levels
+  const calculateDailyRevenueForLevel = (levelCode: string, level: string, category: string) => {
+    let totalDailyRevenue = 0;
+    
+    if (level === 'region' || level === 'geo_region') {
+      // Sum daily revenue from all areas under this region
+      const regionAreas = category === 'domestic' 
+        ? hierarchyLevels.filter(l => l.level === 'area' && l.parentCode === levelCode)
+        : hierarchyLevels.filter(l => l.level === 'area' && l.parentCode === levelCode);
+      
+      regionAreas.forEach(area => {
+        const areaTours = filteredTours.filter(tour => tour.area === area.code);
+        areaTours.forEach(tour => {
+          totalDailyRevenue += parseFloat(tour.dailyRevenue || "0");
+        });
+      });
+    } else if (level === 'continent') {
+      // Sum daily revenue from all regions under this continent
+      const continentRegions = hierarchyLevels.filter(l => l.level === 'region' && l.parentCode === levelCode);
+      continentRegions.forEach(region => {
+        const regionAreas = hierarchyLevels.filter(l => l.level === 'area' && l.parentCode === region.code);
+        regionAreas.forEach(area => {
+          const areaTours = filteredTours.filter(tour => tour.area === area.code);
+          areaTours.forEach(tour => {
+            totalDailyRevenue += parseFloat(tour.dailyRevenue || "0");
+          });
+        });
+      });
+    } else if (level === 'area') {
+      // Sum daily revenue from all tours in this area
+      const areaTours = filteredTours.filter(tour => tour.area === levelCode);
+      areaTours.forEach(tour => {
+        totalDailyRevenue += parseFloat(tour.dailyRevenue || "0");
+      });
+    }
+    
+    return totalDailyRevenue.toString();
+  };
+
+  // Calculate total daily revenue for sections (domestic/international)
+  const calculateSectionDailyRevenue = (category: string) => {
+    const categoryTours = filteredTours.filter(tour => tour.category === category);
+    const totalDailyRevenue = categoryTours.reduce((sum, tour) => {
+      return sum + parseFloat(tour.dailyRevenue || "0");
+    }, 0);
+    return totalDailyRevenue.toString();
+  };
+
   const getSalesUnitName = (code: string) => {
     const unit = salesUnits.find(u => u.code === code);
     return unit ? unit.name : code;
@@ -612,7 +660,7 @@ export default function TourTable() {
                       {parseFloat(sectionData.completionRate).toFixed(1)}%
                     </td>
                     <td className="px-2 py-3 text-center text-sm font-semibold text-blue-600">
-                      {formatCurrency((parseFloat(sectionData.revenue) * 0.15).toString())}
+                      {formatCurrency(calculateSectionDailyRevenue(row.section))}
                     </td>
                     <td className="px-2 py-3 text-center text-sm font-semibold text-gray-900">
                       {formatCurrency(sectionData.revenue)}
@@ -665,7 +713,7 @@ export default function TourTable() {
                     <td className={`px-2 py-2 text-center text-sm font-semibold ${getCompletionRateColor(continentData.completionRate)}`}>
                       {parseFloat(continentData.completionRate).toFixed(1)}%
                     </td>
-                    <td className="px-2 py-2 text-center text-sm font-medium text-blue-600">{formatCurrency((parseFloat(continentData.revenue) * 0.15).toString())}</td>
+                    <td className="px-2 py-2 text-center text-sm font-medium text-blue-600">{formatCurrency(calculateDailyRevenueForLevel(continentData.code, continentData.level, continentData.category))}</td>
                     <td className="px-2 py-2 text-center text-sm font-medium text-blue-700">{formatCurrency(continentData.revenue)}</td>
                     <td className="px-2 py-2 text-center">
                       <div className="flex flex-col items-center">
@@ -715,7 +763,7 @@ export default function TourTable() {
                     <td className={`px-2 py-2 text-center text-sm font-semibold ${getCompletionRateColor(regionData.completionRate)}`}>
                       {parseFloat(regionData.completionRate).toFixed(1)}%
                     </td>
-                    <td className="px-2 py-2 text-center text-sm font-medium text-gray-600">{formatCurrency((parseFloat(regionData.revenue) * 0.15).toString())}</td>
+                    <td className="px-2 py-2 text-center text-sm font-medium text-gray-600">{formatCurrency(calculateDailyRevenueForLevel(regionData.code, regionData.level, regionData.category))}</td>
                     <td className="px-2 py-2 text-center text-sm font-medium text-gray-700">{formatCurrency(regionData.revenue)}</td>
                     <td className="px-2 py-2 text-center">
                       <div className="flex flex-col items-center">
@@ -770,7 +818,7 @@ export default function TourTable() {
                     <td className={`px-2 py-2 text-center text-sm font-medium ${getCompletionRateColor(areaData.completionRate)}`}>
                       {parseFloat(areaData.completionRate).toFixed(1)}%
                     </td>
-                    <td className="px-2 py-2 text-center text-sm text-gray-500">{formatCurrency((parseFloat(areaData.revenue) * 0.15).toString())}</td>
+                    <td className="px-2 py-2 text-center text-sm text-gray-500">{formatCurrency(calculateDailyRevenueForLevel(areaData.code, areaData.level, areaData.category))}</td>
                     <td className="px-2 py-2 text-center text-sm text-gray-600">{formatCurrency(areaData.revenue)}</td>
                     <td className="px-2 py-2 text-center">
                       <div className="flex flex-col items-center">
