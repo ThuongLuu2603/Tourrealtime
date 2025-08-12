@@ -20,6 +20,7 @@ export const tours = pgTable("tours", {
   completionRate: decimal("completion_rate", { precision: 5, scale: 2 }).notNull().default("0"),
   dailyRevenue: decimal("daily_revenue", { precision: 15, scale: 2 }).notNull().default("0"), // Doanh thư hôm nay
   revenue: decimal("revenue", { precision: 15, scale: 2 }).notNull().default("0"),
+  plannedRevenue: decimal("planned_revenue", { precision: 15, scale: 2 }).notNull().default("0"), // Doanh thu kế hoạch
   targetPercentage: decimal("target_percentage", { precision: 5, scale: 2 }).notNull().default("0"),
   topSalesUnit: text("top_sales_unit").notNull().default("HCM"), // 'HCM', 'HN', 'CT'
   isActive: boolean("is_active").notNull().default(true),
@@ -42,6 +43,7 @@ export const hierarchyLevels = pgTable("hierarchy_levels", {
   recentlyBooked30min: integer("recently_booked_30min").notNull().default(0),
   completionRate: decimal("completion_rate", { precision: 5, scale: 2 }).notNull().default("0"),
   revenue: decimal("revenue", { precision: 15, scale: 2 }).notNull().default("0"),
+  plannedRevenue: decimal("planned_revenue", { precision: 15, scale: 2 }).notNull().default("0"), // Doanh thu kế hoạch
   targetPercentage: decimal("target_percentage", { precision: 5, scale: 2 }).notNull().default("0"),
 });
 

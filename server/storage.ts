@@ -73,74 +73,74 @@ export class MemStorage implements IStorage {
     const hierarchyData: InsertHierarchyLevel[] = [
       // International - Level 1: Tour Quốc tế - Tổng 30min = 8+10+2+1 = 21 
       { name: "TOUR QUỐC TẾ", code: "tour_quoc_te", category: "international", level: "tour_category", parentCode: null, planned: 18935, sold: 14267, remaining: 4668, recentlyBooked: 37,
-        recentlyBooked30min: 21, completionRate: "75.3", revenue: "789480000000", targetPercentage: "12.4" },
+        recentlyBooked30min: 21, completionRate: "75.3", revenue: "789480000000", plannedRevenue: "950000000000", targetPercentage: "12.4" },
       
       // International - Level 2: Châu lục - Châu Á 30min = 8+10+2 = 20, Châu Âu = 1  
       { name: "Châu Á", code: "chau_a", category: "international", level: "continent", parentCode: "tour_quoc_te", planned: 18935, sold: 14267, remaining: 4668, recentlyBooked: 37,
-        recentlyBooked30min: 20, completionRate: "75.3", revenue: "789480000000", targetPercentage: "12.4" },
+        recentlyBooked30min: 20, completionRate: "75.3", revenue: "789480000000", plannedRevenue: "850000000000", targetPercentage: "12.4" },
       { name: "Châu Âu", code: "chau_au", category: "international", level: "continent", parentCode: "tour_quoc_te", planned: 2401, sold: 1550, remaining: 851, recentlyBooked: 3,
-        recentlyBooked30min: 1, completionRate: "64.5", revenue: "245000000000", targetPercentage: "8.5" },
+        recentlyBooked30min: 1, completionRate: "64.5", revenue: "245000000000", plannedRevenue: "300000000000", targetPercentage: "8.5" },
       
       // International - Level 3: Khu vực - 30min: Đông Bắc Á = 2+2+2+2 = 8, Đông Nam Á = 2+2+2+2+2 = 10, Nam Á = 2
       { name: "Đông Bắc Á", code: "dong_bac_a", category: "international", level: "region", parentCode: "chau_a", planned: 8753, sold: 6592, remaining: 2161, recentlyBooked: 22,
-        recentlyBooked30min: 8, completionRate: "75.3", revenue: "464936000000", targetPercentage: "10.7" },
+        recentlyBooked30min: 8, completionRate: "75.3", revenue: "464936000000", plannedRevenue: "520000000000", targetPercentage: "10.7" },
       { name: "Đông Nam Á", code: "dong_nam_a", category: "international", level: "region", parentCode: "chau_a", planned: 7781, sold: 5550, remaining: 2231, recentlyBooked: 13,
-        recentlyBooked30min: 10, completionRate: "71.3", revenue: "275065000000", targetPercentage: "11.2" },
+        recentlyBooked30min: 10, completionRate: "71.3", revenue: "275065000000", plannedRevenue: "320000000000", targetPercentage: "11.2" },
       { name: "Nam Á", code: "nam_a", category: "international", level: "region", parentCode: "chau_a", planned: 2401, sold: 2125, remaining: 276, recentlyBooked: 2,
-        recentlyBooked30min: 2, completionRate: "88.5", revenue: "49479000000", targetPercentage: "14.2" },
+        recentlyBooked30min: 2, completionRate: "88.5", revenue: "49479000000", plannedRevenue: "60000000000", targetPercentage: "14.2" },
       
       // International - Level 4: Tuyến Tour cụ thể (quốc gia)
       // Đông Bắc Á (8.753) = Trung Quốc (3.200) + Nhật Bản (2.156) + Hàn Quốc (2.800) + Mongolia (597)
       { name: "Trung Quốc", code: "trung_quoc", category: "international", level: "area", parentCode: "dong_bac_a", planned: 3200, sold: 2400, remaining: 800, recentlyBooked: 4,
-        recentlyBooked30min: 2, completionRate: "75.0", revenue: "180000000000", targetPercentage: "9.5" },
+        recentlyBooked30min: 2, completionRate: "75.0", revenue: "180000000000", plannedRevenue: "210000000000", targetPercentage: "9.5" },
       { name: "Nhật Bản", code: "nhat_ban", category: "international", level: "area", parentCode: "dong_bac_a", planned: 2156, sold: 1987, remaining: 169, recentlyBooked: 10,
-        recentlyBooked30min: 2, completionRate: "92.2", revenue: "287350000000", targetPercentage: "15.2" },
+        recentlyBooked30min: 2, completionRate: "92.2", revenue: "287350000000", plannedRevenue: "320000000000", targetPercentage: "15.2" },
       { name: "Hàn Quốc", code: "han_quoc", category: "international", level: "area", parentCode: "dong_bac_a", planned: 2800, sold: 2100, remaining: 700, recentlyBooked: 7,
-        recentlyBooked30min: 2, completionRate: "75.0", revenue: "165000000000", targetPercentage: "8.2" },
+        recentlyBooked30min: 2, completionRate: "75.0", revenue: "165000000000", plannedRevenue: "190000000000", targetPercentage: "8.2" },
       { name: "Mongolia", code: "mongolia", category: "international", level: "area", parentCode: "dong_bac_a", planned: 597, sold: 105, remaining: 492, recentlyBooked: 1,
-        recentlyBooked30min: 2, completionRate: "17.6", revenue: "12286000000", targetPercentage: "2.8" },
+        recentlyBooked30min: 2, completionRate: "17.6", revenue: "12286000000", plannedRevenue: "25000000000", targetPercentage: "2.8" },
       // Đông Nam Á (7.781) = Thái Lan (2.800) + Singapore-Malaysia (1.987) + Lào (800) + Campuchia (700) + Indonesia (1.494)
       { name: "Thái Lan", code: "thai_lan", category: "international", level: "area", parentCode: "dong_nam_a", planned: 2800, sold: 2200, remaining: 600, recentlyBooked: 3,
-        recentlyBooked30min: 2, completionRate: "78.6", revenue: "132000000000", targetPercentage: "10.5" },
+        recentlyBooked30min: 2, completionRate: "78.6", revenue: "132000000000", plannedRevenue: "155000000000", targetPercentage: "10.5" },
       { name: "Singapore - Malaysia", code: "singapore_malaysia", category: "international", level: "area", parentCode: "dong_nam_a", planned: 1987, sold: 1534, remaining: 453, recentlyBooked: 6,
-        recentlyBooked30min: 2, completionRate: "77.2", revenue: "198700000000", targetPercentage: "9.8" },
+        recentlyBooked30min: 2, completionRate: "77.2", revenue: "198700000000", plannedRevenue: "210000000000", targetPercentage: "9.8" },
       { name: "Lào", code: "lao", category: "international", level: "area", parentCode: "dong_nam_a", planned: 800, sold: 600, remaining: 200, recentlyBooked: 1,
-        recentlyBooked30min: 2, completionRate: "75.0", revenue: "45000000000", targetPercentage: "7.2" },
+        recentlyBooked30min: 2, completionRate: "75.0", revenue: "45000000000", plannedRevenue: "55000000000", targetPercentage: "7.2" },
       { name: "Campuchia", code: "campuchia", category: "international", level: "area", parentCode: "dong_nam_a", planned: 700, sold: 500, remaining: 200, recentlyBooked: 1,
-        recentlyBooked30min: 2, completionRate: "71.4", revenue: "43000000000", targetPercentage: "6.8" },
+        recentlyBooked30min: 2, completionRate: "71.4", revenue: "43000000000", plannedRevenue: "50000000000", targetPercentage: "6.8" },
       { name: "Indonesia", code: "indonesia", category: "international", level: "area", parentCode: "dong_nam_a", planned: 1494, sold: 716, remaining: 778, recentlyBooked: 2,
-        recentlyBooked30min: 2, completionRate: "47.9", revenue: "56365000000", targetPercentage: "8.7" },
+        recentlyBooked30min: 2, completionRate: "47.9", revenue: "56365000000", plannedRevenue: "70000000000", targetPercentage: "8.7" },
       
       // Domestic - Geographic Regions (Level 1) - Tổng 30min = 6+4+2 = 12
       { name: "Nội Địa", code: "noi_dia", category: "domestic", level: "geo_region", parentCode: null, planned: 15467, sold: 11245, remaining: 4222, recentlyBooked: 32,
-        recentlyBooked30min: 12, completionRate: "72.7", revenue: "355680000000", targetPercentage: "5.2" },
+        recentlyBooked30min: 12, completionRate: "72.7", revenue: "355680000000", plannedRevenue: "420000000000", targetPercentage: "5.2" },
       
       // Domestic - Regional Areas (Level 2) - 30min: Miền Bắc = 2+2+2 = 6, Miền Trung = 2+2 = 4, Miền Nam = 1+1 = 2
       { name: "Miền Bắc", code: "mien_bac", category: "domestic", level: "region", parentCode: "noi_dia", planned: 8000, sold: 6200, remaining: 1800, recentlyBooked: 15,
-        recentlyBooked30min: 6, completionRate: "77.5", revenue: "153000000000", targetPercentage: "9.2" },
+        recentlyBooked30min: 6, completionRate: "77.5", revenue: "153000000000", plannedRevenue: "185000000000", targetPercentage: "9.2" },
       { name: "Miền Trung", code: "mien_trung", category: "domestic", level: "region", parentCode: "noi_dia", planned: 4268, sold: 3156, remaining: 1112, recentlyBooked: 12,
-        recentlyBooked30min: 4, completionRate: "74.0", revenue: "98700000000", targetPercentage: "6.3" },
+        recentlyBooked30min: 4, completionRate: "74.0", revenue: "98700000000", plannedRevenue: "125000000000", targetPercentage: "6.3" },
       { name: "Miền Nam", code: "mien_nam", category: "domestic", level: "region", parentCode: "noi_dia", planned: 3199, sold: 1889, remaining: 1310, recentlyBooked: 5,
-        recentlyBooked30min: 2, completionRate: "59.1", revenue: "104000000000", targetPercentage: "2.8" },
+        recentlyBooked30min: 2, completionRate: "59.1", revenue: "104000000000", plannedRevenue: "130000000000", targetPercentage: "2.8" },
       
       // Domestic - Specific Areas (Level 3) - Đã tính toán chính xác
       // Miền Bắc: 8.000 (kế hoạch) = 3.752 + 2.500 + 1.748, 6.200 (đã bán) = 2.845 + 1.890 + 1.465 = 6.200
       { name: "ĐBSH&DH", code: "dbsh_dh", category: "domestic", level: "area", parentCode: "mien_bac", planned: 3752, sold: 2845, remaining: 907, recentlyBooked: 8,
-        recentlyBooked30min: 2, completionRate: "75.8", revenue: "60000000000", targetPercentage: "8.1" },
+        recentlyBooked30min: 2, completionRate: "75.8", revenue: "60000000000", plannedRevenue: "75000000000", targetPercentage: "8.1" },
       { name: "Tây Bắc", code: "tay_bac", category: "domestic", level: "area", parentCode: "mien_bac", planned: 2500, sold: 1890, remaining: 610, recentlyBooked: 5,
-        recentlyBooked30min: 2, completionRate: "75.6", revenue: "45000000000", targetPercentage: "7.3" },
+        recentlyBooked30min: 2, completionRate: "75.6", revenue: "45000000000", plannedRevenue: "58000000000", targetPercentage: "7.3" },
       { name: "Duyên Hải Miền Bắc", code: "duyen_hai_bac", category: "domestic", level: "area", parentCode: "mien_bac", planned: 1748, sold: 1465, remaining: 283, recentlyBooked: 2,
-        recentlyBooked30min: 2, completionRate: "83.8", revenue: "48000000000", targetPercentage: "7.8" },
+        recentlyBooked30min: 2, completionRate: "83.8", revenue: "48000000000", plannedRevenue: "62000000000", targetPercentage: "7.8" },
       // Miền Trung: 4.268 (kế hoạch) = 2.200 + 2.068 = 4.268, 3.156 (đã bán) = 1.650 + 1.506 = 3.156
       { name: "Tây Nguyên", code: "tay_nguyen", category: "domestic", level: "area", parentCode: "mien_trung", planned: 2200, sold: 1650, remaining: 550, recentlyBooked: 6,
-        recentlyBooked30min: 2, completionRate: "75.0", revenue: "48500000000", targetPercentage: "5.8" },
+        recentlyBooked30min: 2, completionRate: "75.0", revenue: "48500000000", plannedRevenue: "62000000000", targetPercentage: "5.8" },
       { name: "Miền Trung Duyên Hải", code: "mt_duyen_hai", category: "domestic", level: "area", parentCode: "mien_trung", planned: 2068, sold: 1506, remaining: 562, recentlyBooked: 6,
-        recentlyBooked30min: 2, completionRate: "72.8", revenue: "50200000000", targetPercentage: "6.8" },
+        recentlyBooked30min: 2, completionRate: "72.8", revenue: "50200000000", plannedRevenue: "63000000000", targetPercentage: "6.8" },
       // Miền Nam: 30min = 1+1 = 2
       { name: "Tây Nam Bộ", code: "tay_nam_bo", category: "domestic", level: "area", parentCode: "mien_nam", planned: 1665, sold: 998, remaining: 667, recentlyBooked: 3,
-        recentlyBooked30min: 1, completionRate: "59.9", revenue: "52000000000", targetPercentage: "3.1" },
+        recentlyBooked30min: 1, completionRate: "59.9", revenue: "52000000000", plannedRevenue: "68000000000", targetPercentage: "3.1" },
       { name: "Đông Nam Bộ", code: "dong_nam_bo", category: "domestic", level: "area", parentCode: "mien_nam", planned: 1534, sold: 891, remaining: 643, recentlyBooked: 2,
-        recentlyBooked30min: 1, completionRate: "58.1", revenue: "52000000000", targetPercentage: "4.2" },
+        recentlyBooked30min: 1, completionRate: "58.1", revenue: "52000000000", plannedRevenue: "65000000000", targetPercentage: "4.2" },
     ];
 
     hierarchyData.forEach(levelData => {
@@ -158,6 +158,7 @@ export class MemStorage implements IStorage {
         recentlyBooked30min: levelData.recentlyBooked30min || 0,
         completionRate: levelData.completionRate || "0",
         revenue: levelData.revenue || "0",
+        plannedRevenue: levelData.plannedRevenue || "0",
         targetPercentage: levelData.targetPercentage || "0"
       };
       this.hierarchyLevels.set(level.id, level);
@@ -182,6 +183,7 @@ export class MemStorage implements IStorage {
         completionRate: "92.6",
         dailyRevenue: "12500000000", // Doanh thư hôm nay
         revenue: "60000000000",
+        plannedRevenue: "75000000000", // Doanh thu kế hoạch
         targetPercentage: "8.1",
         topSalesUnit: "Hà Nội"
       },
@@ -202,6 +204,7 @@ export class MemStorage implements IStorage {
         completionRate: "81.8",
         dailyRevenue: "8500000000", // Doanh thư hôm nay
         revenue: "52000000000",
+        plannedRevenue: "65000000000", // Doanh thu kế hoạch
         targetPercentage: "4.2",
         topSalesUnit: "HCM"
       },
@@ -222,6 +225,7 @@ export class MemStorage implements IStorage {
         completionRate: "92.2",
         dailyRevenue: "18500000000", // Doanh thư hôm nay
         revenue: "287350000000",
+        plannedRevenue: "320000000000", // Doanh thu kế hoạch
         targetPercentage: "15.2",
         topSalesUnit: "HCM"
       },
@@ -242,6 +246,7 @@ export class MemStorage implements IStorage {
         completionRate: "77.2",
         dailyRevenue: "9200000000", // Doanh thư hôm nay
         revenue: "198700000000",
+        plannedRevenue: "210000000000", // Doanh thu kế hoạch
         targetPercentage: "9.8",
         topSalesUnit: "HN"
       }
@@ -267,6 +272,7 @@ export class MemStorage implements IStorage {
         completionRate: tourData.completionRate || "0",
         dailyRevenue: tourData.dailyRevenue || "0",
         revenue: tourData.revenue || "0",
+        plannedRevenue: tourData.plannedRevenue || "0",
         targetPercentage: tourData.targetPercentage || "0",
         topSalesUnit: tourData.topSalesUnit || "HN",
         isActive: true
@@ -362,6 +368,7 @@ export class MemStorage implements IStorage {
       completionRate: insertTour.completionRate ?? "0",
       dailyRevenue: insertTour.dailyRevenue ?? "0",
       revenue: insertTour.revenue ?? "0",
+      plannedRevenue: insertTour.plannedRevenue ?? "0",
       targetPercentage: insertTour.targetPercentage ?? "0",
       topSalesUnit: insertTour.topSalesUnit ?? "HCM",
       isActive: insertTour.isActive ?? true
@@ -407,6 +414,7 @@ export class MemStorage implements IStorage {
       recentlyBooked30min: insertLevel.recentlyBooked30min ?? 0,
       completionRate: insertLevel.completionRate ?? "0",
       revenue: insertLevel.revenue ?? "0",
+      plannedRevenue: insertLevel.plannedRevenue ?? "0",
       targetPercentage: insertLevel.targetPercentage ?? "0"
     };
     this.hierarchyLevels.set(id, level);
