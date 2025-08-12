@@ -60,6 +60,7 @@
   /* Level background colors */
   --blue-25: hsl(217 88% 97%);
   --gray-25: hsl(210 20% 97%);
+  --purple-25: hsl(267 78% 97%);
 }
 
 .dark {
@@ -193,4 +194,8 @@
 
 .bg-gray-25 {
   background-color: var(--gray-25);
+}
+
+.bg-purple-25 {
+  background-color: var(--purple-25);
 }

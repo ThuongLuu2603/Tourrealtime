@@ -95,7 +95,7 @@ export default function TourTable() {
     return 'bg-red-50';
   };
 
-  // Helper function to get consistent colors for hierarchy levels
+  // Helper function to get consistent colors for hierarchy levels - same colors for same levels regardless of domestic/international
   const getLevelColors = (level: string, isDomestic?: boolean) => {
     switch (level) {
       case 'section':
@@ -108,25 +108,25 @@ export default function TourTable() {
         return {
           bg: 'bg-blue-25 hover:bg-blue-50',
           text: 'text-blue-800 font-semibold',
-          indicator: 'bg-blue-500'
+          indicator: 'bg-blue-600'
         };
       case 'region':
         return {
-          bg: 'bg-gray-25 hover:bg-gray-50',
-          text: 'text-gray-800 font-semibold', 
-          indicator: 'bg-gray-500'
+          bg: 'bg-purple-25 hover:bg-purple-50',
+          text: 'text-purple-700 font-semibold', 
+          indicator: 'bg-purple-600'
         };
       case 'area':
         return {
           bg: 'hover:bg-gray-50',
           text: 'text-gray-700 font-medium',
-          indicator: 'bg-gray-400'
+          indicator: 'bg-gray-500'
         };
       case 'tour':
         return {
           bg: 'hover:bg-gray-50',
           text: 'text-gray-600',
-          indicator: 'bg-gray-300'
+          indicator: 'bg-gray-400'
         };
       default:
         return {
@@ -137,19 +137,19 @@ export default function TourTable() {
     }
   };
 
-  // Helper function to get text color for data values based on hierarchy level
+  // Helper function to get text color for data values based on hierarchy level - consistent across domestic/international
   const getDataTextColor = (level: string, isNumeric: boolean = false) => {
     switch (level) {
       case 'section':
         return isNumeric ? 'font-semibold text-gray-900' : 'font-semibold text-gray-900';
       case 'continent':
-        return isNumeric ? 'font-medium text-blue-700' : 'font-semibold text-blue-800';
-      case 'region':
-        return isNumeric ? 'font-medium text-gray-700' : 'font-semibold text-gray-800';
+        return isNumeric ? 'font-semibold text-blue-800' : 'font-semibold text-blue-800';
+      case 'region': 
+        return isNumeric ? 'font-semibold text-purple-700' : 'font-semibold text-purple-700';
       case 'area':
-        return isNumeric ? 'text-gray-600' : 'font-medium text-gray-700';
+        return isNumeric ? 'font-medium text-gray-700' : 'font-medium text-gray-700';
       case 'tour':
-        return 'text-gray-500';
+        return 'text-gray-600';
       default:
         return 'text-gray-500';
     }
