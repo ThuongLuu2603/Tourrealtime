@@ -180,6 +180,7 @@ export class MemStorage implements IStorage {
         recentlyBooked: 8,
         recentlyBooked30min: 2,
         completionRate: "92.6",
+        dailyRevenue: "12500000000", // Doanh thư hôm nay
         revenue: "60000000000",
         targetPercentage: "8.1",
         topSalesUnit: "Hà Nội"
@@ -199,6 +200,7 @@ export class MemStorage implements IStorage {
         recentlyBooked: 5,
         recentlyBooked30min: 2,
         completionRate: "81.8",
+        dailyRevenue: "8500000000", // Doanh thư hôm nay
         revenue: "52000000000",
         targetPercentage: "4.2",
         topSalesUnit: "HCM"
@@ -218,6 +220,7 @@ export class MemStorage implements IStorage {
         recentlyBooked: 10,
         recentlyBooked30min: 2,
         completionRate: "92.2",
+        dailyRevenue: "18500000000", // Doanh thư hôm nay
         revenue: "287350000000",
         targetPercentage: "15.2",
         topSalesUnit: "HCM"
@@ -237,6 +240,7 @@ export class MemStorage implements IStorage {
         recentlyBooked: 6,
         recentlyBooked30min: 2,
         completionRate: "77.2",
+        dailyRevenue: "9200000000", // Doanh thư hôm nay
         revenue: "198700000000",
         targetPercentage: "9.8",
         topSalesUnit: "HN"
@@ -261,6 +265,7 @@ export class MemStorage implements IStorage {
         recentlyBooked: tourData.recentlyBooked || 0,
         recentlyBooked30min: tourData.recentlyBooked30min || 0,
         completionRate: tourData.completionRate || "0",
+        dailyRevenue: tourData.dailyRevenue || "0",
         revenue: tourData.revenue || "0",
         targetPercentage: tourData.targetPercentage || "0",
         topSalesUnit: tourData.topSalesUnit || "HN",
@@ -355,6 +360,7 @@ export class MemStorage implements IStorage {
       recentlyBooked: insertTour.recentlyBooked ?? 0,
       recentlyBooked30min: insertTour.recentlyBooked30min ?? 0,
       completionRate: insertTour.completionRate ?? "0",
+      dailyRevenue: insertTour.dailyRevenue ?? "0",
       revenue: insertTour.revenue ?? "0",
       targetPercentage: insertTour.targetPercentage ?? "0",
       topSalesUnit: insertTour.topSalesUnit ?? "HCM",
