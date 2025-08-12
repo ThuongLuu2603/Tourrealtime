@@ -43,7 +43,7 @@ export default function MetricsCards() {
       testId: "metric-daily-bookings"
     },
     {
-      title: "Doanh Số Hôm Nay",
+      title: "Doanh Thu Hôm Nay",
       value: metrics.dailyRevenue,
       change: metrics.dailyRevenueChange,
       changeType: "percentage",
@@ -61,7 +61,7 @@ export default function MetricsCards() {
       testId: "metric-tours-sold"
     },
     {
-      title: "Doanh số",
+      title: "Doanh Thu",
       value: metrics.revenue || metrics.dailyRevenue,
       change: metrics.revenuePlanPercentage || 0,
       changeType: "plan_percentage", // Hiển thị % kế hoạch
