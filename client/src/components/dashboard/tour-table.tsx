@@ -82,10 +82,77 @@ export default function TourTable() {
   };
 
   const getCompletionRateColor = (rate: string) => {
-    const numRate = parseFloat(rate);
-    if (numRate >= 75) return 'text-brand-green';
-    if (numRate >= 60) return 'text-brand-amber';
-    return 'text-brand-red';
+    const percentage = parseFloat(rate);
+    if (percentage > 75) return 'text-green-600';
+    if (percentage > 60) return 'text-yellow-600';
+    return 'text-red-600';
+  };
+
+  const getCompletionRateBackground = (rate: string) => {
+    const percentage = parseFloat(rate);
+    if (percentage > 75) return 'bg-green-50';
+    if (percentage > 60) return 'bg-yellow-50';
+    return 'bg-red-50';
+  };
+
+  // Helper function to get consistent colors for hierarchy levels
+  const getLevelColors = (level: string, isDomestic?: boolean) => {
+    switch (level) {
+      case 'section':
+        return {
+          bg: isDomestic ? 'bg-green-50 hover:bg-green-100' : 'bg-blue-50 hover:bg-blue-100',
+          text: 'text-gray-900 font-semibold',
+          indicator: isDomestic ? 'bg-brand-green' : 'bg-brand-blue'
+        };
+      case 'continent':
+        return {
+          bg: 'bg-blue-25 hover:bg-blue-50',
+          text: 'text-blue-800 font-semibold',
+          indicator: 'bg-blue-500'
+        };
+      case 'region':
+        return {
+          bg: 'bg-gray-25 hover:bg-gray-50',
+          text: 'text-gray-800 font-semibold', 
+          indicator: 'bg-gray-500'
+        };
+      case 'area':
+        return {
+          bg: 'hover:bg-gray-50',
+          text: 'text-gray-700 font-medium',
+          indicator: 'bg-gray-400'
+        };
+      case 'tour':
+        return {
+          bg: 'hover:bg-gray-50',
+          text: 'text-gray-600',
+          indicator: 'bg-gray-300'
+        };
+      default:
+        return {
+          bg: 'hover:bg-gray-50',
+          text: 'text-gray-600',
+          indicator: 'bg-gray-300'
+        };
+    }
+  };
+
+  // Helper function to get text color for data values based on hierarchy level
+  const getDataTextColor = (level: string, isNumeric: boolean = false) => {
+    switch (level) {
+      case 'section':
+        return isNumeric ? 'font-semibold text-gray-900' : 'font-semibold text-gray-900';
+      case 'continent':
+        return isNumeric ? 'font-medium text-blue-700' : 'font-semibold text-blue-800';
+      case 'region':
+        return isNumeric ? 'font-medium text-gray-700' : 'font-semibold text-gray-800';
+      case 'area':
+        return isNumeric ? 'text-gray-600' : 'font-medium text-gray-700';
+      case 'tour':
+        return 'text-gray-500';
+      default:
+        return 'text-gray-500';
+    }
   };
 
   const formatCurrency = (value: string) => {
@@ -235,24 +302,14 @@ export default function TourTable() {
         
       case 'planned':
         return (
-          <span className={`text-center text-sm ${
-            isSection ? 'font-semibold text-gray-900' : 
-            isContinent ? 'font-medium text-blue-700' :
-            isRegion ? 'font-medium text-gray-700' :
-            isArea ? 'text-gray-600' : 'text-gray-500'
-          }`}>
+          <span className={`text-center text-sm ${getDataTextColor(rowType, true)}`}>
             {rowData.data.planned.toLocaleString()}
           </span>
         );
         
       case 'sold':
         return (
-          <span className={`text-center text-sm ${
-            isSection ? 'font-semibold text-gray-900' : 
-            isContinent ? 'font-medium text-blue-700' :
-            isRegion ? 'font-medium text-gray-700' :
-            isArea ? 'text-gray-600' : 'text-gray-500'
-          }`}>
+          <span className={`text-center text-sm ${getDataTextColor(rowType, true)}`}>
             {rowData.data.sold.toLocaleString()}
           </span>
         );
@@ -312,11 +369,11 @@ export default function TourTable() {
       case 'completionRate':
         const rate = parseFloat(rowData.data.completionRate);
         return (
-          <span className={`text-center text-sm font-semibold ${
-            isSection ? 'text-brand-green' : getCompletionRateColor(rowData.data.completionRate)
-          }`}>
-            {rate.toFixed(1)}%
-          </span>
+          <div className={`text-center ${getCompletionRateBackground(rowData.data.completionRate)} rounded px-2 py-1`}>
+            <span className={`text-sm font-semibold ${getCompletionRateColor(rowData.data.completionRate)}`}>
+              {rate.toFixed(1)}%
+            </span>
+          </div>
         );
         
       case 'dailyRevenue':
@@ -328,9 +385,7 @@ export default function TourTable() {
           );
         } else if (isContinent || isRegion || isArea) {
           return (
-            <span className={`text-center text-sm font-medium ${
-              isContinent ? 'text-blue-600' : isRegion ? 'text-gray-600' : 'text-gray-500'
-            }`}>
+            <span className={`text-center text-sm ${getDataTextColor(rowType, true)} text-blue-600`}>
               {formatCurrency(calculateDailyRevenueForLevel(rowData.data.code, rowData.data.level, rowData.data.category))}
             </span>
           );
@@ -345,12 +400,7 @@ export default function TourTable() {
         
       case 'revenue':
         return (
-          <span className={`text-center text-sm font-medium ${
-            isSection ? 'text-gray-900' : 
-            isContinent ? 'text-blue-700' :
-            isRegion ? 'text-gray-700' :
-            isArea ? 'text-gray-600' : 'text-gray-500'
-          }`}>
+          <span className={`text-center text-sm ${getDataTextColor(rowType, true)}`}>
             {formatCurrency(rowData.data.revenue)}
           </span>
         );
@@ -379,13 +429,11 @@ export default function TourTable() {
       case 'targetPercentage':
         const completionRate = parseFloat(rowData.data.completionRate);
         return (
-          <div className="flex flex-col items-center">
-            <span className="text-xs text-brand-green leading-tight">
+          <div className={`flex flex-col items-center ${getCompletionRateBackground(rowData.data.completionRate)} rounded px-2 py-1`}>
+            <span className="text-xs text-green-600 leading-tight">
               +{(completionRate * 0.1).toFixed(1)}%
             </span>
-            <span className={`text-sm font-medium ${
-              isSection ? 'text-gray-700' : 'text-gray-700'
-            }`}>
+            <span className={`text-sm font-medium ${getCompletionRateColor(rowData.data.completionRate)}`}>
               {completionRate.toFixed(1)}%
             </span>
           </div>
@@ -887,20 +935,24 @@ export default function TourTable() {
           <tbody className="bg-white divide-y divide-gray-200">
             {allRows.map((row, index) => {
               const isDomestic = row.section === 'domestic';
+              const levelColors = getLevelColors(row.type, isDomestic);
+              
               const getRowClassName = () => {
+                let baseClass = `table-row-hover ${levelColors.bg}`;
+                
                 if (row.type === 'section') {
-                  return `${isDomestic ? 'bg-green-50 hover:bg-green-100' : 'bg-blue-50 hover:bg-blue-100'} cursor-pointer table-row-hover`;
+                  return `${baseClass} cursor-pointer`;
                 } else if (row.type === 'continent') {
-                  return "hover:bg-gray-50 table-row-hover bg-blue-25 cursor-pointer";
+                  return `${baseClass} cursor-pointer`;
                 } else if (row.type === 'region') {
-                  return "hover:bg-gray-50 table-row-hover bg-gray-25 cursor-pointer";
+                  return `${baseClass} cursor-pointer`;
                 } else if (row.type === 'area') {
                   const isInternational = row.data.category === 'international';
-                  return `hover:bg-gray-50 table-row-hover ${!isInternational ? 'cursor-pointer' : ''}`;
+                  return `${baseClass} ${!isInternational ? 'cursor-pointer' : ''}`;
                 } else if (row.type === 'tour') {
-                  return "hover:bg-gray-50 table-row-hover";
+                  return baseClass;
                 }
-                return "";
+                return baseClass;
               };
 
               const getOnClick = () => {
