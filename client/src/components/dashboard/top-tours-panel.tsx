@@ -82,7 +82,7 @@ export default function TopToursPanel() {
             </div>
             <div className="text-right">
               <p className="text-sm font-semibold text-gray-900">{tour.sold.toLocaleString()}</p>
-              <p className="text-xs text-gray-500">tours</p>
+              <p className="text-xs text-gray-500">Khách</p>
             </div>
           </div>
         ))}

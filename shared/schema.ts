@@ -111,11 +111,15 @@ export type RegionalPerformance = typeof regionalPerformance.$inferSelect;
 export type DashboardMetrics = {
   totalActiveTours: number;
   totalActiveToursChange: number;
-  dailyBookings: number;
+  dailyBookings: number; // Tổng từ cột "Số Chỗ Bán Hôm Nay" (recentlyBooked30min)
   dailyBookingsChange: number;
   dailyRevenue: string;
   dailyRevenueChange: number;
-  toursSold: number;
-  toursSoldChange: number;
+  toursSold: number; // Tổng từ cột "Đã bán" (sold)
+  toursSoldChange: number; // % kế hoạch thay vì -3.2%
+  toursSoldPlanPercentage: number; // % so với kế hoạch cho SL Đã Bán
+  revenue: string; // Tổng từ cột "Doanh số" (revenue)
+  revenueChange: number; // % kế hoạch cho Doanh số
+  revenuePlanPercentage: number; // % so với kế hoạch cho Doanh số
   completionRate: number;
 };
