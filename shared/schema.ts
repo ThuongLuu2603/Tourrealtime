@@ -18,6 +18,7 @@ export const tours = pgTable("tours", {
   recentlyBooked: integer("recently_booked").notNull().default(0),
   recentlyBooked30min: integer("recently_booked_30min").notNull().default(0),
   completionRate: decimal("completion_rate", { precision: 5, scale: 2 }).notNull().default("0"),
+  dailyRevenue: decimal("daily_revenue", { precision: 15, scale: 2 }).notNull().default("0"), // Doanh thư hôm nay
   revenue: decimal("revenue", { precision: 15, scale: 2 }).notNull().default("0"),
   targetPercentage: decimal("target_percentage", { precision: 5, scale: 2 }).notNull().default("0"),
   topSalesUnit: text("top_sales_unit").notNull().default("HCM"), // 'HCM', 'HN', 'CT'
