@@ -333,25 +333,25 @@ export class MemStorage implements IStorage {
 
   async getTours(): Promise<Tour[]> {
     return Array.from(this.tours.values())
-      .sort((a, b) => b.recentlyBooked30min - a.recentlyBooked30min);
+      .sort((a, b) => b.recentlyBooked - a.recentlyBooked);
   }
 
   async getToursByCategory(category: string): Promise<Tour[]> {
     return Array.from(this.tours.values())
       .filter(tour => tour.category === category)
-      .sort((a, b) => b.recentlyBooked30min - a.recentlyBooked30min);
+      .sort((a, b) => b.recentlyBooked - a.recentlyBooked);
   }
 
   async getToursByArea(areaCode: string): Promise<Tour[]> {
     return Array.from(this.tours.values())
       .filter(tour => tour.area === areaCode)
-      .sort((a, b) => b.recentlyBooked30min - a.recentlyBooked30min);
+      .sort((a, b) => b.recentlyBooked - a.recentlyBooked);
   }
 
   async getToursBySalesUnit(salesUnitCode: string): Promise<Tour[]> {
     return Array.from(this.tours.values())
       .filter(tour => tour.topSalesUnit === salesUnitCode)
-      .sort((a, b) => b.recentlyBooked30min - a.recentlyBooked30min);
+      .sort((a, b) => b.recentlyBooked - a.recentlyBooked);
   }
 
   async createTour(insertTour: InsertTour): Promise<Tour> {
@@ -395,19 +395,19 @@ export class MemStorage implements IStorage {
 
   async getHierarchyLevels(): Promise<HierarchyLevel[]> {
     return Array.from(this.hierarchyLevels.values())
-      .sort((a, b) => b.recentlyBooked30min - a.recentlyBooked30min);
+      .sort((a, b) => b.recentlyBooked - a.recentlyBooked);
   }
 
   async getHierarchyLevelsByCategory(category: string): Promise<HierarchyLevel[]> {
     return Array.from(this.hierarchyLevels.values())
       .filter(level => level.category === category)
-      .sort((a, b) => b.recentlyBooked30min - a.recentlyBooked30min);
+      .sort((a, b) => b.recentlyBooked - a.recentlyBooked);
   }
 
   async getHierarchyLevelsByLevel(level: string): Promise<HierarchyLevel[]> {
     return Array.from(this.hierarchyLevels.values())
       .filter(h => h.level === level)
-      .sort((a, b) => b.recentlyBooked30min - a.recentlyBooked30min);
+      .sort((a, b) => b.recentlyBooked - a.recentlyBooked);
   }
 
   async createHierarchyLevel(insertLevel: InsertHierarchyLevel): Promise<HierarchyLevel> {
