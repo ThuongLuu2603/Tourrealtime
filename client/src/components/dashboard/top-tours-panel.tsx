@@ -1,17 +1,23 @@
 import { useQuery } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
 import type { Tour } from "@shared/schema";
+import { useState } from "react";
 
 export default function TopToursPanel() {
+  const [showAll, setShowAll] = useState(false);
   const { data: tours = [], isLoading } = useQuery<Tour[]>({
     queryKey: ["/api/tours"],
     refetchInterval: 30000,
   });
 
   // Get top 10 tours by sold count
-  const topTours = tours
+  const allTopTours = tours
     .sort((a, b) => b.sold - a.sold)
     .slice(0, 10);
+  
+  // Show only 5 initially, or all if showAll is true
+  const topTours = showAll ? allTopTours : allTopTours.slice(0, 5);
 
   const getRegionLabel = (region: string) => {
     switch (region) {
@@ -55,7 +61,7 @@ export default function TopToursPanel() {
     <Card className="bg-white rounded-xl shadow-sm border border-gray-200" data-testid="top-tours-panel">
       <CardHeader className="px-6 py-4 border-b border-gray-200">
         <CardTitle className="text-lg font-semibold text-gray-900">
-          Top 10 Tuyến Tour Bán Chạy
+          {showAll ? 'Top 10' : 'Top 5'} Tuyến Tour Bán Chạy
         </CardTitle>
       </CardHeader>
       <CardContent className="p-6 space-y-4">
@@ -90,6 +96,20 @@ export default function TopToursPanel() {
         {topTours.length === 0 && (
           <div className="text-center py-8 text-gray-500">
             <p>Không có dữ liệu tour</p>
+          </div>
+        )}
+
+        {/* Show More / Show Less Button */}
+        {allTopTours.length > 5 && (
+          <div className="text-center pt-4 border-t border-gray-100">
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => setShowAll(!showAll)}
+              className="text-blue-600 hover:text-blue-700 hover:bg-blue-50"
+            >
+              {showAll ? 'Thu gọn' : `Xem thêm (${allTopTours.length - 5} tour)`}
+            </Button>
           </div>
         )}
       </CardContent>
