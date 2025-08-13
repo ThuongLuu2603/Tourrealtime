@@ -515,6 +515,7 @@ export class MemStorage implements IStorage {
     const totalSold = hierarchyLevels.reduce((sum, level) => sum + level.sold, 0);
     const totalPlanned = hierarchyLevels.reduce((sum, level) => sum + level.planned, 0);
     const totalRevenue = hierarchyLevels.reduce((sum, level) => sum + parseFloat(level.revenue), 0);
+    const totalPlannedRevenue = hierarchyLevels.reduce((sum, level) => sum + parseFloat(level.plannedRevenue), 0);
     const totalDailyBookings = hierarchyLevels.reduce((sum, level) => sum + level.recentlyBooked30min, 0);
     
     // Calculate total daily revenue from all tours
@@ -523,9 +524,8 @@ export class MemStorage implements IStorage {
     // Calculate percentage vs plan for tours sold
     const toursSoldPlanPercentage = totalPlanned > 0 ? parseFloat(((totalSold / totalPlanned) * 100).toFixed(1)) : 0;
     
-    // For revenue, calculate percentage vs a target (assuming target is 1.2 trillion VND)
-    const revenueTargetVND = 1200000000000; // 1.2 trillion VND target
-    const revenuePlanPercentage = parseFloat(((totalRevenue / revenueTargetVND) * 100).toFixed(1));
+    // Calculate revenue percentage vs plan: Tổng Doanh Thu / Doanh thu Kế Hoạch
+    const revenuePlanPercentage = totalPlannedRevenue > 0 ? parseFloat(((totalRevenue / totalPlannedRevenue) * 100).toFixed(1)) : 0;
     
     // Previous values for change calculation
     const yesterdayBookings = Math.floor(Math.random() * 5) + 2;
@@ -541,9 +541,9 @@ export class MemStorage implements IStorage {
       toursSold: totalSold, // Tổng từ cột "Đã bán"
       toursSoldChange: -3.2, // Keep for compatibility, but will show percentage instead
       toursSoldPlanPercentage: toursSoldPlanPercentage, // % so với kế hoạch
-      revenue: (totalRevenue / 1000000000).toFixed(1) + "B VND", // Tổng từ cột "Doanh số"
+      revenue: (totalRevenue / 1000000000).toFixed(1) + "B VND", // Tổng từ cột "Doanh Thu"
       revenueChange: 5.2, // Revenue change percentage
-      revenuePlanPercentage: revenuePlanPercentage, // % so với kế hoạch cho doanh số
+      revenuePlanPercentage: revenuePlanPercentage, // % = Tổng Doanh Thu / Doanh thu Kế Hoạch
       completionRate: totalPlanned > 0 ? parseFloat(((totalSold / totalPlanned) * 100).toFixed(1)) : 0,
     };
   }
