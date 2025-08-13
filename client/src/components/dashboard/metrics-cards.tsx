@@ -62,9 +62,9 @@ export default function MetricsCards() {
     },
     {
       title: "Doanh Thu",
-      value: metrics.revenue || metrics.dailyRevenue,
-      change: metrics.revenuePlanPercentage || 0,
-      changeType: "plan_percentage", // Hiển thị % kế hoạch
+      value: `${metrics.revenuePlanPercentage || 0}%`,
+      change: metrics.revenue || metrics.dailyRevenue,
+      changeType: "revenue_total", // Hiển thị tổng doanh thu
       icon: PieChart,
       color: "purple",
       testId: "metric-revenue"
@@ -85,8 +85,9 @@ export default function MetricsCards() {
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
       {cards.map((card, index) => {
         const IconComponent = card.icon;
-        const isPositive = card.change !== null && card.change > 0;
-        const isNegative = card.change !== null && card.change < 0;
+        const changeValue = typeof card.change === 'number' ? card.change : 0;
+        const isPositive = card.change !== null && changeValue > 0;
+        const isNegative = card.change !== null && changeValue < 0;
         
         return (
           <Card key={index} className="bg-white rounded-xl shadow-sm border border-gray-200" data-testid={card.testId}>
@@ -97,18 +98,21 @@ export default function MetricsCards() {
                   <p className="text-3xl font-bold text-gray-900">{card.value}</p>
                   {card.change !== null && (
                     <div className="flex items-center mt-1">
-                      {isPositive && <TrendingUp className="w-4 h-4 text-brand-green mr-1" />}
-                      {isNegative && <TrendingDown className="w-4 h-4 text-brand-red mr-1" />}
+                      {card.changeType !== "revenue_total" && isPositive && <TrendingUp className="w-4 h-4 text-brand-green mr-1" />}
+                      {card.changeType !== "revenue_total" && isNegative && <TrendingDown className="w-4 h-4 text-brand-red mr-1" />}
                       <span className={`text-sm font-medium ${
+                        card.changeType === "revenue_total" ? 'text-gray-600' :
                         isPositive ? 'text-brand-green' : 
                         isNegative ? 'text-brand-red' : 'text-gray-600'
                       }`}>
                         {card.changeType === "customers" ? (
-                          `${isPositive ? '+' : ''}${card.change} khách so với hôm qua`
+                          `${isPositive ? '+' : ''}${changeValue} khách so với hôm qua`
                         ) : card.changeType === "plan_percentage" ? (
-                          `= ${card.change}% kế hoạch`
+                          `= ${changeValue}% kế hoạch`
+                        ) : card.changeType === "revenue_total" ? (
+                          `${card.change}`
                         ) : (
-                          `${isPositive ? '+' : ''}${card.change}% so với kế hoạch`
+                          `${isPositive ? '+' : ''}${changeValue}% so với kế hoạch`
                         )}
                       </span>
                     </div>
