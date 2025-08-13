@@ -52,16 +52,16 @@ export default function MetricsCards() {
       testId: "metric-daily-revenue"
     },
     {
-      title: "SL Đã Bán",
-      value: metrics.toursSold.toLocaleString(),
-      change: metrics.toursSoldPlanPercentage || 0,
-      changeType: "plan_percentage", // Hiển thị % kế hoạch
+      title: "Mục tiêu lượt khách",
+      value: `${metrics.toursSoldPlanPercentage || 0}%`,
+      change: metrics.toursSold.toLocaleString(),
+      changeType: "tours_sold_total", // Hiển thị tổng SL đã bán
       icon: ShoppingCart,
       color: "amber",
       testId: "metric-tours-sold"
     },
     {
-      title: "Doanh Thu",
+      title: "Mục tiêu Doanh Thu",
       value: `${metrics.revenuePlanPercentage || 0}%`,
       change: metrics.revenue || metrics.dailyRevenue,
       changeType: "revenue_total", // Hiển thị tổng doanh thu
@@ -98,10 +98,11 @@ export default function MetricsCards() {
                   <p className="text-3xl font-bold text-gray-900">{card.value}</p>
                   {card.change !== null && (
                     <div className="flex items-center mt-1">
-                      {card.changeType !== "revenue_total" && isPositive && <TrendingUp className="w-4 h-4 text-brand-green mr-1" />}
-                      {card.changeType !== "revenue_total" && isNegative && <TrendingDown className="w-4 h-4 text-brand-red mr-1" />}
+                      {!["revenue_total", "tours_sold_total"].includes(card.changeType) && isPositive && <TrendingUp className="w-4 h-4 text-brand-green mr-1" />}
+                      {!["revenue_total", "tours_sold_total"].includes(card.changeType) && isNegative && <TrendingDown className="w-4 h-4 text-brand-red mr-1" />}
                       <span className={`text-sm font-medium ${
-                        card.changeType === "revenue_total" ? 'text-gray-600' :
+                        card.changeType === "revenue_total" ? 'text-purple-600' :
+                        card.changeType === "tours_sold_total" ? 'text-emerald-600' :
                         isPositive ? 'text-brand-green' : 
                         isNegative ? 'text-brand-red' : 'text-gray-600'
                       }`}>
@@ -110,6 +111,8 @@ export default function MetricsCards() {
                         ) : card.changeType === "plan_percentage" ? (
                           `= ${changeValue}% kế hoạch`
                         ) : card.changeType === "revenue_total" ? (
+                          `${card.change}`
+                        ) : card.changeType === "tours_sold_total" ? (
                           `${card.change}`
                         ) : (
                           `${isPositive ? '+' : ''}${changeValue}% so với kế hoạch`
