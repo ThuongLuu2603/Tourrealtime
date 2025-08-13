@@ -56,13 +56,14 @@ export default function HierarchicalTourTable() {
     return unit ? unit.name : code;
   };
 
-  // Calculate top sales unit for area based on tours in that area
+  // Calculate top sales unit for area based on ALL tours (not filtered)
   const getAreaTopSalesUnit = (areaCode: string) => {
-    const toursInArea = toursByArea[areaCode] || [];
-    if (toursInArea.length === 0) return null;
+    // Use all tours, not filtered tours for this calculation
+    const allToursInArea = tours.filter(tour => tour.area === areaCode);
+    if (allToursInArea.length === 0) return null;
     
     // Count tours by sales unit
-    const salesUnitCounts = toursInArea.reduce((acc, tour) => {
+    const salesUnitCounts = allToursInArea.reduce((acc, tour) => {
       acc[tour.topSalesUnit] = (acc[tour.topSalesUnit] || 0) + 1;
       return acc;
     }, {} as Record<string, number>);
