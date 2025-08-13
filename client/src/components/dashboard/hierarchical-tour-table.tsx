@@ -60,19 +60,17 @@ export default function HierarchicalTourTable() {
   const getAreaTopSalesUnit = (areaCode: string) => {
     // Use all tours, not filtered tours for this calculation
     const allToursInArea = tours.filter(tour => tour.area === areaCode);
-    if (allToursInArea.length === 0) return null;
+    console.log(`getAreaTopSalesUnit(${areaCode}): found ${allToursInArea.length} tours`);
     
-    // Count tours by sales unit
-    const salesUnitCounts = allToursInArea.reduce((acc, tour) => {
-      acc[tour.topSalesUnit] = (acc[tour.topSalesUnit] || 0) + 1;
-      return acc;
-    }, {} as Record<string, number>);
+    if (allToursInArea.length === 0) {
+      console.log(`No tours found for area ${areaCode}`);
+      return null;
+    }
     
-    // Find the sales unit with most tours
-    const topSalesUnit = Object.entries(salesUnitCounts)
-      .sort(([,a], [,b]) => b - a)[0]?.[0];
-    
-    return topSalesUnit;
+    // For debugging: just return the first tour's sales unit
+    const firstTourUnit = allToursInArea[0].topSalesUnit;
+    console.log(`Returning unit for ${areaCode}: ${firstTourUnit}`);
+    return firstTourUnit;
   };
 
   const handleSort = (field: SortField) => {
