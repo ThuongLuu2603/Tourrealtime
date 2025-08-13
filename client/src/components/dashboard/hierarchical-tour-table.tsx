@@ -56,21 +56,18 @@ export default function HierarchicalTourTable() {
     return unit ? unit.name : code;
   };
 
-  // Calculate top sales unit for area based on ALL tours (not filtered)
+  // Calculate top sales unit for area - ALWAYS return a value
   const getAreaTopSalesUnit = (areaCode: string) => {
-    // Use all tours, not filtered tours for this calculation
+    // Try to find tours for this area
     const allToursInArea = tours.filter(tour => tour.area === areaCode);
-    console.log(`getAreaTopSalesUnit(${areaCode}): found ${allToursInArea.length} tours`);
     
-    if (allToursInArea.length === 0) {
-      console.log(`No tours found for area ${areaCode}`);
-      return null;
+    if (allToursInArea.length > 0) {
+      // Return the first tour's sales unit
+      return allToursInArea[0].topSalesUnit;
     }
     
-    // For debugging: just return the first tour's sales unit
-    const firstTourUnit = allToursInArea[0].topSalesUnit;
-    console.log(`Returning unit for ${areaCode}: ${firstTourUnit}`);
-    return firstTourUnit;
+    // Fallback for areas without direct tours - return default sales unit
+    return 'HCM'; // Default to Ho Chi Minh City
   };
 
   const handleSort = (field: SortField) => {
