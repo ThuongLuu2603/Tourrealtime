@@ -185,7 +185,7 @@ export class MemStorage implements IStorage {
         revenue: "60000000000",
         plannedRevenue: "75000000000", // Doanh thu kế hoạch
         targetPercentage: "8.1",
-        topSalesUnit: "Hà Nội"
+        topSalesUnit: "HN"
       },
       // Domestic Tours - Miền Nam  
       {
