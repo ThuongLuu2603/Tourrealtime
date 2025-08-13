@@ -1,21 +1,26 @@
-import React, { useState } from "react";
+import { useState, useMemo } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { ChevronDown, ChevronRight, Filter, ArrowUpDown, ArrowUp, ArrowDown } from "lucide-react";
+import { ChevronDown, ChevronRight, ArrowUpDown, ArrowUp, ArrowDown } from "lucide-react";
 import type { Tour, HierarchyLevel, SalesUnit } from "@shared/schema";
 
-type SortField = 'planned' | 'sold' | 'remaining' | 'recentlyBooked' | 'completionRate' | 'revenue' | 'targetPercentage';
 type SortDirection = 'asc' | 'desc' | null;
+type SortField = 'name' | 'planned' | 'sold' | 'remaining' | 'completionRate' | 'revenue';
+
+interface SortState {
+  field: SortField;
+  direction: SortDirection;
+}
 
 export default function HierarchicalTourTable() {
-  const [expandedSections, setExpandedSections] = useState<Record<string, boolean>>({
-    domestic: true,
-    international: true
+  const [expandedSections, setExpandedSections] = useState({
+    domestic: false,
+    international: false
   });
-  const [selectedSalesUnit, setSelectedSalesUnit] = useState<string>("all");
-  const [sortField, setSortField] = useState<SortField | null>(null);
-  const [sortDirection, setSortDirection] = useState<SortDirection>(null);
+
+  const [sortState, setSortState] = useState<SortState>({
+    field: 'name',
+    direction: null
+  });
 
   const { data: tours = [], isLoading: toursLoading } = useQuery<Tour[]>({
     queryKey: ["/api/tours"],
@@ -27,273 +32,256 @@ export default function HierarchicalTourTable() {
     refetchInterval: 5000,
   });
 
-  const { data: salesUnits = [], isLoading: salesUnitsLoading } = useQuery<SalesUnit[]>({
+  const { data: salesUnits = [] } = useQuery<SalesUnit[]>({
     queryKey: ["/api/sales-units"],
     refetchInterval: 30000,
   });
-
-  const toggleSection = (section: string) => {
-    setExpandedSections(prev => ({
-      ...prev,
-      [section]: !prev[section]
-    }));
-  };
-
-  const getCompletionRateColor = (rate: string) => {
-    const numRate = parseFloat(rate);
-    if (numRate >= 75) return 'text-brand-green';
-    if (numRate >= 60) return 'text-brand-amber';
-    return 'text-brand-red';
-  };
-
-  const formatCurrency = (value: string) => {
-    const num = parseFloat(value) / 1000000000;
-    return `${num.toFixed(1)}B`;
-  };
 
   const getSalesUnitName = (code: string) => {
     const unit = salesUnits.find(u => u.code === code);
     return unit ? unit.name : code;
   };
 
-  // Calculate top sales unit for area - ALWAYS return a value
+  // Fixed sales unit mapping for areas
   const getAreaTopSalesUnit = (areaCode: string) => {
-    // Try to find tours for this area
-    const allToursInArea = tours.filter(tour => tour.area === areaCode);
+    const areaToSalesUnitMap: Record<string, string> = {
+      'nhat_ban': 'HCM',
+      'han_quoc': 'HCM', 
+      'singapore_malaysia': 'HN',
+      'trung_quoc': 'HN',
+      'thai_lan': 'HCM',
+      'indonesia': 'HN',
+      'mongolia': 'CT',
+      'lao': 'HCM',
+      'campuchia': 'HN',
+      // Domestic areas
+      'dbsh_dh': 'HN',
+      'dong_nam_bo': 'HCM'
+    };
     
-    if (allToursInArea.length > 0) {
-      // Return the first tour's sales unit
-      return allToursInArea[0].topSalesUnit;
-    }
-    
-    // Fallback for areas without direct tours - return default sales unit
-    return 'HCM'; // Default to Ho Chi Minh City
+    return areaToSalesUnitMap[areaCode] || 'HCM';
+  };
+
+  const toggleExpansion = (section: 'domestic' | 'international') => {
+    setExpandedSections(prev => ({
+      ...prev,
+      [section]: !prev[section]
+    }));
   };
 
   const handleSort = (field: SortField) => {
-    if (sortField === field) {
-      if (sortDirection === 'asc') {
-        setSortDirection('desc');
-      } else if (sortDirection === 'desc') {
-        setSortField(null);
-        setSortDirection(null);
+    setSortState(prevState => {
+      if (prevState.field === field) {
+        // Cycle through: null -> asc -> desc -> null
+        const newDirection = 
+          prevState.direction === null ? 'asc' :
+          prevState.direction === 'asc' ? 'desc' : null;
+        return { field, direction: newDirection };
       } else {
-        setSortDirection('asc');
-      }
-    } else {
-      setSortField(field);
-      setSortDirection('asc');
-    }
-  };
-
-  const getSortIcon = (field: SortField) => {
-    if (sortField !== field) {
-      return <ArrowUpDown className="w-3 h-3 text-gray-400" />;
-    }
-    if (sortDirection === 'asc') {
-      return <ArrowUp className="w-3 h-3 text-gray-600" />;
-    }
-    if (sortDirection === 'desc') {
-      return <ArrowDown className="w-3 h-3 text-gray-600" />;
-    }
-    return <ArrowUpDown className="w-3 h-3 text-gray-400" />;
-  };
-
-  const sortData = (data: any[], field: SortField | null, direction: SortDirection) => {
-    if (!field || !direction) return data;
-    
-    return [...data].sort((a, b) => {
-      let aValue = a[field];
-      let bValue = b[field];
-      
-      // Handle string numbers
-      if (typeof aValue === 'string' && !isNaN(parseFloat(aValue))) {
-        aValue = parseFloat(aValue);
-      }
-      if (typeof bValue === 'string' && !isNaN(parseFloat(bValue))) {
-        bValue = parseFloat(bValue);
-      }
-      
-      if (direction === 'asc') {
-        return aValue > bValue ? 1 : -1;
-      } else {
-        return aValue < bValue ? 1 : -1;
+        // New field starts with asc
+        return { field, direction: 'asc' };
       }
     });
   };
 
-  // Filter tours by selected sales unit
-  const filteredTours = selectedSalesUnit === "all" 
-    ? tours 
-    : tours.filter(tour => tour.topSalesUnit === selectedSalesUnit);
+  const getSortIcon = (field: SortField) => {
+    if (sortState.field !== field || sortState.direction === null) {
+      return <ArrowUpDown className="w-3 h-3 text-gray-400" />;
+    }
+    return sortState.direction === 'asc' ? 
+      <ArrowUp className="w-3 h-3 text-blue-500" /> : 
+      <ArrowDown className="w-3 h-3 text-blue-500" />;
+  };
 
-  // Group hierarchy levels
-  const domesticLevels = hierarchyLevels.filter(level => level.category === 'domestic');
-  const internationalLevels = hierarchyLevels.filter(level => level.category === 'international');
+  const sortAreas = (areas: HierarchyLevel[]) => {
+    if (sortState.direction === null) return areas;
+    
+    return [...areas].sort((a, b) => {
+      let aValue: any, bValue: any;
+      
+      switch (sortState.field) {
+        case 'name':
+          aValue = a.name.toLowerCase();
+          bValue = b.name.toLowerCase();
+          break;
+        case 'planned':
+          aValue = a.planned;
+          bValue = b.planned;
+          break;
+        case 'sold':
+          aValue = a.sold;
+          bValue = b.sold;
+          break;
+        case 'remaining':
+          aValue = a.remaining;
+          bValue = b.remaining;
+          break;
+        case 'completionRate':
+          aValue = parseFloat(a.completionRate);
+          bValue = parseFloat(b.completionRate);
+          break;
+        case 'revenue':
+          aValue = parseFloat(a.revenue);
+          bValue = parseFloat(b.revenue);
+          break;
+        default:
+          return 0;
+      }
+      
+      if (typeof aValue === 'string') {
+        return sortState.direction === 'asc' 
+          ? aValue.localeCompare(bValue)
+          : bValue.localeCompare(aValue);
+      } else {
+        return sortState.direction === 'asc' ? aValue - bValue : bValue - aValue;
+      }
+    });
+  };
+
+  const formatCurrency = (value: string | number) => {
+    const numValue = typeof value === 'string' ? parseFloat(value) : value;
+    return (numValue / 1000000000).toFixed(1);
+  };
+
+  const getCompletionRateColor = (rate: string) => {
+    const numRate = parseFloat(rate);
+    if (numRate >= 85) return "text-brand-green";
+    if (numRate >= 70) return "text-brand-blue";
+    if (numRate >= 50) return "text-brand-amber";
+    return "text-red-500";
+  };
+
+  // Organize data by category and levels
+  const domesticRoot = hierarchyLevels.find(l => l.code === 'noi_dia');
+  const internationalRoot = hierarchyLevels.find(l => l.code === 'tour_quoc_te');
   
-  // Get top-level categories
-  const domesticRoot = domesticLevels.find(level => level.level === 'geo_region');
-  const internationalRoot = internationalLevels.find(level => level.level === 'continent');
+  const domesticAreas = sortAreas(hierarchyLevels.filter(l => 
+    l.category === 'domestic' && l.level === 'area'
+  ));
   
-  // Get areas under each category and sort them
-  const domesticAreas = sortData(domesticLevels.filter(level => level.level === 'area'), sortField, sortDirection);
-  const internationalAreas = sortData(internationalLevels.filter(level => level.level === 'area'), sortField, sortDirection);
+  const internationalAreas = sortAreas(hierarchyLevels.filter(l => 
+    l.category === 'international' && l.level === 'area'
+  ));
 
   // Group tours by area
-  const toursByArea = filteredTours.reduce((acc, tour) => {
-    if (!acc[tour.area]) {
-      acc[tour.area] = [];
-    }
-    acc[tour.area].push(tour);
-    return acc;
-  }, {} as Record<string, Tour[]>);
+  const toursByArea = useMemo(() => {
+    return tours.reduce((acc, tour) => {
+      if (!acc[tour.area]) {
+        acc[tour.area] = [];
+      }
+      acc[tour.area].push(tour);
+      return acc;
+    }, {} as Record<string, Tour[]>);
+  }, [tours]);
 
-  // Sort tours within each area
-  Object.keys(toursByArea).forEach(area => {
-    toursByArea[area] = sortData(toursByArea[area], sortField, sortDirection);
-  });
-
-  if (toursLoading || hierarchyLoading || salesUnitsLoading) {
+  if (toursLoading || hierarchyLoading) {
     return (
-      <Card className="bg-white rounded-xl shadow-sm border border-gray-200">
-        <CardHeader>
-          <CardTitle>Bảng Theo Dõi Tour Realtime</CardTitle>
-        </CardHeader>
-        <CardContent>
+      <div className="bg-white rounded-xl shadow-sm border border-gray-200">
+        <div className="p-6">
           <div className="animate-pulse space-y-4">
-            {Array.from({ length: 8 }).map((_, i) => (
-              <div key={i} className="h-12 bg-gray-200 rounded"></div>
-            ))}
+            <div className="h-6 bg-gray-200 rounded w-1/4"></div>
+            <div className="space-y-3">
+              {Array.from({ length: 8 }).map((_, i) => (
+                <div key={i} className="h-12 bg-gray-200 rounded"></div>
+              ))}
+            </div>
           </div>
-        </CardContent>
-      </Card>
+        </div>
+      </div>
     );
   }
 
   return (
-    <Card className="bg-white rounded-xl shadow-sm border border-gray-200" data-testid="hierarchical-tour-table">
-      <CardHeader className="px-6 py-4 border-b border-gray-200">
-        <div className="flex justify-between items-center">
-          <CardTitle className="text-lg font-semibold text-gray-900">
-            Bảng Theo Dõi Tour Realtime
-          </CardTitle>
-          
-          {/* Sales Unit Filter */}
-          <div className="flex items-center space-x-2">
-            <Filter className="w-4 h-4 text-gray-500" />
-            <Select value={selectedSalesUnit} onValueChange={setSelectedSalesUnit}>
-              <SelectTrigger className="w-48" data-testid="sales-unit-filter">
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">Tất cả đơn vị</SelectItem>
-                {salesUnits.map(unit => (
-                  <SelectItem key={unit.id} value={unit.code}>
-                    {unit.name}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
-        </div>
-      </CardHeader>
-      
-      <div className="overflow-x-auto custom-scrollbar">
-        <table className="w-full">
-          <thead className="bg-gray-50">
-            <tr>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Tuyến Tour
-              </th>
-              <th 
-                className="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100 transition-colors" 
-                onClick={() => handleSort('planned')}
-              >
-                <div className="flex items-center justify-center space-x-1">
-                  <span>Kế Hoạch</span>
-                  {getSortIcon('planned')}
-                </div>
-              </th>
-              <th 
-                className="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100 transition-colors" 
-                onClick={() => handleSort('sold')}
-              >
-                <div className="flex items-center justify-center space-x-1">
-                  <span>Đã Bán</span>
-                  {getSortIcon('sold')}
-                </div>
-              </th>
-              <th 
-                className="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100 transition-colors" 
-                onClick={() => handleSort('remaining')}
-              >
-                <div className="flex items-center justify-center space-x-1">
-                  <span>Còn Lại</span>
-                  {getSortIcon('remaining')}
-                </div>
-              </th>
-              <th 
-                className="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100 transition-colors" 
-                onClick={() => handleSort('recentlyBooked')}
-              >
-                <div className="flex items-center justify-center space-x-1">
-                  <span>Số Chỗ Vừa Bán</span>
-                  {getSortIcon('recentlyBooked')}
-                </div>
-              </th>
-              <th 
-                className="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100 transition-colors" 
-                onClick={() => handleSort('completionRate')}
-              >
-                <div className="flex items-center justify-center space-x-1">
-                  <span>% Hoàn Thành</span>
-                  {getSortIcon('completionRate')}
-                </div>
-              </th>
-              <th 
-                className="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100 transition-colors" 
-                onClick={() => handleSort('revenue')}
-              >
-                <div className="flex items-center justify-center space-x-1">
-                  <span>Doanh Thu</span>
-                  {getSortIcon('revenue')}
-                </div>
-              </th>
-              <th 
-                className="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100 transition-colors" 
-                onClick={() => handleSort('targetPercentage')}
-              >
-                <div className="flex items-center justify-center space-x-1">
-                  <span>% Mục Tiêu</span>
-                  {getSortIcon('targetPercentage')}
-                </div>
-              </th>
-              <th className="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Đơn Vị Top 1
-              </th>
-            </tr>
-          </thead>
-          <tbody className="bg-white divide-y divide-gray-200">
-            
-            {/* Domestic Tours Section */}
-            {domesticRoot && (
-              <>
-                <tr 
-                  className="bg-green-50 hover:bg-green-100 cursor-pointer table-row-hover"
-                  onClick={() => toggleSection('domestic')}
-                  data-testid="section-domestic"
-                >
+    <div className="bg-white rounded-xl shadow-sm border border-gray-200" data-testid="hierarchical-tour-table">
+      <div className="p-6">
+        <h2 className="text-xl font-bold text-gray-900 mb-6">
+          Báo Cáo Tour Theo Cấu Trúc Phân Cấp
+        </h2>
+        
+        <div className="overflow-x-auto">
+          <table className="min-w-full">
+            <thead className="bg-gray-50 border-b border-gray-200">
+              <tr>
+                <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <button 
+                    onClick={() => handleSort('name')}
+                    className="flex items-center space-x-1 hover:text-gray-700"
+                    data-testid="sort-name"
+                  >
+                    <span>Tuyến Tour</span>
+                    {getSortIcon('name')}
+                  </button>
+                </th>
+                <th className="px-4 py-4 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <button 
+                    onClick={() => handleSort('planned')}
+                    className="flex items-center justify-center space-x-1 hover:text-gray-700 w-full"
+                    data-testid="sort-planned"
+                  >
+                    <span>Kế Hoạch</span>
+                    {getSortIcon('planned')}
+                  </button>
+                </th>
+                <th className="px-4 py-4 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <button 
+                    onClick={() => handleSort('sold')}
+                    className="flex items-center justify-center space-x-1 hover:text-gray-700 w-full"
+                    data-testid="sort-sold"
+                  >
+                    <span>Đã Bán</span>
+                    {getSortIcon('sold')}
+                  </button>
+                </th>
+                <th className="px-4 py-4 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <button 
+                    onClick={() => handleSort('remaining')}
+                    className="flex items-center justify-center space-x-1 hover:text-gray-700 w-full"
+                    data-testid="sort-remaining"
+                  >
+                    <span>SL KH Còn Lại</span>
+                    {getSortIcon('remaining')}
+                  </button>
+                </th>
+                <th className="px-4 py-4 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Đặt Gần Đây (30 phút)
+                </th>
+                <th className="px-4 py-4 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <button 
+                    onClick={() => handleSort('completionRate')}
+                    className="flex items-center justify-center space-x-1 hover:text-gray-700 w-full"
+                    data-testid="sort-completion"
+                  >
+                    <span>% DS KH</span>
+                    {getSortIcon('completionRate')}
+                  </button>
+                </th>
+                <th className="px-4 py-4 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <button 
+                    onClick={() => handleSort('revenue')}
+                    className="flex items-center justify-center space-x-1 hover:text-gray-700 w-full"
+                    data-testid="sort-revenue"
+                  >
+                    <span>DT Hôm Nay</span>
+                    {getSortIcon('revenue')}
+                  </button>
+                </th>
+                <th className="px-4 py-4 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">% DS KH</th>
+                <th className="px-4 py-4 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Đơn Vị Top 1</th>
+              </tr>
+            </thead>
+            <tbody className="bg-white divide-y divide-gray-200">
+              
+              {/* Domestic Section */}
+              {domesticRoot && (
+                <tr className="bg-blue-50 hover:bg-blue-100 cursor-pointer" onClick={() => toggleExpansion('domestic')}>
                   <td className="px-6 py-4 whitespace-nowrap">
                     <div className="flex items-center">
-                      {expandedSections.domestic ? (
-                        <ChevronDown className="w-4 h-4 text-gray-400 mr-2 transition-transform duration-200" />
-                      ) : (
-                        <ChevronRight className="w-4 h-4 text-gray-400 mr-2 transition-transform duration-200" />
-                      )}
-                      <div className="flex items-center">
-                        <div className="w-2 h-2 bg-brand-green rounded-full mr-3"></div>
-                        <span className="font-semibold text-gray-900">TOUR {domesticRoot.name.toUpperCase()}</span>
-                      </div>
+                      {expandedSections.domestic ? 
+                        <ChevronDown className="w-4 h-4 text-blue-600 mr-2" /> : 
+                        <ChevronRight className="w-4 h-4 text-blue-600 mr-2" />
+                      }
+                      <div className="w-3 h-3 bg-brand-green rounded-full mr-2"></div>
+                      <span className="font-semibold text-gray-900">{domesticRoot.name}</span>
                     </div>
                   </td>
                   <td className="px-4 py-4 text-center text-sm font-semibold text-gray-900">
@@ -306,7 +294,7 @@ export default function HierarchicalTourTable() {
                     {domesticRoot.remaining.toLocaleString()}
                   </td>
                   <td className="px-4 py-4 text-center">
-                    <span className="bg-brand-green text-white px-2 py-1 rounded-full text-xs font-medium blink">
+                    <span className="bg-brand-blue text-white px-2 py-1 rounded-full text-xs font-medium blink">
                       +{domesticRoot.recentlyBooked}
                     </span>
                   </td>
@@ -323,110 +311,49 @@ export default function HierarchicalTourTable() {
                     <div className="w-3 h-3 bg-brand-green rounded-full mx-auto"></div>
                   </td>
                 </tr>
+              )}
 
-                {/* Domestic Areas and Tours */}
-                {expandedSections.domestic && (
-                  <>
-                    {domesticAreas.map((area) => (
-                      <React.Fragment key={area.id}>
-                        {/* Area Row */}
-                        <tr className="hover:bg-gray-50 table-row-hover" data-testid={`area-${area.code}`}>
-                          <td className="px-6 py-3 whitespace-nowrap">
-                            <div className="flex items-center pl-8">
-                              <ChevronRight className="w-3 h-3 text-gray-300 mr-2" />
-                              <span className="font-medium text-gray-700">{area.name}</span>
-                            </div>
-                          </td>
-                          <td className="px-4 py-3 text-center text-sm text-gray-600">{area.planned.toLocaleString()}</td>
-                          <td className="px-4 py-3 text-center text-sm text-gray-600">{area.sold.toLocaleString()}</td>
-                          <td className="px-4 py-3 text-center text-sm text-brand-amber">{area.remaining.toLocaleString()}</td>
-                          <td className="px-4 py-3 text-center">
-                            <span className="bg-blue-100 text-blue-800 px-2 py-1 rounded-full text-xs">
-                              +{area.recentlyBooked}
-                            </span>
-                          </td>
-                          <td className={`px-4 py-3 text-center text-sm font-medium ${getCompletionRateColor(area.completionRate)}`}>
-                            {parseFloat(area.completionRate).toFixed(1)}%
-                          </td>
-                          <td className="px-4 py-3 text-center text-sm text-gray-600">{formatCurrency(area.revenue)}B</td>
-                          <td className="px-4 py-3 text-center text-sm text-brand-green">+{parseFloat(area.targetPercentage).toFixed(1)}%</td>
-                          <td className="px-4 py-3 text-center">
-                            {(() => {
-                              const topUnit = getAreaTopSalesUnit(area.code);
-                              return topUnit ? (
-                                <span className="text-xs font-medium text-blue-600 bg-blue-100 px-2 py-1 rounded">
-                                  {getSalesUnitName(topUnit)}
-                                </span>
-                              ) : (
-                                <div className="w-2 h-2 bg-gray-300 rounded-full mx-auto"></div>
-                              );
-                            })()}
-                          </td>
-                        </tr>
-                        
-                        {/* Tours under this area */}
-                        {toursByArea[area.code]?.map((tour) => (
-                          <tr key={tour.id} className="hover:bg-gray-50 table-row-hover" data-testid={`tour-${tour.id}`}>
-                            <td className="px-6 py-3 whitespace-nowrap">
-                              <div className="flex items-center pl-12">
-                                {tour.imageUrl && (
-                                  <img 
-                                    src={tour.imageUrl} 
-                                    alt={tour.name}
-                                    className="w-6 h-6 rounded mr-2 object-cover"
-                                  />
-                                )}
-                                <span className="text-sm text-gray-600">{tour.name}</span>
-                              </div>
-                            </td>
-                            <td className="px-4 py-3 text-center text-sm text-gray-500">{tour.planned.toLocaleString()}</td>
-                            <td className="px-4 py-3 text-center text-sm text-gray-500">{tour.sold.toLocaleString()}</td>
-                            <td className="px-4 py-3 text-center text-sm text-gray-500">{tour.remaining.toLocaleString()}</td>
-                            <td className="px-4 py-3 text-center">
-                              <span className="bg-green-100 text-green-800 px-2 py-1 rounded-full text-xs blink">
-                                +{tour.recentlyBooked}
-                              </span>
-                            </td>
-                            <td className="px-4 py-3 text-center text-sm text-gray-500">
-                              {parseFloat(tour.completionRate).toFixed(1)}%
-                            </td>
-                            <td className="px-4 py-3 text-center text-sm text-gray-500">{formatCurrency(tour.revenue)}B</td>
-                            <td className="px-4 py-3 text-center text-sm text-green-600">
-                              +{parseFloat(tour.targetPercentage).toFixed(1)}%
-                            </td>
-                            <td className="px-4 py-3 text-center">
-                              <span className="text-xs font-medium text-blue-600 bg-blue-100 px-2 py-1 rounded">
-                                {getSalesUnitName(tour.topSalesUnit)}
-                              </span>
-                            </td>
-                          </tr>
-                        ))}
-                      </React.Fragment>
-                    ))}
-                  </>
-                )}
-              </>
-            )}
+              {/* Domestic Areas */}
+              {expandedSections.domestic && domesticAreas.map((area) => (
+                <tr key={area.id} className="hover:bg-gray-50" data-testid={`area-${area.code}`}>
+                  <td className="px-6 py-3 whitespace-nowrap">
+                    <div className="flex items-center pl-8">
+                      <ChevronRight className="w-3 h-3 text-gray-300 mr-2" />
+                      <span className="font-medium text-gray-700">{area.name}</span>
+                    </div>
+                  </td>
+                  <td className="px-4 py-3 text-center text-sm text-gray-600">{area.planned.toLocaleString()}</td>
+                  <td className="px-4 py-3 text-center text-sm text-gray-600">{area.sold.toLocaleString()}</td>
+                  <td className="px-4 py-3 text-center text-sm text-brand-amber">{area.remaining.toLocaleString()}</td>
+                  <td className="px-4 py-3 text-center">
+                    <span className="bg-blue-100 text-blue-800 px-2 py-1 rounded-full text-xs">
+                      +{area.recentlyBooked}
+                    </span>
+                  </td>
+                  <td className={`px-4 py-3 text-center text-sm font-medium ${getCompletionRateColor(area.completionRate)}`}>
+                    {parseFloat(area.completionRate).toFixed(1)}%
+                  </td>
+                  <td className="px-4 py-3 text-center text-sm text-gray-600">{formatCurrency(area.revenue)}B</td>
+                  <td className="px-4 py-3 text-center text-sm text-brand-green">+{parseFloat(area.targetPercentage).toFixed(1)}%</td>
+                  <td className="px-4 py-3 text-center">
+                    <span className="text-xs font-medium text-blue-600 bg-blue-100 px-2 py-1 rounded">
+                      {getSalesUnitName(getAreaTopSalesUnit(area.code))}
+                    </span>
+                  </td>
+                </tr>
+              ))}
 
-            {/* International Tours Section */}
-            {internationalRoot && (
-              <>
-                <tr 
-                  className="bg-blue-50 hover:bg-blue-100 cursor-pointer table-row-hover"
-                  onClick={() => toggleSection('international')}
-                  data-testid="section-international"
-                >
+              {/* International Section */}
+              {internationalRoot && (
+                <tr className="bg-orange-50 hover:bg-orange-100 cursor-pointer" onClick={() => toggleExpansion('international')}>
                   <td className="px-6 py-4 whitespace-nowrap">
                     <div className="flex items-center">
-                      {expandedSections.international ? (
-                        <ChevronDown className="w-4 h-4 text-gray-400 mr-2 transition-transform duration-200" />
-                      ) : (
-                        <ChevronRight className="w-4 h-4 text-gray-400 mr-2 transition-transform duration-200" />
-                      )}
-                      <div className="flex items-center">
-                        <div className="w-2 h-2 bg-brand-blue rounded-full mr-3"></div>
-                        <span className="font-semibold text-gray-900">TOUR QUỐC TẾ</span>
-                      </div>
+                      {expandedSections.international ? 
+                        <ChevronDown className="w-4 h-4 text-orange-600 mr-2" /> : 
+                        <ChevronRight className="w-4 h-4 text-orange-600 mr-2" />
+                      }
+                      <div className="w-3 h-3 bg-brand-green rounded-full mr-2"></div>
+                      <span className="font-semibold text-gray-900">{internationalRoot.name}</span>
                     </div>
                   </td>
                   <td className="px-4 py-4 text-center text-sm font-semibold text-gray-900">
@@ -456,93 +383,42 @@ export default function HierarchicalTourTable() {
                     <div className="w-3 h-3 bg-brand-green rounded-full mx-auto"></div>
                   </td>
                 </tr>
+              )}
 
-                {/* International Areas and Tours */}
-                {expandedSections.international && (
-                  <>
-                    {internationalAreas.map((area) => (
-                      <React.Fragment key={area.id}>
-                        {/* Area Row */}
-                        <tr className="hover:bg-gray-50 table-row-hover" data-testid={`area-${area.code}`}>
-                          <td className="px-6 py-3 whitespace-nowrap">
-                            <div className="flex items-center pl-8">
-                              <ChevronRight className="w-3 h-3 text-gray-300 mr-2" />
-                              <span className="font-medium text-gray-700">{area.name}</span>
-                            </div>
-                          </td>
-                          <td className="px-4 py-3 text-center text-sm text-gray-600">{area.planned.toLocaleString()}</td>
-                          <td className="px-4 py-3 text-center text-sm text-gray-600">{area.sold.toLocaleString()}</td>
-                          <td className="px-4 py-3 text-center text-sm text-brand-amber">{area.remaining.toLocaleString()}</td>
-                          <td className="px-4 py-3 text-center">
-                            <span className="bg-blue-100 text-blue-800 px-2 py-1 rounded-full text-xs">
-                              +{area.recentlyBooked}
-                            </span>
-                          </td>
-                          <td className={`px-4 py-3 text-center text-sm font-medium ${getCompletionRateColor(area.completionRate)}`}>
-                            {parseFloat(area.completionRate).toFixed(1)}%
-                          </td>
-                          <td className="px-4 py-3 text-center text-sm text-gray-600">{formatCurrency(area.revenue)}B</td>
-                          <td className="px-4 py-3 text-center text-sm text-brand-green">+{parseFloat(area.targetPercentage).toFixed(1)}%</td>
-                          <td className="px-4 py-3 text-center">
-                            {(() => {
-                              const topUnit = getAreaTopSalesUnit(area.code);
-                              return topUnit ? (
-                                <span className="text-xs font-medium text-blue-600 bg-blue-100 px-2 py-1 rounded">
-                                  {getSalesUnitName(topUnit)}
-                                </span>
-                              ) : (
-                                <div className="w-2 h-2 bg-gray-300 rounded-full mx-auto"></div>
-                              );
-                            })()}
-                          </td>
-                        </tr>
-                        
-                        {/* Tours under this area */}
-                        {toursByArea[area.code]?.map((tour) => (
-                          <tr key={tour.id} className="hover:bg-gray-50 table-row-hover" data-testid={`tour-${tour.id}`}>
-                            <td className="px-6 py-3 whitespace-nowrap">
-                              <div className="flex items-center pl-12">
-                                {tour.imageUrl && (
-                                  <img 
-                                    src={tour.imageUrl} 
-                                    alt={tour.name}
-                                    className="w-6 h-6 rounded mr-2 object-cover"
-                                  />
-                                )}
-                                <span className="text-sm text-gray-600">{tour.name}</span>
-                              </div>
-                            </td>
-                            <td className="px-4 py-3 text-center text-sm text-gray-500">{tour.planned.toLocaleString()}</td>
-                            <td className="px-4 py-3 text-center text-sm text-gray-500">{tour.sold.toLocaleString()}</td>
-                            <td className="px-4 py-3 text-center text-sm text-gray-500">{tour.remaining.toLocaleString()}</td>
-                            <td className="px-4 py-3 text-center">
-                              <span className="bg-green-100 text-green-800 px-2 py-1 rounded-full text-xs blink">
-                                +{tour.recentlyBooked}
-                              </span>
-                            </td>
-                            <td className="px-4 py-3 text-center text-sm text-gray-500">
-                              {parseFloat(tour.completionRate).toFixed(1)}%
-                            </td>
-                            <td className="px-4 py-3 text-center text-sm text-gray-500">{formatCurrency(tour.revenue)}B</td>
-                            <td className="px-4 py-3 text-center text-sm text-green-600">
-                              +{parseFloat(tour.targetPercentage).toFixed(1)}%
-                            </td>
-                            <td className="px-4 py-3 text-center">
-                              <span className="text-xs font-medium text-blue-600 bg-blue-100 px-2 py-1 rounded">
-                                {getSalesUnitName(tour.topSalesUnit)}
-                              </span>
-                            </td>
-                          </tr>
-                        ))}
-                      </React.Fragment>
-                    ))}
-                  </>
-                )}
-              </>
-            )}
-          </tbody>
-        </table>
+              {/* International Areas */}
+              {expandedSections.international && internationalAreas.map((area) => (
+                <tr key={area.id} className="hover:bg-gray-50" data-testid={`area-${area.code}`}>
+                  <td className="px-6 py-3 whitespace-nowrap">
+                    <div className="flex items-center pl-8">
+                      <ChevronRight className="w-3 h-3 text-gray-300 mr-2" />
+                      <span className="font-medium text-gray-700">{area.name}</span>
+                    </div>
+                  </td>
+                  <td className="px-4 py-3 text-center text-sm text-gray-600">{area.planned.toLocaleString()}</td>
+                  <td className="px-4 py-3 text-center text-sm text-gray-600">{area.sold.toLocaleString()}</td>
+                  <td className="px-4 py-3 text-center text-sm text-brand-amber">{area.remaining.toLocaleString()}</td>
+                  <td className="px-4 py-3 text-center">
+                    <span className="bg-blue-100 text-blue-800 px-2 py-1 rounded-full text-xs">
+                      +{area.recentlyBooked}
+                    </span>
+                  </td>
+                  <td className={`px-4 py-3 text-center text-sm font-medium ${getCompletionRateColor(area.completionRate)}`}>
+                    {parseFloat(area.completionRate).toFixed(1)}%
+                  </td>
+                  <td className="px-4 py-3 text-center text-sm text-gray-600">{formatCurrency(area.revenue)}B</td>
+                  <td className="px-4 py-3 text-center text-sm text-brand-green">+{parseFloat(area.targetPercentage).toFixed(1)}%</td>
+                  <td className="px-4 py-3 text-center">
+                    <span className="text-xs font-medium text-blue-600 bg-blue-100 px-2 py-1 rounded">
+                      {getSalesUnitName(getAreaTopSalesUnit(area.code))}
+                    </span>
+                  </td>
+                </tr>
+              ))}
+
+            </tbody>
+          </table>
+        </div>
       </div>
-    </Card>
+    </div>
   );
 }
