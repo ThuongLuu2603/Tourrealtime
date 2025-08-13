@@ -59,7 +59,6 @@ export default function HierarchicalTourTable() {
   // Calculate top sales unit for area based on tours in that area
   const getAreaTopSalesUnit = (areaCode: string) => {
     const toursInArea = toursByArea[areaCode] || [];
-    console.log(`Debug getAreaTopSalesUnit for ${areaCode}:`, toursInArea.length, 'tours');
     if (toursInArea.length === 0) return null;
     
     // Count tours by sales unit
@@ -68,13 +67,10 @@ export default function HierarchicalTourTable() {
       return acc;
     }, {} as Record<string, number>);
     
-    console.log(`Sales unit counts for ${areaCode}:`, salesUnitCounts);
-    
     // Find the sales unit with most tours
     const topSalesUnit = Object.entries(salesUnitCounts)
       .sort(([,a], [,b]) => b - a)[0]?.[0];
     
-    console.log(`Top sales unit for ${areaCode}:`, topSalesUnit);
     return topSalesUnit;
   };
 
