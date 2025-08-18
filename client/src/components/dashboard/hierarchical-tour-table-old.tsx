@@ -262,7 +262,7 @@ export default function HierarchicalTourTable() {
                 onClick={() => handleSort('revenue')}
               >
                 <div className="flex items-center justify-center space-x-1">
-                  <span>Doanh Thu</span>
+                  <span>Doanh Số</span>
                   {getSortIcon('revenue')}
                 </div>
               </th>
