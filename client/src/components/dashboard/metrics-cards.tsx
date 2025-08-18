@@ -43,7 +43,7 @@ export default function MetricsCards() {
       testId: "metric-daily-bookings"
     },
     {
-      title: "Doanh Thu Hôm Nay",
+      title: "Doanh Số Hôm Nay",
       value: metrics.dailyRevenue,
       change: metrics.dailyRevenueChange,
       changeType: "percentage",
@@ -61,10 +61,10 @@ export default function MetricsCards() {
       testId: "metric-tours-sold"
     },
     {
-      title: "Mục tiêu Doanh Thu",
+      title: "Mục tiêu Doanh Số",
       value: `${metrics.revenuePlanPercentage || 0}%`,
       change: metrics.revenue || metrics.dailyRevenue,
-      changeType: "revenue_total", // Hiển thị tổng doanh thu
+      changeType: "revenue_total", // Hiển thị tổng doanh số
       icon: PieChart,
       color: "purple",
       testId: "metric-revenue"
