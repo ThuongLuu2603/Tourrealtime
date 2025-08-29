@@ -124,7 +124,6 @@ export default function DateFilterDropdown({ onSelectionChange }: DateFilterDrop
           <DropdownMenuSubTrigger className="flex items-center">
             <span className="text-pink-500 mr-2">●</span>
             Tuần
-            <ChevronDown className="w-4 h-4 ml-auto" />
           </DropdownMenuSubTrigger>
           <DropdownMenuSubContent className="max-h-64 overflow-y-auto">
             {weekOptions.map((week) => (
@@ -158,7 +157,6 @@ export default function DateFilterDropdown({ onSelectionChange }: DateFilterDrop
           <DropdownMenuSubTrigger className="flex items-center">
             <span className="text-pink-500 mr-2">●</span>
             Tháng
-            <ChevronDown className="w-4 h-4 ml-auto" />
           </DropdownMenuSubTrigger>
           <DropdownMenuSubContent>
             {monthOptions.map((month) => (
