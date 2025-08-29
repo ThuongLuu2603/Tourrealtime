@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Calendar, ChevronDown } from "lucide-react";
+import { Calendar, ChevronDown, Check } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -15,12 +15,13 @@ import {
 type FilterType = 'week' | 'month' | 'year';
 
 interface DateFilterDropdownProps {
-  onSelectionChange?: (type: FilterType, value: number) => void;
+  onSelectionChange?: (type: FilterType, values: number[]) => void;
 }
 
 export default function DateFilterDropdown({ onSelectionChange }: DateFilterDropdownProps) {
   const [selectedType, setSelectedType] = useState<FilterType>('week');
-  const [selectedValue, setSelectedValue] = useState<number>(1);
+  const [selectedWeeks, setSelectedWeeks] = useState<number[]>([]);
+  const [selectedMonths, setSelectedMonths] = useState<number[]>([]);
 
   // Calculate current week number from current date
   const getCurrentWeek = () => {
@@ -36,24 +37,47 @@ export default function DateFilterDropdown({ onSelectionChange }: DateFilterDrop
     return new Date().getMonth() + 1; // getMonth() returns 0-11
   };
 
-  // Initialize with current week/month based on server date
+  // Initialize with current week based on server date
   useEffect(() => {
     const currentWeek = getCurrentWeek();
-    setSelectedValue(currentWeek);
-    onSelectionChange?.('week', currentWeek);
+    setSelectedWeeks([currentWeek]);
+    onSelectionChange?.('week', [currentWeek]);
   }, []);
 
-  const handleSelection = (type: FilterType, value: number) => {
-    setSelectedType(type);
-    setSelectedValue(value);
-    onSelectionChange?.(type, value);
+  const handleWeekSelection = (week: number) => {
+    const newSelectedWeeks = selectedWeeks.includes(week)
+      ? selectedWeeks.filter(w => w !== week)
+      : [...selectedWeeks, week].sort((a, b) => a - b);
+    
+    setSelectedWeeks(newSelectedWeeks);
+    setSelectedType('week');
+    onSelectionChange?.('week', newSelectedWeeks);
+  };
+
+  const handleMonthSelection = (month: number) => {
+    const newSelectedMonths = selectedMonths.includes(month)
+      ? selectedMonths.filter(m => m !== month)
+      : [...selectedMonths, month].sort((a, b) => a - b);
+    
+    setSelectedMonths(newSelectedMonths);
+    setSelectedType('month');
+    onSelectionChange?.('month', newSelectedMonths);
+  };
+
+  const handleYearSelection = () => {
+    setSelectedType('year');
+    onSelectionChange?.('year', []);
   };
 
   const getDisplayText = () => {
     if (selectedType === 'week') {
-      return `Tuần ${selectedValue}`;
+      if (selectedWeeks.length === 0) return 'Chọn tuần';
+      if (selectedWeeks.length === 1) return `Tuần ${selectedWeeks[0]}`;
+      return `${selectedWeeks.length} tuần đã chọn`;
     } else if (selectedType === 'month') {
-      return `Tháng ${selectedValue}`;
+      if (selectedMonths.length === 0) return 'Chọn tháng';
+      if (selectedMonths.length === 1) return `Tháng ${selectedMonths[0]}`;
+      return `${selectedMonths.length} tháng đã chọn`;
     } else {
       return `Toàn năm`;
     }
@@ -106,18 +130,22 @@ export default function DateFilterDropdown({ onSelectionChange }: DateFilterDrop
             {weekOptions.map((week) => (
               <DropdownMenuItem
                 key={week}
-                onClick={() => handleSelection('week', week)}
-                className={`cursor-pointer ${
-                  selectedType === 'week' && selectedValue === week 
-                    ? 'bg-blue-50 text-blue-600' 
-                    : ''
-                }`}
+                onClick={(e) => {
+                  e.preventDefault();
+                  handleWeekSelection(week);
+                }}
+                className="cursor-pointer flex items-center justify-between"
                 data-testid={`week-${week}`}
               >
-                Tuần {week}
-                {getCurrentWeek() === week && (
-                  <span className="ml-auto text-xs text-green-600">(Hiện tại)</span>
-                )}
+                <span>Tuần {week}</span>
+                <div className="flex items-center">
+                  {getCurrentWeek() === week && (
+                    <span className="text-xs text-green-600 mr-2">(Hiện tại)</span>
+                  )}
+                  {selectedWeeks.includes(week) && (
+                    <Check className="w-4 h-4 text-blue-600" />
+                  )}
+                </div>
               </DropdownMenuItem>
             ))}
           </DropdownMenuSubContent>
@@ -136,18 +164,22 @@ export default function DateFilterDropdown({ onSelectionChange }: DateFilterDrop
             {monthOptions.map((month) => (
               <DropdownMenuItem
                 key={month.value}
-                onClick={() => handleSelection('month', month.value)}
-                className={`cursor-pointer ${
-                  selectedType === 'month' && selectedValue === month.value 
-                    ? 'bg-blue-50 text-blue-600' 
-                    : ''
-                }`}
+                onClick={(e) => {
+                  e.preventDefault();
+                  handleMonthSelection(month.value);
+                }}
+                className="cursor-pointer flex items-center justify-between"
                 data-testid={`month-${month.value}`}
               >
-                {month.label}
-                {getCurrentMonth() === month.value && (
-                  <span className="ml-auto text-xs text-green-600">(Hiện tại)</span>
-                )}
+                <span>{month.label}</span>
+                <div className="flex items-center">
+                  {getCurrentMonth() === month.value && (
+                    <span className="text-xs text-green-600 mr-2">(Hiện tại)</span>
+                  )}
+                  {selectedMonths.includes(month.value) && (
+                    <Check className="w-4 h-4 text-blue-600" />
+                  )}
+                </div>
               </DropdownMenuItem>
             ))}
           </DropdownMenuSubContent>
@@ -157,16 +189,21 @@ export default function DateFilterDropdown({ onSelectionChange }: DateFilterDrop
 
         {/* Year Selection */}
         <DropdownMenuItem
-          onClick={() => handleSelection('year', 0)}
-          className={`cursor-pointer ${
+          onClick={handleYearSelection}
+          className={`cursor-pointer flex items-center justify-between ${
             selectedType === 'year' 
               ? 'bg-blue-50 text-blue-600' 
               : ''
           }`}
           data-testid="year-option"
         >
-          <span className="text-pink-500 mr-2">●</span>
-          Toàn năm
+          <div className="flex items-center">
+            <span className="text-pink-500 mr-2">●</span>
+            <span>Toàn năm</span>
+          </div>
+          {selectedType === 'year' && (
+            <Check className="w-4 h-4 text-blue-600" />
+          )}
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
