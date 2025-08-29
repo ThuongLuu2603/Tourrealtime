@@ -78,6 +78,17 @@ export default function Dashboard() {
                 }}
               />
               
+              <Select value={selectedMonth} onValueChange={setSelectedMonth}>
+                <SelectTrigger className="w-32" data-testid="month-selector">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="7">Năm 2025</SelectItem>
+                  <SelectItem value="6">Năm 2026</SelectItem>
+                  <SelectItem value="5">Năm 2027</SelectItem>
+                </SelectContent>
+              </Select>
+              
               <Button 
                 onClick={handleExportExcel}
                 className="bg-brand-blue hover:bg-blue-600"
