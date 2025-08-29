@@ -113,9 +113,11 @@ export default function MetricsCards() {
                   <p className="text-sm font-medium text-gray-600">{card.title}</p>
                   <p className="text-3xl font-bold text-gray-900">{card.value}</p>
                   {card.detailLabel && card.detailValue ? (
-                    <div className="mt-2 space-y-1">
-                      <p className="text-xs text-gray-500">{card.detailLabel}</p>
-                      <p className="text-lg font-semibold text-gray-800">{card.detailValue}</p>
+                    <div className="mt-2">
+                      <p className="text-sm font-medium text-gray-800">
+                        <span className="text-xs text-gray-500">{card.detailLabel}:</span> 
+                        <span className="ml-1 font-semibold">{card.detailValue}</span>
+                      </p>
                     </div>
                   ) : card.change !== null ? (
                     <div className="flex items-center mt-1">
