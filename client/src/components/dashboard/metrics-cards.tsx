@@ -32,7 +32,19 @@ export default function MetricsCards() {
 
   if (!metrics) return null;
 
-  const cards = [
+  interface CardProps {
+    title: string;
+    value: string;
+    change?: string | number;
+    changeType: string;
+    icon: any;
+    color: string;
+    testId: string;
+    detailLabel?: string;
+    detailValue?: string;
+  }
+
+  const cards: CardProps[] = [
     {
       title: "SL Đã Bán hôm nay",
       value: metrics.dailyBookings?.toLocaleString() || "0",
@@ -58,7 +70,9 @@ export default function MetricsCards() {
       changeType: "tours_sold_total", // Hiển thị tổng SL đã bán
       icon: ShoppingCart,
       color: "amber",
-      testId: "metric-tours-sold"
+      testId: "metric-tours-sold",
+      detailLabel: "KH lượt khách",
+      detailValue: `${metrics.toursSold.toLocaleString()} LK`
     },
     {
       title: "Mục tiêu Doanh Số",
@@ -67,7 +81,9 @@ export default function MetricsCards() {
       changeType: "revenue_total", // Hiển thị tổng doanh số
       icon: PieChart,
       color: "purple",
-      testId: "metric-revenue"
+      testId: "metric-revenue",
+      detailLabel: "KH Doanh Thu",
+      detailValue: `${(parseFloat(metrics.revenue?.replace(/[^\d.]/g, '') || '0') / 1000).toFixed(1)}B VND`
     },
   ];
 
@@ -96,6 +112,12 @@ export default function MetricsCards() {
                 <div>
                   <p className="text-sm font-medium text-gray-600">{card.title}</p>
                   <p className="text-3xl font-bold text-gray-900">{card.value}</p>
+                  {card.detailLabel && card.detailValue && (
+                    <div className="mt-2 space-y-1">
+                      <p className="text-xs text-gray-500">{card.detailLabel}</p>
+                      <p className="text-lg font-semibold text-gray-800">{card.detailValue}</p>
+                    </div>
+                  )}
                   {card.change !== null && (
                     <div className="flex items-center mt-1">
                       {!["revenue_total", "tours_sold_total"].includes(card.changeType) && isPositive && <TrendingUp className="w-4 h-4 text-brand-green mr-1" />}
