@@ -72,8 +72,8 @@ export default function Dashboard() {
               </div>
               
               <DateFilterDropdown 
-                onSelectionChange={(type, value) => {
-                  console.log(`Selected ${type}: ${value}`);
+                onSelectionChange={(type, values) => {
+                  console.log(`Selected ${type}:`, values);
                   // Handle date filter change here
                 }}
               />
