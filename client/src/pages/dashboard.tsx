@@ -5,6 +5,7 @@ import TourTable from "@/components/dashboard/tour-table";
 import TopToursPanel from "@/components/dashboard/top-tours-panel";
 import RegionalPerformance from "@/components/dashboard/regional-performance";
 import RecentActivities from "@/components/dashboard/recent-activities";
+import DateFilterDropdown from "@/components/dashboard/date-filter-dropdown";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { FileSpreadsheet, Clock } from "lucide-react";
@@ -70,16 +71,12 @@ export default function Dashboard() {
                 <span className="ml-2">| Cập nhật: 9s trước</span>
               </div>
               
-              <Select value={selectedMonth} onValueChange={setSelectedMonth}>
-                <SelectTrigger className="w-32" data-testid="month-selector">
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="7">Năm 2025</SelectItem>
-                  <SelectItem value="6">Năm 2026</SelectItem>
-                  <SelectItem value="5">Năm 2027</SelectItem>
-                </SelectContent>
-              </Select>
+              <DateFilterDropdown 
+                onSelectionChange={(type, value) => {
+                  console.log(`Selected ${type}: ${value}`);
+                  // Handle date filter change here
+                }}
+              />
               
               <Button 
                 onClick={handleExportExcel}
