@@ -112,13 +112,12 @@ export default function MetricsCards() {
                 <div>
                   <p className="text-sm font-medium text-gray-600">{card.title}</p>
                   <p className="text-3xl font-bold text-gray-900">{card.value}</p>
-                  {card.detailLabel && card.detailValue && (
+                  {card.detailLabel && card.detailValue ? (
                     <div className="mt-2 space-y-1">
                       <p className="text-xs text-gray-500">{card.detailLabel}</p>
                       <p className="text-lg font-semibold text-gray-800">{card.detailValue}</p>
                     </div>
-                  )}
-                  {card.change !== null && (
+                  ) : card.change !== null ? (
                     <div className="flex items-center mt-1">
                       {!["revenue_total", "tours_sold_total"].includes(card.changeType) && isPositive && <TrendingUp className="w-4 h-4 text-brand-green mr-1" />}
                       {!["revenue_total", "tours_sold_total"].includes(card.changeType) && isNegative && <TrendingDown className="w-4 h-4 text-brand-red mr-1" />}
@@ -141,7 +140,7 @@ export default function MetricsCards() {
                         )}
                       </span>
                     </div>
-                  )}
+                  ) : null}
                   {card.title === "Tỷ Lệ Hoàn Thành" && (
                     <div className="w-full bg-gray-200 rounded-full h-2 mt-2">
                       <div 
