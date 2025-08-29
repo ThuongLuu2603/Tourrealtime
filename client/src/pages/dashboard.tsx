@@ -52,7 +52,7 @@ export default function Dashboard() {
     <div className="min-h-screen bg-gray-50">
       {/* Header */}
       <header className="bg-white shadow-sm border-b border-gray-200 sticky top-0 z-40">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="w-full px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
             <div className="flex items-center space-x-4">
               <h1 className="text-2xl font-bold text-gray-900" data-testid="dashboard-title">
@@ -117,18 +117,18 @@ export default function Dashboard() {
         </div>
       </header>
 
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+      <main className="w-full px-4 sm:px-6 lg:px-8 py-6">
         {/* Key Metrics Cards */}
         <MetricsCards />
 
-        <div className="grid grid-cols-1 xl:grid-cols-4 gap-6 mt-8">
+        <div className="grid grid-cols-1 lg:grid-cols-5 gap-6 mt-8">
           {/* Main Dashboard Table */}
-          <div className="xl:col-span-3">
+          <div className="lg:col-span-3">
             <TourTable />
           </div>
 
           {/* Right Sidebar */}
-          <div className="xl:col-span-1 space-y-6">
+          <div className="lg:col-span-2 space-y-6">
             <TopToursPanel />
             <RegionalPerformance />
             <RecentActivities />
