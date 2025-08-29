@@ -12,7 +12,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 
-type FilterType = 'week' | 'month';
+type FilterType = 'week' | 'month' | 'year';
 
 interface DateFilterDropdownProps {
   onSelectionChange?: (type: FilterType, value: number) => void;
@@ -52,8 +52,10 @@ export default function DateFilterDropdown({ onSelectionChange }: DateFilterDrop
   const getDisplayText = () => {
     if (selectedType === 'week') {
       return `Tuần ${selectedValue}`;
-    } else {
+    } else if (selectedType === 'month') {
       return `Tháng ${selectedValue}`;
+    } else {
+      return `Toàn năm`;
     }
   };
 
@@ -150,6 +152,22 @@ export default function DateFilterDropdown({ onSelectionChange }: DateFilterDrop
             ))}
           </DropdownMenuSubContent>
         </DropdownMenuSub>
+
+        <DropdownMenuSeparator />
+
+        {/* Year Selection */}
+        <DropdownMenuItem
+          onClick={() => handleSelection('year', 0)}
+          className={`cursor-pointer ${
+            selectedType === 'year' 
+              ? 'bg-blue-50 text-blue-600' 
+              : ''
+          }`}
+          data-testid="year-option"
+        >
+          <span className="text-pink-500 mr-2">●</span>
+          Toàn năm
+        </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
   );
