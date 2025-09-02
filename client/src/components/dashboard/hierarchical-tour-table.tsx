@@ -140,7 +140,7 @@ export default function HierarchicalTourTable() {
 
   const formatCurrency = (value: string | number) => {
     const numValue = typeof value === 'string' ? parseFloat(value) : value;
-    return (numValue / 1000000000).toFixed(1);
+    return (numValue / 1000000).toFixed(0);
   };
 
   const getCompletionRateColor = (rate: string) => {
@@ -195,7 +195,7 @@ export default function HierarchicalTourTable() {
     <div className="bg-white rounded-xl shadow-sm border border-gray-200" data-testid="hierarchical-tour-table">
       <div className="p-6">
         <h2 className="text-xl font-bold text-gray-900 mb-6">
-          Báo Cáo Tour Theo Cấu Trúc Phân Cấp
+          Tráo Cáo Tour Theo Cấu Trúc Phân Cấp
         </h2>
         
         <div className="overflow-x-auto">
@@ -228,7 +228,7 @@ export default function HierarchicalTourTable() {
                     className="flex items-center justify-center space-x-1 hover:text-gray-700 w-full"
                     data-testid="sort-sold"
                   >
-                    <span>Đã Bán</span>
+                    <span>Đã Trán</span>
                     {getSortIcon('sold')}
                   </button>
                 </th>
@@ -302,7 +302,7 @@ export default function HierarchicalTourTable() {
                     {parseFloat(domesticRoot.completionRate).toFixed(1)}%
                   </td>
                   <td className="px-4 py-4 text-center text-sm font-semibold text-gray-900">
-                    {formatCurrency(domesticRoot.revenue)}B
+                    {formatCurrency(domesticRoot.revenue)}Tr
                   </td>
                   <td className="px-4 py-4 text-center">
                     <span className="text-brand-green font-medium">+{parseFloat(domesticRoot.targetPercentage).toFixed(1)}%</span>
@@ -333,7 +333,7 @@ export default function HierarchicalTourTable() {
                   <td className={`px-4 py-3 text-center text-sm font-medium ${getCompletionRateColor(area.completionRate)}`}>
                     {parseFloat(area.completionRate).toFixed(1)}%
                   </td>
-                  <td className="px-4 py-3 text-center text-sm text-gray-600">{formatCurrency(area.revenue)}B</td>
+                  <td className="px-4 py-3 text-center text-sm text-gray-600">{formatCurrency(area.revenue)}Tr</td>
                   <td className="px-4 py-3 text-center text-sm text-brand-green">+{parseFloat(area.targetPercentage).toFixed(1)}%</td>
                   <td className="px-4 py-3 text-center">
                     <span className="text-xs font-medium text-blue-600 bg-blue-100 px-2 py-1 rounded">
@@ -374,7 +374,7 @@ export default function HierarchicalTourTable() {
                     {parseFloat(internationalRoot.completionRate).toFixed(1)}%
                   </td>
                   <td className="px-4 py-4 text-center text-sm font-semibold text-gray-900">
-                    {formatCurrency(internationalRoot.revenue)}B
+                    {formatCurrency(internationalRoot.revenue)}Tr
                   </td>
                   <td className="px-4 py-4 text-center">
                     <span className="text-brand-green font-medium">+{parseFloat(internationalRoot.targetPercentage).toFixed(1)}%</span>
@@ -405,7 +405,7 @@ export default function HierarchicalTourTable() {
                   <td className={`px-4 py-3 text-center text-sm font-medium ${getCompletionRateColor(area.completionRate)}`}>
                     {parseFloat(area.completionRate).toFixed(1)}%
                   </td>
-                  <td className="px-4 py-3 text-center text-sm text-gray-600">{formatCurrency(area.revenue)}B</td>
+                  <td className="px-4 py-3 text-center text-sm text-gray-600">{formatCurrency(area.revenue)}Tr</td>
                   <td className="px-4 py-3 text-center text-sm text-brand-green">+{parseFloat(area.targetPercentage).toFixed(1)}%</td>
                   <td className="px-4 py-3 text-center">
                     <span className="text-xs font-medium text-blue-600 bg-blue-100 px-2 py-1 rounded">
