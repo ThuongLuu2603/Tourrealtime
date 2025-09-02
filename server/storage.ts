@@ -67,20 +67,20 @@ code: "tour_quoc_te",
 category: "international",
 level: "tour_category",
 parentCode: null,
-planned: 4976,
-sold: 2665,
-remaining: 2311,
-opensell: 3278,
-recentlyBooked: 430,
-recentlyBooked30min: 143,
-completionRate: "13.4%",
-plannedRevenue: "60962750000",
-revenue: "8089550000",
-remainingRevenue: "19932750000",
-openRevenue: "71726000000",
-recentlyRevenue: "11033931000",
-recentlyRevenue30min: "3677977000",
-targetPercentage: "75%"
+planned: 4907,
+sold: 2598,
+remaining: 2309,
+opensell: 3167,
+recentlyBooked: 363,
+recentlyBooked30min: 66,
+completionRate: "52.9",
+plannedRevenue: "76918000000",
+revenue: "57473000000",
+remainingRevenue: "19445000000",
+openRevenue: "64165250000",
+dailyRevenue: "7594433500",
+recentlyRevenue30min: "1386474965",
+targetPercentage: "74.72"
 },
 // International - Level 2: Châu lục - Châu Á 30min = 8+10+2 = 20, Châu Âu = 1
     {
@@ -1072,20 +1072,20 @@ code: "noi_dia",
 category: "domestic",
 level: "geo_region",
 parentCode: null,
-planned: 3281,
-sold: 3022,
-remaining: 259,
-opensell: 3418,
-recentlyBooked: 403,
-recentlyBooked30min: 67,
+planned: 3226,
+sold: 2968,
+remaining: 258,
+opensell: 3328,
+recentlyBooked: 374,
+recentlyBooked30min: 52,
 completionRate: "92.1",
-plannedRevenue: "1555750000",
-revenue: "16036250000",
-remainingRevenue: "480500000",
-openRevenue: "1515700000",
-recentlyRevenue: "1778951308",
-recentlyRevenue30min: "296491884.7",
-targetPercentage: "97"
+plannedRevenue: "15616000000",
+revenue: "15263000000",
+remainingRevenue: "353000000",
+openRevenue: "14757500000",
+dailyRevenue: "1489038748",
+recentlyRevenue30min: "218796662",
+targetPercentage: "97.74"
 },
 
 // Domestic - Regional Areas (Level 2) - 30min: Miền Bắc = 2+2+2 = 6, Miền Trung = 2+2 = 4, Miền Nam = 1+1 = 2
@@ -1107,7 +1107,7 @@ targetPercentage: "97"
   revenue: "7649250000",
   remainingRevenue: "-593750000", // Value not available in the image
   openRevenue: "7547750000",
-  recentlyRevenue: "175425208",
+  dailyRevenue: "175425208",
   recentlyRevenue30min: "175425208", // Value not available in the image
   targetPercentage: "108.42%",
   },
@@ -1128,7 +1128,7 @@ targetPercentage: "97"
   revenue: "3228250000",
   remainingRevenue: "-571750000", // Value not available in the image
   openRevenue: "3017750000",
-  recentlyRevenue: "14252572",
+    dailyRevenue: "14252572",
   recentlyRevenue30min: "14252572", // Value not available in the image
   targetPercentage: "121.52%",
   },
@@ -1149,7 +1149,7 @@ targetPercentage: "97"
   revenue: "438550000",
   remainingRevenue: "1518500000", 
   openRevenue: "419200000",
-  recentlyRevenue: "29018882",
+    dailyRevenue: "29018882",
   recentlyRevenue30min: "29018882", 
   targetPercentage: "74.28",
   },
@@ -1173,7 +1173,7 @@ targetPercentage: "97"
   revenue: "952750000",
   remainingRevenue: "-85500000",
   openRevenue: "964750000",
-  recentlyRevenue: "764947968",
+    dailyRevenue: "764947968",
   recentlyRevenue30min: "77633417",
   targetPercentage: "109.96"
   },
@@ -1194,7 +1194,7 @@ targetPercentage: "97"
   revenue: "3906500000",
   remainingRevenue: "-262750000",
   openRevenue: "3636000000",
-  recentlyRevenue: "198052500",
+    dailyRevenue: "198052500",
   recentlyRevenue30min: "44201791",
   targetPercentage: "107.21"
   },
@@ -1215,7 +1215,7 @@ targetPercentage: "97"
   revenue: "550000000",
   remainingRevenue: "208000000",
   openRevenue: "550750000",
-  recentlyRevenue: "120870000",
+    dailyRevenue: "120870000",
   recentlyRevenue30min: "40290000",
   targetPercentage: "72.56"
   },
@@ -1236,7 +1236,7 @@ targetPercentage: "97"
   revenue: "2396250000",
   remainingRevenue: "-453500000",
   openRevenue: "2396250000",
-  recentlyRevenue: "41000000",
+    dailyRevenue: "41000000",
   recentlyRevenue30min: "13330000",
   targetPercentage: "125.38"
   },
@@ -1257,7 +1257,7 @@ targetPercentage: "97"
   revenue: "2755250000",
   remainingRevenue: "-397250000",
   openRevenue: "2567250000",
-  recentlyRevenue: "55823440",
+    dailyRevenue: "55823440",
   recentlyRevenue30min: "9230572",
   targetPercentage: "116.85"
   },
@@ -1278,7 +1278,7 @@ targetPercentage: "97"
   revenue: "473000000",
   remainingRevenue: "-174500000",
   openRevenue: "450250000",
-  recentlyRevenue: "48096000",
+    dailyRevenue: "48096000",
   recentlyRevenue30min: "5122000",
   targetPercentage: "158.46"
   },
@@ -1299,7 +1299,7 @@ targetPercentage: "97"
   revenue: "3374250000",
   remainingRevenue: "-3336000000",
   openRevenue: "3271750000",
-  recentlyRevenue: "174348840",
+    dailyRevenue: "174348840",
   recentlyRevenue30min: "20528882",
   targetPercentage: "8821.57"
   },
@@ -1320,7 +1320,7 @@ targetPercentage: "97"
   revenue: "553500000",
   remainingRevenue: "-488250000",
   openRevenue: "501750000",
-  recentlyRevenue: "13090000",
+    dailyRevenue: "13090000",
   recentlyRevenue30min: "0",
   targetPercentage: "848.28"
   },
@@ -1341,7 +1341,7 @@ targetPercentage: "97"
   revenue: "457750000",
   remainingRevenue: "-408500000",
   openRevenue: "418750000",
-  recentlyRevenue: "72810000",
+    dailyRevenue: "72810000",
   recentlyRevenue30min: "8490000",
   targetPercentage: "929.44"
   },
@@ -1362,7 +1362,7 @@ targetPercentage: "97"
   revenue: "0",
   remainingRevenue: "-5751250000",
   openRevenue: "0",
-  recentlyRevenue: "0",
+    dailyRevenue: "0",
   recentlyRevenue30min: "0",
   targetPercentage: "0.00%"
   }
@@ -1385,7 +1385,10 @@ recentlyBooked30min: levelData.recentlyBooked30min || 0,
 completionRate: levelData.completionRate || "0",
 revenue: levelData.revenue || "0",
 openRevenue: levelData.openRevenue || "0",
+remainingRevenue: levelData.remainingRevenue || "0",
+dailyRevenue: levelData.dailyRevenue || "0",
 plannedRevenue: levelData.plannedRevenue || "0",
+recentlyRevenue30min: levelData.recentlyRevenue30min || "0",
 targetPercentage: levelData.targetPercentage || "0"
 };
 this.hierarchyLevels.set(level.id, level);
@@ -3298,17 +3301,27 @@ return performance;
 async getDashboardMetrics(): Promise<DashboardMetrics> {
 const tours = Array.from(this.tours.values());
 const hierarchyLevels = Array.from(this.hierarchyLevels.values());
+
+// Only calculate from main levels: Tour Nội Địa và Tour Quốc Tế (level = 'tour_category')
+const mainLevels = hierarchyLevels.filter(level => level.level === 'tour_category');
 const totalActiveTours = tours.length;
-// Calculate from hierarchy levels data (more comprehensive than tours data)
-const totalSold = hierarchyLevels.reduce((sum, level) => sum + level.sold, 0);
-const totalPlanned = hierarchyLevels.reduce((sum, level) => sum + level.planned, 0);
-const totalopensell = hierarchyLevels.reduce((sum, level) => sum + level.opensell, 0);
-const totalRevenue = hierarchyLevels.reduce((sum, level) => sum + parseFloat(level.revenue), 0);
-const totalPlannedRevenue = hierarchyLevels.reduce((sum, level) => sum + parseFloat(level.plannedRevenue), 0);
-const totalDailyBookings = hierarchyLevels.reduce((sum, level) => sum + level.recentlyBooked30min, 0);
-// Calculate total daily revenue from all tours
-const totalDailyRevenue = tours.reduce((sum, tour) => sum + parseFloat(tour.dailyRevenue || "0"), 0);
-const totalopenRevenue = tours.reduce((sum, tour) => sum + parseFloat(tour.openRevenue || "0"), 0);
+
+// Calculate from main hierarchy levels only (Tour Nội Địa và Tour Quốc Tế)
+const totalSold = mainLevels.reduce((sum, level) => sum + level.sold, 0);
+const totalPlanned = mainLevels.reduce((sum, level) => sum + level.planned, 0);
+const totalopensell = mainLevels.reduce((sum, level) => sum + level.opensell, 0);
+const totalRevenue = mainLevels.reduce((sum, level) => sum + parseFloat(level.revenue), 0);
+const totalPlannedRevenue = mainLevels.reduce((sum, level) => sum + parseFloat(level.plannedRevenue), 0);
+const totalDailyBookings = mainLevels.reduce((sum, level) => sum + level.recentlyBooked30min, 0);
+// Calculate total daily revenue and open revenue from main levels only
+const totalDailyRevenue = mainLevels.reduce((sum, level) => {
+  const dailyRevenue = parseFloat(level.dailyRevenue || "0");
+  return sum + dailyRevenue;
+}, 0);
+const totalopenRevenue = mainLevels.reduce((sum, level) => {
+  const openRevenue = parseFloat(level.openRevenue || "0");
+  return sum + openRevenue;
+}, 0);
 // Calculate percentage vs plan for tours sold
 const toursSoldPlanPercentage = totalPlanned > 0 ? parseFloat(((totalSold / totalPlanned) * 100).toFixed(1)) : 0;
 // Calculate revenue percentage vs plan: Tổng Doanh Thu / Doanh thu Kế Hoạch
