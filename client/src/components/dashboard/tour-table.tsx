@@ -13,12 +13,12 @@ const DEFAULT_COLUMNS: ColumnConfig[] = [
   { id: 'planned', label: 'Kế Hoạch', visible: true, width: '8%' },
   { id: 'sold', label: 'Đã Bán', visible: true, width: '8%' },
   { id: 'remaining', label: 'SL KH Còn Lại', visible: true, width: '10%' },
-  { id: 'opensell', label: 'LK Mở bán', visible: true, width: '9%' },
+  { id: 'opensell', label: 'LK Mở bán', visible: false, width: '9%' },// Mặc định ẩn
   { id: 'recentlyBooked', label: 'Số Chỗ Bán Hôm Nay', visible: true, width: '10%' },
   { id: 'completionRate', label: '% LK Hoàn Thành', visible: true, width: '9%' },
   { id: 'dailyRevenue', label: 'Doanh Thu Hôm Nay', visible: true, width: '10%' },
-  { id: 'revenue', label: 'Doanh Số', visible: false, width: '10%' }, // Mặc định ẩn
-  { id: 'openRevenue', label: 'DS Mở bán', visible: true, width: '9%' },
+  { id: 'revenue', label: 'Doanh Số', visible: true, width: '10%' }, 
+  { id: 'openRevenue', label: 'DS Mở bán', visible: false, width: '9%' },// Mặc định ẩn
   { id: 'plannedRevenue', label: 'Doanh Số Kế Hoạch', visible: false, width: '10%' }, // Mặc định ẩn
   { id: 'targetPercentage', label: '% DS KH', visible: true, width: '8%' },
   { id: 'topSalesUnit', label: 'Đơn Vị Top 1', visible: true, width: '12%' },
@@ -863,7 +863,7 @@ export default function TourTable() {
   };
 
   // Always add main categories first, then their content when expanded
-  // Tour Quốc Tế xuất hiện trước Tour Nội Địa
+  // Show TOUR QUỐC TẾ (international) first, then TOUR NỘI ĐỊA (domestic)
   if (internationalRoot && showSections.includes('international')) {
     allRows.push({
       type: 'section',
