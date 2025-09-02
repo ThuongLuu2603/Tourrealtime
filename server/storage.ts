@@ -78,7 +78,7 @@ plannedRevenue: "76918000000",
 revenue: "57473000000",
 remainingRevenue: "19445000000",
 openRevenue: "64165250000",
-dailyRevenue: "69200000000",
+dailyRevenue: "7594433500",
 recentlyRevenue30min: "1386474965",
 targetPercentage: "74.72"
 },
