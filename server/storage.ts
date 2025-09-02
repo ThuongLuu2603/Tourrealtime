@@ -1065,13 +1065,36 @@ targetPercentage: "74.72"
       targetPercentage: "0.00%",
     },
 
-// Domestic - Geographic Regions (Level 1) - Tổng 30min = 6+4+2 = 12
+// Domestic - Level 1: Tour Nội Địa (Main Category)
+{
+name: "TOUR NỘI ĐỊA",
+code: "tour_noi_dia",
+category: "domestic", 
+level: "tour_category",
+parentCode: null,
+planned: 3226,
+sold: 2968,
+remaining: 258,
+opensell: 3544,
+recentlyBooked: 189,
+recentlyBooked30min: 12,
+completionRate: "92.0%",
+plannedRevenue: "29118500000",
+revenue: "184377374000",
+remainingRevenue: "2445750000",
+openRevenue: "193163050000",
+dailyRevenue: "69153838748",
+recentlyRevenue30min: "518025303",
+targetPercentage: "95.21%"
+},
+
+// Domestic - Geographic Regions (Level 2) - Tổng 30min = 6+4+2 = 12
 {
 name: "Nội Địa",
-code: "noi_dia",
+code: "noi_dia", 
 category: "domestic",
 level: "geo_region",
-parentCode: null,
+parentCode: "tour_noi_dia",
 planned: 3226,
 sold: 2968,
 remaining: 258,
