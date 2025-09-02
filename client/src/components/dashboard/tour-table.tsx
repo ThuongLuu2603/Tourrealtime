@@ -13,10 +13,12 @@ const DEFAULT_COLUMNS: ColumnConfig[] = [
   { id: 'planned', label: 'Kế Hoạch', visible: true, width: '8%' },
   { id: 'sold', label: 'Đã Bán', visible: true, width: '8%' },
   { id: 'remaining', label: 'SL KH Còn Lại', visible: true, width: '10%' },
+  { id: 'opensell', label: 'LK Mở bán', visible: true, width: '9%' },
   { id: 'recentlyBooked', label: 'Số Chỗ Bán Hôm Nay', visible: true, width: '10%' },
   { id: 'completionRate', label: '% LK Hoàn Thành', visible: true, width: '9%' },
   { id: 'dailyRevenue', label: 'Doanh Thư Hôm Nay', visible: true, width: '10%' },
   { id: 'revenue', label: 'Doanh Số', visible: false, width: '10%' }, // Mặc định ẩn
+  { id: 'openRevenue', label: 'DS Mở bán', visible: true, width: '9%' },
   { id: 'plannedRevenue', label: 'Doanh Số Kế Hoạch', visible: false, width: '10%' }, // Mặc định ẩn
   { id: 'targetPercentage', label: '% DS KH', visible: true, width: '8%' },
   { id: 'topSalesUnit', label: 'Đơn Vị Top 1', visible: true, width: '12%' },
@@ -321,6 +323,13 @@ export default function TourTable() {
           </span>
         );
         
+      case 'opensell':
+        return (
+          <span className={`text-center text-sm ${getDataTextColor(rowType, true)} text-orange-600`}>
+            {rowData.data.opensell.toLocaleString()}
+          </span>
+        );
+        
       case 'recentlyBooked':
         if (isSection) {
           return (
@@ -402,6 +411,13 @@ export default function TourTable() {
         return (
           <span className={`text-center text-sm ${getDataTextColor(rowData.type, true)} text-green-600`}>
             {formatCurrency(rowData.data.revenue)}
+          </span>
+        );
+        
+      case 'openRevenue':
+        return (
+          <span className={`text-center text-sm ${getDataTextColor(rowData.type, true)} text-teal-600`}>
+            {formatCurrency(rowData.data.openRevenue)}
           </span>
         );
         
