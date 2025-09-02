@@ -140,7 +140,7 @@ export default function HierarchicalTourTable() {
 
   const formatCurrency = (value: string | number) => {
     const numValue = typeof value === 'string' ? parseFloat(value) : value;
-    return (numValue / 1000000).toFixed(0);
+    return (numValue / 1000000).toLocaleString();
   };
 
   const getCompletionRateColor = (rate: string) => {
