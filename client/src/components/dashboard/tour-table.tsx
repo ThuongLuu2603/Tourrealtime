@@ -158,8 +158,8 @@ export default function TourTable() {
   };
 
   const formatCurrency = (value: string) => {
-    const num = parseFloat(value) / 1000000000;
-    return `${num.toFixed(1)}B`;
+    const num = parseFloat(value) / 1000000;
+    return `${num.toFixed(0)}Tr`;
   };
 
   // Calculate total daily revenue for hierarchical levels
