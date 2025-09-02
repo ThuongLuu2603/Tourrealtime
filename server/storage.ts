@@ -1075,17 +1075,17 @@ parentCode: null,
 planned: 3226,
 sold: 2968,
 remaining: 258,
-opensell: 3544,
-recentlyBooked: 189,
+opensell: 3328,
+recentlyBooked: 374,
 recentlyBooked30min: 12,
 completionRate: "92.0%",
-plannedRevenue: "29118500000",
-revenue: "184377374000",
-remainingRevenue: "2445750000",
-openRevenue: "193163050000",
-dailyRevenue: "69153838748",
-recentlyRevenue30min: "518025303",
-targetPercentage: "95.21%"
+plannedRevenue: "15616000000",
+revenue: "15263000000",
+remainingRevenue: "353000000",
+openRevenue: "14757500000",
+dailyRevenue: "1489038748",
+recentlyRevenue30min: "218796662",
+targetPercentage: "97.74%"
 },
 
 // Domestic - Geographic Regions (Level 2) - Tổng 30min = 6+4+2 = 12
@@ -3335,7 +3335,7 @@ const totalPlanned = mainLevels.reduce((sum, level) => sum + level.planned, 0);
 const totalopensell = mainLevels.reduce((sum, level) => sum + level.opensell, 0);
 const totalRevenue = mainLevels.reduce((sum, level) => sum + parseFloat(level.revenue), 0);
 const totalPlannedRevenue = mainLevels.reduce((sum, level) => sum + parseFloat(level.plannedRevenue), 0);
-const totalDailyBookings = mainLevels.reduce((sum, level) => sum + level.recentlyBooked30min, 0);
+const totalDailyBookings = mainLevels.reduce((sum, level) => sum + level.recentlyBooked, 0);
 // Calculate total daily revenue and open revenue from main levels only
 const totalDailyRevenue = mainLevels.reduce((sum, level) => {
   const dailyRevenue = parseFloat(level.dailyRevenue || "0");
