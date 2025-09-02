@@ -326,7 +326,7 @@ export default function TourTable() {
       case 'opensell':
         return (
           <span className={`text-center text-sm ${getDataTextColor(rowType, true)} text-orange-600`}>
-            {rowData.data.opensell.toLocaleString()}
+            {(rowData.data.opensell || 0).toLocaleString()}
           </span>
         );
         
@@ -417,7 +417,7 @@ export default function TourTable() {
       case 'openRevenue':
         return (
           <span className={`text-center text-sm ${getDataTextColor(rowData.type, true)} text-teal-600`}>
-            {formatCurrency(rowData.data.openRevenue)}
+            {formatCurrency(rowData.data.openRevenue || "0")}
           </span>
         );
         

@@ -1,550 +1,3107 @@
 import { type Tour, type HierarchyLevel, type SalesUnit, type Activity, type RegionalPerformance, type InsertTour, type InsertHierarchyLevel, type InsertSalesUnit, type InsertActivity, type InsertRegionalPerformance, type DashboardMetrics } from "@shared/schema";
 import { randomUUID } from "crypto";
-
 export interface IStorage {
-  // Tours
-  getTours(): Promise<Tour[]>;
-  getToursByCategory(category: string): Promise<Tour[]>;
-  getToursByArea(areaCode: string): Promise<Tour[]>;
-  getToursBySalesUnit(salesUnitCode: string): Promise<Tour[]>;
-  createTour(tour: InsertTour): Promise<Tour>;
-  updateTour(id: string, tour: Partial<Tour>): Promise<Tour | undefined>;
-  
-  // Hierarchy Levels
-  getHierarchyLevels(): Promise<HierarchyLevel[]>;
-  getHierarchyLevelsByCategory(category: string): Promise<HierarchyLevel[]>;
-  getHierarchyLevelsByLevel(level: string): Promise<HierarchyLevel[]>;
-  createHierarchyLevel(level: InsertHierarchyLevel): Promise<HierarchyLevel>;
-  updateHierarchyLevel(id: string, level: Partial<HierarchyLevel>): Promise<HierarchyLevel | undefined>;
-  
-  // Sales Units
-  getSalesUnits(): Promise<SalesUnit[]>;
-  createSalesUnit(unit: InsertSalesUnit): Promise<SalesUnit>;
-  updateSalesUnit(id: string, unit: Partial<SalesUnit>): Promise<SalesUnit | undefined>;
-  
-  // Activities
-  getRecentActivities(limit: number): Promise<Activity[]>;
-  createActivity(activity: InsertActivity): Promise<Activity>;
-  
-  // Regional Performance
-  getRegionalPerformance(): Promise<RegionalPerformance[]>;
-  createRegionalPerformance(performance: InsertRegionalPerformance): Promise<RegionalPerformance>;
-  
-  // Dashboard Metrics
-  getDashboardMetrics(): Promise<DashboardMetrics>;
+// Tours
+getTours(): Promise<Tour[]>;
+getToursByCategory(category: string): Promise<Tour[]>;
+getToursByArea(areaCode: string): Promise<Tour[]>;
+getToursBySalesUnit(salesUnitCode: string): Promise<Tour[]>;
+createTour(tour: InsertTour): Promise<Tour>;
+updateTour(id: string, tour: Partial<Tour>): Promise<Tour | undefined>;
+// Hierarchy Levels
+getHierarchyLevels(): Promise<HierarchyLevel[]>;
+getHierarchyLevelsByCategory(category: string): Promise<HierarchyLevel[]>;
+getHierarchyLevelsByLevel(level: string): Promise<HierarchyLevel[]>;
+createHierarchyLevel(level: InsertHierarchyLevel): Promise<HierarchyLevel>;
+updateHierarchyLevel(id: string, level: Partial<HierarchyLevel>): Promise<HierarchyLevel | undefined>;
+// Sales Units
+getSalesUnits(): Promise<SalesUnit[]>;
+createSalesUnit(unit: InsertSalesUnit): Promise<SalesUnit>;
+updateSalesUnit(id: string, unit: Partial<SalesUnit>): Promise<SalesUnit | undefined>;
+// Activities
+getRecentActivities(limit: number): Promise<Activity[]>;
+createActivity(activity: InsertActivity): Promise<Activity>;
+// Regional Performance
+getRegionalPerformance(): Promise<RegionalPerformance[]>;
+createRegionalPerformance(performance: InsertRegionalPerformance): Promise<RegionalPerformance>;
+// Dashboard Metrics
+getDashboardMetrics(): Promise<DashboardMetrics>;
 }
-
 export class MemStorage implements IStorage {
-  private tours: Map<string, Tour>;
-  private hierarchyLevels: Map<string, HierarchyLevel>;
-  private salesUnits: Map<string, SalesUnit>;
-  private activities: Map<string, Activity>;
-  private regionalPerformance: Map<string, RegionalPerformance>;
-
-  constructor() {
-    this.tours = new Map();
-    this.hierarchyLevels = new Map();
-    this.salesUnits = new Map();
-    this.activities = new Map();
-    this.regionalPerformance = new Map();
-    this.initializeData();
-  }
-
-  private initializeData() {
-    // Initialize Sales Units
-    const salesUnitsData: InsertSalesUnit[] = [
-      { name: "TP. Hồ Chí Minh", code: "HCM", performanceRate: "85.2", status: "good" },
-      { name: "Hà Nội", code: "HN", performanceRate: "78.9", status: "good" },
-      { name: "Cần Thơ", code: "CT", performanceRate: "72.4", status: "moderate" },
-    ];
-
-    salesUnitsData.forEach(unitData => {
-      const unit: SalesUnit = { 
-        id: randomUUID(),
-        name: unitData.name,
-        code: unitData.code,
-        performanceRate: unitData.performanceRate || "0",
-        status: unitData.status || "good"
-      };
-      this.salesUnits.set(unit.id, unit);
-    });
-
-    // Initialize Hierarchy Levels
-    const hierarchyData: InsertHierarchyLevel[] = [
-      // International - Level 1: Tour Quốc tế 
-      {
-        name: "TOUR QUỐC TẾ",
-        code: "tour_quoc_te",
-        category: "international",
-        level: "tour_category",
-        parentCode: null,
-        planned: 4976,
-        sold: 2665,
-        remaining: 2311,
-        opensell: 3278,
-        recentlyBooked: 430,
-        recentlyBooked30min: 143,
-        completionRate: "13.4",
-        plannedRevenue: "60962750000",
-        revenue: "8089550000",
-        openRevenue: "71726000000",
-        targetPercentage: "75"
-      },
-      // International - Level 2: Châu lục - Châu Á
-      {
-        name: "Châu Á",
-        code: "chau_a",
-        category: "international",
-        level: "continent",
-        parentCode: "tour_quoc_te",
-        planned: 4515,
-        sold: 2312,
-        remaining: 2203,
-        opensell: 2786,
-        recentlyBooked: 335,
-        recentlyBooked30min: 84,
-        completionRate: "51.1",
-        plannedRevenue: "40395500000",
-        revenue: "57968250000",
-        openRevenue: "4369800000",
-        targetPercentage: "70"
-      },
-      {
-        name: "Châu Âu",
-        code: "chau_au",
-        category: "international",
-        level: "continent",
-        parentCode: "tour_quoc_te",
-        planned: 246,
-        sold: 222,
-        remaining: 24,
-        opensell: 346,
-        recentlyBooked: 28,
-        recentlyBooked30min: 9,
-        completionRate: "90.3",
-        plannedRevenue: "15235250000",
-        revenue: "13165750000",
-        openRevenue: "2128250000",
-        targetPercentage: "116"
-      },
-      {
-        name: "Châu Đại Dương",
-        code: "chau_dai_duong",
-        category: "international",
-        level: "continent",
-        parentCode: "tour_quoc_te",
-        planned: 117,
-        sold: 96,
-        remaining: 21,
-        opensell: 152,
-        recentlyBooked: 31,
-        recentlyBooked30min: 10,
-        completionRate: "82.1",
-        plannedRevenue: "1716000000",
-        revenue: "2433750000",
-        openRevenue: "328850000",
-        targetPercentage: "149"
-      },
-      {
-        name: "Châu Mỹ",
-        code: "chau_my",
-        category: "international",
-        level: "continent",
-        parentCode: "tour_quoc_te",
-        planned: 98,
-        sold: 35,
-        remaining: 62,
-        opensell: 36,
-        recentlyBooked: 6,
-        recentlyBooked30min: 1,
-        completionRate: "36",
-        plannedRevenue: "521500000",
-        revenue: "121300000",
-        openRevenue: "113600000",
-        targetPercentage: "20"
-      },
-      // Add more detailed regional data with opensell and openRevenue
-      {
-        name: "Đông Bắc Á",
-        code: "dong_bac_a",
-        category: "international",
-        level: "region",
-        parentCode: "chau_a",
-        planned: 2073,
-        sold: 1607,
-        remaining: 465,
-        opensell: 1813,
-        recentlyBooked: 248,
-        recentlyBooked30min: 83,
-        completionRate: "77.6",
-        plannedRevenue: "30738250000",
-        revenue: "34971750000",
-        openRevenue: "3243450000",
-        targetPercentage: "88"
-      },
-      {
-        name: "Đông Nam Á",
-        code: "dong_nam_a",
-        category: "international",
-        level: "region",
-        parentCode: "chau_a",
-        planned: 2401,
-        sold: 672,
-        remaining: 1729,
-        opensell: 935,
-        recentlyBooked: 77,
-        recentlyBooked30min: 26,
-        completionRate: "28.0",
-        plannedRevenue: "8548250000",
-        revenue: "20341250000",
-        openRevenue: "36500000",
-        targetPercentage: "42"
-      }
-    ];
-
-    hierarchyData.forEach(levelData => {
-      const level: HierarchyLevel = { 
-        id: randomUUID(),
-        name: levelData.name,
-        category: levelData.category,
-        code: levelData.code,
-        level: levelData.level,
-        parentCode: levelData.parentCode || null,
-        planned: levelData.planned || 0,
-        sold: levelData.sold || 0,
-        remaining: levelData.remaining || 0,
-        opensell: levelData.opensell || 0,
-        recentlyBooked: levelData.recentlyBooked || 0,
-        recentlyBooked30min: levelData.recentlyBooked30min || 0,
-        completionRate: levelData.completionRate || "0",
-        revenue: levelData.revenue || "0",
-        openRevenue: levelData.openRevenue || "0",
-        plannedRevenue: levelData.plannedRevenue || "0",
-        targetPercentage: levelData.targetPercentage || "0"
-      };
-      this.hierarchyLevels.set(level.id, level);
-    });
-
-    // Initialize sample tours data
-    const toursData: InsertTour[] = [
-      {
-        name: "Du lịch Singapore - Malaysia 4N3Đ",
-        category: "international",
-        continent: "chau_a",
-        area: "dong_nam_a",
-        duration: "4N3D",
-        planned: 150,
-        sold: 120,
-        remaining: 30,
-        opensell: 180,
-        recentlyBooked: 15,
-        recentlyBooked30min: 5,
-        completionRate: "80.0",
-        dailyRevenue: "45000000",
-        revenue: "2400000000",
-        openRevenue: "3600000000",
-        plannedRevenue: "3000000000",
-        targetPercentage: "80.0",
-        topSalesUnit: "HCM"
-      },
-      {
-        name: "Tour Nhật Bản 5N4Đ",
-        category: "international",
-        continent: "chau_a", 
-        area: "dong_bac_a",
-        duration: "5N4D",
-        planned: 200,
-        sold: 180,
-        remaining: 20,
-        opensell: 220,
-        recentlyBooked: 25,
-        recentlyBooked30min: 8,
-        completionRate: "90.0",
-        dailyRevenue: "75000000",
-        revenue: "7200000000",
-        openRevenue: "8800000000",
-        plannedRevenue: "8000000000",
-        targetPercentage: "90.0",
-        topSalesUnit: "HN"
-      }
-    ];
-
-    toursData.forEach(tourData => {
-      const tour: Tour = {
-        id: randomUUID(),
-        name: tourData.name,
-        category: tourData.category,
-        continent: tourData.continent || null,
-        geoRegion: tourData.geoRegion || null,
-        area: tourData.area,
-        duration: tourData.duration,
-        imageUrl: tourData.imageUrl || null,
-        planned: tourData.planned || 0,
-        sold: tourData.sold || 0,
-        remaining: tourData.remaining || 0,
-        opensell: tourData.opensell || 0,
-        recentlyBooked: tourData.recentlyBooked || 0,
-        recentlyBooked30min: tourData.recentlyBooked30min || 0,
-        completionRate: tourData.completionRate || "0",
-        dailyRevenue: tourData.dailyRevenue || "0",
-        revenue: tourData.revenue || "0",
-        openRevenue: tourData.openRevenue || "0",
-        plannedRevenue: tourData.plannedRevenue || "0",
-        targetPercentage: tourData.targetPercentage || "0",
-        topSalesUnit: tourData.topSalesUnit || "HCM",
-        isActive: true,
-        createdAt: new Date(),
-        updatedAt: new Date()
-      };
-      this.tours.set(tour.id, tour);
-    });
-
-    // Initialize Activities
-    const activitiesData: InsertActivity[] = [
-      {
-        type: "booking",
-        message: "Khách hàng vừa đặt tour Singapore - Malaysia",
-        tourId: null,
-        location: "TP. Hồ Chí Minh"
-      },
-      {
-        type: "booking", 
-        message: "Đặt tour Nhật Bản 5N4Đ",
-        tourId: null,
-        location: "Hà Nội"
-      },
-      {
-        type: "price_update",
-        message: "Cập nhật giá tour Châu Âu",
-        tourId: null,
-        location: "Cần Thơ"
-      }
-    ];
-
-    activitiesData.forEach(activityData => {
-      const activity: Activity = {
-        id: randomUUID(),
-        type: activityData.type,
-        message: activityData.message,
-        tourId: activityData.tourId || null,
-        location: activityData.location,
-        timestamp: new Date()
-      };
-      this.activities.set(activity.id, activity);
-    });
-
-    // Initialize Regional Performance
-    const regionalData: InsertRegionalPerformance[] = [
-      { cityName: "TP. Hồ Chí Minh", performanceRate: "85.2", status: "good" },
-      { cityName: "Hà Nội", performanceRate: "78.9", status: "good" },
-      { cityName: "Cần Thơ", performanceRate: "72.4", status: "moderate" },
-      { cityName: "Đà Nẵng", performanceRate: "68.1", status: "moderate" }
-    ];
-
-    regionalData.forEach(regionData => {
-      const region: RegionalPerformance = {
-        id: randomUUID(),
-        cityName: regionData.cityName,
-        performanceRate: regionData.performanceRate,
-        status: regionData.status || "good"
-      };
-      this.regionalPerformance.set(region.id, region);
-    });
-  }
-
-  // Tours methods
-  async getTours(): Promise<Tour[]> {
-    return Array.from(this.tours.values());
-  }
-
-  async getToursByCategory(category: string): Promise<Tour[]> {
-    return Array.from(this.tours.values()).filter(tour => tour.category === category);
-  }
-
-  async getToursByArea(areaCode: string): Promise<Tour[]> {
-    return Array.from(this.tours.values()).filter(tour => tour.area === areaCode);
-  }
-
-  async getToursBySalesUnit(salesUnitCode: string): Promise<Tour[]> {
-    return Array.from(this.tours.values()).filter(tour => tour.topSalesUnit === salesUnitCode);
-  }
-
-  async createTour(tourData: InsertTour): Promise<Tour> {
-    const tour: Tour = {
-      id: randomUUID(),
-      name: tourData.name,
-      category: tourData.category,
-      continent: tourData.continent || null,
-      geoRegion: tourData.geoRegion || null,
-      area: tourData.area,
-      duration: tourData.duration,
-      imageUrl: tourData.imageUrl || null,
-      planned: tourData.planned || 0,
-      sold: tourData.sold || 0,
-      remaining: tourData.remaining || 0,
-      opensell: tourData.opensell || 0,
-      recentlyBooked: tourData.recentlyBooked || 0,
-      recentlyBooked30min: tourData.recentlyBooked30min || 0,
-      completionRate: tourData.completionRate || "0",
-      dailyRevenue: tourData.dailyRevenue || "0",
-      revenue: tourData.revenue || "0",
-      openRevenue: tourData.openRevenue || "0",
-      plannedRevenue: tourData.plannedRevenue || "0",
-      targetPercentage: tourData.targetPercentage || "0",
-      topSalesUnit: tourData.topSalesUnit || "HCM",
-      isActive: tourData.isActive ?? true,
-      createdAt: new Date(),
-      updatedAt: new Date()
-    };
-    this.tours.set(tour.id, tour);
-    return tour;
-  }
-
-  async updateTour(id: string, updateData: Partial<Tour>): Promise<Tour | undefined> {
-    const tour = this.tours.get(id);
-    if (!tour) return undefined;
-    
-    const updatedTour = { ...tour, ...updateData, updatedAt: new Date() };
-    this.tours.set(id, updatedTour);
-    return updatedTour;
-  }
-
-  // Hierarchy Levels methods
-  async getHierarchyLevels(): Promise<HierarchyLevel[]> {
-    return Array.from(this.hierarchyLevels.values());
-  }
-
-  async getHierarchyLevelsByCategory(category: string): Promise<HierarchyLevel[]> {
-    return Array.from(this.hierarchyLevels.values()).filter(level => level.category === category);
-  }
-
-  async getHierarchyLevelsByLevel(level: string): Promise<HierarchyLevel[]> {
-    return Array.from(this.hierarchyLevels.values()).filter(l => l.level === level);
-  }
-
-  async createHierarchyLevel(levelData: InsertHierarchyLevel): Promise<HierarchyLevel> {
-    const level: HierarchyLevel = {
-      id: randomUUID(),
-      name: levelData.name,
-      code: levelData.code,
-      category: levelData.category,
-      level: levelData.level,
-      parentCode: levelData.parentCode || null,
-      planned: levelData.planned || 0,
-      sold: levelData.sold || 0,
-      remaining: levelData.remaining || 0,
-      opensell: levelData.opensell || 0,
-      recentlyBooked: levelData.recentlyBooked || 0,
-      recentlyBooked30min: levelData.recentlyBooked30min || 0,
-      completionRate: levelData.completionRate || "0",
-      revenue: levelData.revenue || "0",
-      openRevenue: levelData.openRevenue || "0",
-      plannedRevenue: levelData.plannedRevenue || "0",
-      targetPercentage: levelData.targetPercentage || "0"
-    };
-    this.hierarchyLevels.set(level.id, level);
-    return level;
-  }
-
-  async updateHierarchyLevel(id: string, updateData: Partial<HierarchyLevel>): Promise<HierarchyLevel | undefined> {
-    const level = this.hierarchyLevels.get(id);
-    if (!level) return undefined;
-    
-    const updatedLevel = { ...level, ...updateData };
-    this.hierarchyLevels.set(id, updatedLevel);
-    return updatedLevel;
-  }
-
-  // Sales Units methods
-  async getSalesUnits(): Promise<SalesUnit[]> {
-    return Array.from(this.salesUnits.values());
-  }
-
-  async createSalesUnit(unitData: InsertSalesUnit): Promise<SalesUnit> {
-    const unit: SalesUnit = {
-      id: randomUUID(),
-      name: unitData.name,
-      code: unitData.code,
-      performanceRate: unitData.performanceRate || "0",
-      status: unitData.status || "good"
-    };
-    this.salesUnits.set(unit.id, unit);
-    return unit;
-  }
-
-  async updateSalesUnit(id: string, updateData: Partial<SalesUnit>): Promise<SalesUnit | undefined> {
-    const unit = this.salesUnits.get(id);
-    if (!unit) return undefined;
-    
-    const updatedUnit = { ...unit, ...updateData };
-    this.salesUnits.set(id, updatedUnit);
-    return updatedUnit;
-  }
-
-  // Activities methods
-  async getRecentActivities(limit: number): Promise<Activity[]> {
-    return Array.from(this.activities.values())
-      .sort((a, b) => b.timestamp!.getTime() - a.timestamp!.getTime())
-      .slice(0, limit);
-  }
-
-  async createActivity(activityData: InsertActivity): Promise<Activity> {
-    const activity: Activity = {
-      id: randomUUID(),
-      type: activityData.type,
-      message: activityData.message,
-      tourId: activityData.tourId || null,
-      location: activityData.location,
-      timestamp: new Date()
-    };
-    this.activities.set(activity.id, activity);
-    return activity;
-  }
-
-  // Regional Performance methods
-  async getRegionalPerformance(): Promise<RegionalPerformance[]> {
-    return Array.from(this.regionalPerformance.values());
-  }
-
-  async createRegionalPerformance(performanceData: InsertRegionalPerformance): Promise<RegionalPerformance> {
-    const performance: RegionalPerformance = {
-      id: randomUUID(),
-      cityName: performanceData.cityName,
-      performanceRate: performanceData.performanceRate,
-      status: performanceData.status || "good"
-    };
-    this.regionalPerformance.set(performance.id, performance);
-    return performance;
-  }
-
-  // Dashboard Metrics method
-  async getDashboardMetrics(): Promise<DashboardMetrics> {
-    const tours = Array.from(this.tours.values());
-    const hierarchyLevels = Array.from(this.hierarchyLevels.values());
-
-    const totalActiveTours = tours.filter(tour => tour.isActive).length;
-    const dailyBookings = tours.reduce((sum, tour) => sum + tour.recentlyBooked30min, 0);
-    const toursSold = tours.reduce((sum, tour) => sum + tour.sold, 0);
-    const plannedTotal = tours.reduce((sum, tour) => sum + tour.planned, 0);
-    const revenueTotal = tours.reduce((sum, tour) => sum + Number(tour.revenue), 0);
-    const plannedRevenueTotal = tours.reduce((sum, tour) => sum + Number(tour.plannedRevenue), 0);
-
-    return {
-      totalActiveTours: hierarchyLevels.length + tours.length,
-      totalActiveToursChange: 5.2,
-      dailyBookings,
-      dailyBookingsChange: 12.5,
-      dailyRevenue: "120000000", 
-      dailyRevenueChange: 8.3,
-      toursSold,
-      toursSoldChange: -3.2,
-      toursSoldPlanPercentage: plannedTotal > 0 ? Math.round((toursSold / plannedTotal) * 100) : 0,
-      revenue: revenueTotal.toString(),
-      revenueChange: 15.7,
-      revenuePlanPercentage: plannedRevenueTotal > 0 ? Math.round((revenueTotal / plannedRevenueTotal) * 100) : 0,
-      completionRate: plannedTotal > 0 ? Math.round((toursSold / plannedTotal) * 100) : 0
-    };
-  }
+private tours: Map<string, Tour>;
+private hierarchyLevels: Map<string, HierarchyLevel>;
+private salesUnits: Map<string, SalesUnit>;
+private activities: Map<string, Activity>;
+private regionalPerformance: Map<string, RegionalPerformance>;
+constructor() {
+this.tours = new Map();
+this.hierarchyLevels = new Map();
+this.salesUnits = new Map();
+this.activities = new Map();
+this.regionalPerformance = new Map();
+this.initializeData();
 }
+private initializeData() {
+// Initialize Sales Units
+const salesUnitsData: InsertSalesUnit[] = [
+{ name: "TP. Hồ Chí Minh", code: "HCM", performanceRate: "85.2", status: "good" },
+{ name: "Hà Nội", code: "HN", performanceRate: "78.9", status: "good" },
+{ name: "Cần Thơ", code: "CT", performanceRate: "72.4", status: "moderate" },
+];
+salesUnitsData.forEach(unitData => {
+const unit: SalesUnit = {
+id: randomUUID(),
+name: unitData.name,
+code: unitData.code,
+performanceRate: unitData.performanceRate || "0",
+status: unitData.status || "good"
+};
+this.salesUnits.set(unit.id, unit);
+});
+// Initialize Hierarchy Levels
+const hierarchyData: InsertHierarchyLevel[] = [
+// International - Level 1: Tour Quốc tế
+{
+name: "TOUR QUỐC TẾ",
+code: "tour_quoc_te",
+category: "international",
+level: "tour_category",
+parentCode: null,
+planned: 4976,
+sold: 2665,
+remaining: 2311,
+opensell: 3278,
+recentlyBooked: 430,
+recentlyBooked30min: 143,
+completionRate: "13.4%",
+plannedRevenue: "60962750000",
+revenue: "8089550000",
+remainingRevenue: "19932750000",
+opensellRevenue: "71726000000",
+recentlyRevenue: "11033931000",
+recentlyRevenue30min: "3677977000",
+targetPercentage: "75%"
+},
+// International - Level 2: Châu lục - Châu Á 30min = 8+10+2 = 20, Châu Âu = 1
+{
+name: "Châu Á",
+code: "chau_a",
+category: "international",
+level: "continent",
+parentCode: "tour_quoc_te",
+planned: 4515,
+sold: 2312,
+remaining: 2203,
+opensell: 2786,
+recentlyBooked: 335,
+recentlyBooked30min: 84,
+completionRate: "51.1",
+plannedRevenue: "40395500000",
+revenue: "57968250000",
+remainingRevenue: "17572750000",
+opensellRevenue: "4369800000",
+recentlyRevenue: "5997338500",
+recentlyRevenue30min: "1499334625",
+targetPercentage: "70"
+},
+{
+name: "Châu Âu",
+code: "chau_au",
+category: "international",
+level: "continent",
+parentCode: "tour_quoc_te",
+planned: 246,
+sold: 222,
+remaining: 24,
+opensell: 346,
+recentlyBooked: 28,
+recentlyBooked30min: 9,
+completionRate: "90.3",
+plannedRevenue: "15235250000",
+revenue: "13165750000",
+remainingRevenue: "-2087500000",
+opensellRevenue: "2128250000",
+recentlyRevenue: "172945500",
+recentlyRevenue30min: "576485000",
+targetPercentage: "116"
+},
+{
+name: "Châu Đại Dương",
+code: "chau_dai_duong",
+category: "international",
+level: "continent",
+parentCode: "tour_quoc_te",
+planned: 82,
+sold: 88,
+remaining: -7,
+opensell: 93,
+recentlyBooked: 3,
+recentlyBooked30min: 0,
+completionRate: "108",
+plannedRevenue: "3616000000",
+revenue: "2433750000",
+remainingRevenue: "-1182250000",
+opensellRevenue: "328850000",
+recentlyRevenue: "2100000",
+recentlyRevenue30min: "3000000",
+targetPercentage: "149"
+},
+{
+name: "Châu Mỹ",
+code: "chau_my",
+category: "international",
+level: "continent",
+parentCode: "tour_quoc_te",
+planned: 98,
+sold: 35,
+remaining: 62,
+opensell: 36,
+recentlyBooked: 6,
+recentlyBooked30min: 1,
+completionRate: "36",
+plannedRevenue: "521500000",
+revenue: "121300000",
+remainingRevenue: "474050000",
+opensellRevenue: "113600000",
+recentlyRevenue: "17598000",
+recentlyRevenue30min: "1798000",
+targetPercentage: "20"
+},
 
+// International - Level 3: Khu vực - 30min: Đông Bắc Á = 2+2+2+2 = 8, Đông Nam Á = 2+2+2+2+2 = 10, Nam Á = 2
+{
+name: "Đông Bắc Á",
+code: "dong_bac_a",
+category: "international",
+level: "region",
+parentCode: "chau_a",
+planned: 2073,
+sold: 1607,
+remaining: 465,
+opensell: 1813,
+recentlyBooked: 248,
+recentlyBooked30min: 83,
+completionRate: "77.6",
+plannedRevenue: "30738250000",
+revenue: "34971750000",
+remainingRevenue: "423950000",
+opensellRevenue: "3243450000",
+recentlyRevenue: "482308500",
+recentlyRevenue30min: "160743867",
+targetPercentage: "88"
+},
+{
+name: "Đông Nam Á",
+code: "dong_nam_a",
+category: "international",
+level: "region",
+parentCode: "chau_a",
+planned: 2401,
+sold: 672,
+remaining: 1729,
+opensell: 935,
+recentlyBooked: 77,
+recentlyBooked30min: 26,
+completionRate: "28.0",
+plannedRevenue: "8548250000",
+revenue: "20341250000",
+remainingRevenue: "1179300000",
+opensellRevenue: "36500000",
+recentlyRevenue: "86213000",
+recentlyRevenue30min: "28737666.7",
+targetPercentage: "42"
+},
+{
+name: "Tây Á, Trung Đông, S.N.G",
+code: "tay_a_trung_dong",
+category: "international",
+level: "region",
+parentCode: "chau_a",
+planned: 25,
+sold: 20,
+remaining: 6,
+opensell: 24,
+recentlyBooked: 8,
+recentlyBooked30min: 1,
+completionRate: "78",
+plannedRevenue: "569000000",
+revenue: "973000000",
+remainingRevenue: "404000000",
+opensellRevenue: "735500000",
+recentlyRevenue: "270920000",
+recentlyRevenue30min: "45153333",
+targetPercentage: "58"
+},
+{
+name: "Nam Á",
+code: "nam_a",
+category: "international",
+level: "region",
+parentCode: "chau_a",
+planned: 25,
+sold: 20,
+remaining: 6,
+opensell: 24,
+recentlyBooked: 8,
+recentlyBooked30min: 1,
+completionRate: "78.0",
+plannedRevenue: "56800000",
+revenue: "97300000",
+remainingRevenue: "4000000",
+opensellRevenue: "73500000",
+recentlyRevenue: "27092000",
+recentlyRevenue30min: "4515333.33",
+targetPercentage: "32"
+},
+{
+name: "Tây Âu",
+code: "tay_au",
+category: "international",
+level: "region",
+parentCode: "chau_au",
+planned: 0,
+sold: 158,
+remaining: -158,
+opensell: 233,
+recentlyBooked: 8,
+recentlyBooked30min: 3,
+completionRate: "-",
+plannedRevenue: "1089500000",
+revenue: "0",
+remainingRevenue: "-1089500000",
+opensellRevenue: "1310725000",
+recentlyRevenue: "52945000",
+recentlyRevenue30min: "17648333.3",
+targetPercentage: "-"
+},
+{
+name: "Liên Bang Nga",
+code: "lien_bang_nga",
+category: "international",
+level: "region",
+parentCode: "chau_au",
+planned: 0,
+sold: 29,
+remaining: -29,
+opensell: 7,
+recentlyBooked: 2,
+recentlyBooked30min: 2,
+completionRate: "-",
+plannedRevenue: "17250000",
+revenue: "0",
+remainingRevenue: "-17250000",
+opensellRevenue: "24725000",
+recentlyRevenue: "43597000",
+recentlyRevenue30min: "10899250",
+targetPercentage: "-"
+},
+{
+name: "Đông Âu",
+code: "dong_au",
+category: "international",
+level: "region",
+parentCode: "chau_au",
+planned: 0,
+sold: 13,
+remaining: -13,
+opensell: 25,
+recentlyBooked: 3,
+recentlyBooked30min: 0,
+completionRate: "-",
+plannedRevenue: "8230000",
+revenue: "0",
+remainingRevenue: "-8230000",
+opensellRevenue: "18030000",
+recentlyRevenue: "2300000",
+recentlyRevenue30min: "2877500",
+targetPercentage: "-"
+},
+{
+name: "Nam Âu",
+code: "nam_au",
+category: "international",
+level: "region",
+parentCode: "chau_au",
+planned: 0,
+sold: 7,
+remaining: -7,
+opensell: 16,
+recentlyBooked: 0,
+recentlyBooked30min: 2,
+completionRate: "-",
+plannedRevenue: "71080000",
+revenue: "0",
+remainingRevenue: "-71080000",
+opensellRevenue: "16375000",
+recentlyRevenue: "10919000",
+recentlyRevenue30min: "0",
+targetPercentage: "-"
+},
+{
+name: "Bắc Âu",
+code: "bac_au",
+category: "international",
+level: "region",
+parentCode: "chau_au",
+planned: 0,
+sold: 6,
+remaining: -6,
+opensell: 9,
+recentlyBooked: 0,
+recentlyBooked30min: 0,
+completionRate: "-",
+plannedRevenue: "47825000",
+revenue: "0",
+remainingRevenue: "-47825000",
+opensellRevenue: "8735000",
+recentlyRevenue: "16198000",
+recentlyRevenue30min: "1799777.78",
+targetPercentage: "-"
+},
+  {
+    name: "Liên Hiệp Anh",
+    code: "lien_hiep_anh",
+    category: "international",
+    level: "region",
+    parentCode: "chau_au",
+  planned: 246,
+  sold: 1,
+  remaining: 245,
+  opensell: 1,
+  recentlyBooked: 2,
+  recentlyBooked30min: 0,
+  completionRate: "0.0%",
+  plannedRevenue: "1150000",
+  revenue: "0",
+  remainingRevenue: -1150000,
+  opensellRevenue: "1150000",
+  recentlyRevenue: "17380000",
+  recentlyRevenue30min: "2172500",
+  targetPercentage: "0%"
+  },
+
+
+  {
+    name: "Úc",
+    code: "nuoc_uc",
+    category: "international",
+    level: "region",
+    parentCode: "chau_dai_duong",
+  planned: 82,
+  sold: 88,
+  remaining: -7,
+  opensell: 93,
+  recentlyBooked: 3,
+  recentlyBooked30min: 0,
+  completionRate: "108",
+  plannedRevenue: "3616000000",
+  revenue: "2433750000",
+  remainingRevenue: "-1182250000",
+  opensellRevenue: "328850000",
+  recentlyRevenue: "2100000",
+  recentlyRevenue30min: "3000000",
+  targetPercentage: "149"
+  },
+
+
+
+{
+  name: "Bắc Mỹ",
+  code: "bac_my",
+  category: "international",
+  level: "region",
+  parentCode: "chau_my",
+  planned: 98,
+  sold: 35,
+  remaining: 62,
+  opensell: 36,
+  recentlyBooked: 6,
+  recentlyBooked30min: 1,
+  completionRate: "36",
+  plannedRevenue: "521500000",
+  revenue: "121300000",
+  remainingRevenue: "474050000",
+  opensellRevenue: "113600000",
+  recentlyRevenue: "17598000",
+  recentlyRevenue30min: "1798000",
+  targetPercentage: "20"
+  },
+
+// International - Level 4: Tuyến Tour cụ thể (quốc gia)
+// Đông Bắc Á (8.753) = Trung Quốc (3.200) + Nhật Bản (2.156) + Hàn Quốc (2.800) + Mongolia (597)
+{
+name: "Trung Quốc",
+code: "trung_quoc",
+category: "international",
+level: "area",
+parentCode: "dong_bac_a",
+planned: 849,
+sold: 762,
+remaining: 87,
+opensell: 851,
+recentlyBooked: 130,
+recentlyBooked30min: 22,
+completionRate: "89.7",
+plannedRevenue: "1418450000",
+revenue: "1405175000",
+remainingRevenue: -9275000,
+opensellRevenue: "1485750000",
+recentlyRevenue: "26134000",
+recentlyRevenue30min: "4360566.67",
+targetPercentage: "101"
+},
+{
+name: "Nhật Bản",
+code: "nhat_ban",
+category: "international",
+level: "area",
+parentCode: "dong_bac_a",
+planned: 306,
+sold: 223,
+remaining: 83,
+opensell: 248,
+recentlyBooked: 26,
+recentlyBooked30min: 1,
+completionRate: "72.9",
+plannedRevenue: "6612750000",
+revenue: "725900000",
+remainingRevenue: -5886750000,
+opensellRevenue: "6765250000",
+recentlyRevenue: "4630000",
+recentlyRevenue30min: "926000",
+targetPercentage: "91"
+},
+{
+name: "Đài Loan",
+code: "dai_loan",
+category: "international",
+level: "area",
+parentCode: "dong_bac_a",
+planned: 402,
+sold: 372,
+remaining: 30,
+opensell: 415,
+recentlyBooked: 29,
+recentlyBooked30min: 9,
+completionRate: "92.5",
+plannedRevenue: "602800000",
+revenue: "56325000",
+remainingRevenue: -546550000,
+opensellRevenue: "62015000",
+recentlyRevenue: "171047500",
+recentlyRevenue30min: "1900516.67",
+targetPercentage: "106"
+},
+{
+name: "Hongkong",
+code: "hongkong",
+category: "international",
+level: "area",
+parentCode: "dong_bac_a",
+planned: 72,
+sold: 88,
+remaining: -16,
+opensell: 99,
+recentlyBooked: 5,
+recentlyBooked30min: 1,
+completionRate: "122.3",
+plannedRevenue: "1652050000",
+revenue: "946500000",
+remainingRevenue: -705550000,
+opensellRevenue: "172700000",
+recentlyRevenue: "8590000",
+recentlyRevenue30min: "1431666.67",
+targetPercentage: "174"
+},
+{
+name: "Singapore - Malaysia",
+code: "singapore_malaysia",
+category: "international",
+level: "area",
+parentCode: "dong_nam_a",
+planned: 427,
+sold: 292,
+remaining: 135,
+opensell: 320,
+recentlyBooked: 20,
+recentlyBooked30min: 4,
+completionRate: "68.3",
+plannedRevenue: "42775000",
+revenue: "51605000",
+remainingRevenue: "8830000",
+opensellRevenue: "42075000",
+recentlyRevenue: "3016000",
+recentlyRevenue30min: "549350",
+targetPercentage: "42"
+},
+{
+name: "Thái Lan",
+code: "thai_lan",
+category: "international",
+level: "area",
+parentCode: "dong_nam_a",
+planned: 1663,
+sold: 225,
+remaining: 1438,
+opensell: 417,
+recentlyBooked: 37,
+recentlyBooked30min: 5,
+completionRate: "13.5",
+plannedRevenue: "19440000",
+revenue: "1243025000",
+remainingRevenue: -1046750000,
+opensellRevenue: "29680000",
+recentlyRevenue: "27738000",
+recentlyRevenue30min: "3472750",
+targetPercentage: "16"
+},
+{
+name: "Singapore",
+code: "singapore",
+category: "international",
+level: "area",
+parentCode: "dong_nam_a",
+planned: 89,
+sold: 70,
+remaining: 19,
+opensell: 39,
+recentlyBooked: 3,
+recentlyBooked30min: 3,
+completionRate: "78.4",
+plannedRevenue: "11080000",
+revenue: "105275000",
+remainingRevenue: -94200000,
+opensellRevenue: "12875000",
+recentlyRevenue: "13141000",
+recentlyRevenue30min: "4380333.33",
+targetPercentage: "105"
+},
+{
+name: "Indonesia",
+code: "indonesia",
+category: "international",
+level: "area",
+parentCode: "dong_nam_a",
+planned: 45,
+sold: 62,
+remaining: -17,
+opensell: 69,
+recentlyBooked: 4,
+recentlyBooked30min: 1,
+completionRate: "137.6",
+plannedRevenue: "90575000",
+revenue: "55625000",
+remainingRevenue: -34950000,
+opensellRevenue: "9625000",
+recentlyRevenue: "5816000",
+recentlyRevenue30min: "1454000",
+targetPercentage: "163"
+},
+{
+name: "Lao",
+code: "lao",
+category: "international",
+level: "area",
+parentCode: "dong_nam_a",
+planned: 33,
+sold: 16,
+remaining: 17,
+opensell: 31,
+recentlyBooked: 4,
+recentlyBooked30min: 1,
+completionRate: "47.4",
+plannedRevenue: "21250000",
+revenue: "37300000",
+remainingRevenue: "15750000",
+opensellRevenue: "34250000",
+recentlyRevenue: "5160000",
+recentlyRevenue30min: "8526666.67",
+targetPercentage: "58"
+},
+{
+name: "Campuchia",
+code: "campuchia",
+category: "international",
+level: "area",
+parentCode: "dong_nam_a",
+planned: 133,
+sold: 3,
+remaining: 130,
+opensell: 12,
+recentlyBooked: 0,
+recentlyBooked30min: 0,
+completionRate: "2.1",
+plannedRevenue: "1800000",
+revenue: "67075000",
+remainingRevenue: -65275000,
+opensellRevenue: "1375000",
+recentlyRevenue: "0",
+recentlyRevenue30min: "0",
+targetPercentage: "3"
+},
+{
+name: "Philippines",
+code: "philippines",
+category: "international",
+level: "area",
+parentCode: "dong_nam_a",
+planned: 6,
+sold: 0,
+remaining: 6,
+opensell: 0,
+recentlyBooked: 0,
+recentlyBooked30min: 0,
+completionRate: "0.0%",
+plannedRevenue: "0",
+revenue: "6000000",
+remainingRevenue: -6000000,
+opensellRevenue: "0",
+recentlyRevenue: "0",
+recentlyRevenue30min: "0",
+targetPercentage: "0%"
+},
+
+  {
+  name: "UAE (Dubai - Abu Dhabi)",
+  code: "uae_dubai_abu_dhabi",
+  category: "international",
+  level: "area",
+  parentCode: "tay_a_trung_dong",
+  planned: 25,
+  sold: 20,
+  remaining: 6,
+  opensell: 24,
+  recentlyBooked: 8,
+  recentlyBooked30min: 1,
+  completionRate: "78",
+  plannedRevenue: "569000000",
+  revenue: "973000000",
+  remainingRevenue: "404000000",
+  opensellRevenue: "735500000",
+  recentlyRevenue: "270920000",
+  recentlyRevenue30min: "45153333",
+  targetPercentage: "58"
+  },
+
+
+
+
+  {
+    name: "Ấn Độ",
+    code: "an_do",
+    category: "international",
+    level: "area",
+    parentCode: "nam_a",
+  planned: 25,
+  sold: 20,
+  remaining: 6,
+  opensell: 24,
+  recentlyBooked: 8,
+  recentlyBooked30min: 1,
+  completionRate: "78.0",
+  plannedRevenue: "56800000",
+  revenue: "97300000",
+  remainingRevenue: "4000000",
+  opensellRevenue: "73500000",
+  recentlyRevenue: "27092000",
+  recentlyRevenue30min: "4515333.33",
+  targetPercentage: "32"
+  },
+{
+name: "Liên Tuyến Tây Âu",
+code: "lien_tuyen_tay_au",
+category: "international",
+level: "area",
+parentCode: "tay_au",
+planned: 0,
+sold: 68,
+remaining: -68,
+opensell: 70,
+recentlyBooked: 4,
+recentlyBooked30min: 1,
+completionRate: "-",
+plannedRevenue: "526925000",
+revenue: "0",
+remainingRevenue: -526925000,
+opensellRevenue: "408500000",
+recentlyRevenue: "26396000",
+recentlyRevenue30min: "37708571",
+targetPercentage: "0"
+},
+{
+name: "Pháp",
+code: "phap",
+category: "international",
+level: "area",
+parentCode: "tay_au",
+planned: 0,
+sold: 52,
+remaining: -52,
+opensell: 110,
+recentlyBooked: 1,
+recentlyBooked30min: 0,
+completionRate: "-",
+plannedRevenue: "255325000",
+revenue: "0",
+remainingRevenue: -255325000,
+opensellRevenue: "555550000",
+recentlyRevenue: "328500",
+recentlyRevenue30min: "328500",
+targetPercentage: "0"
+},
+{
+name: "Pháp - Thụy Sĩ - Ý",
+code: "phap_thuy_si_y",
+category: "international",
+level: "area",
+parentCode: "tay_au",
+planned: 0,
+sold: 4,
+remaining: -4,
+opensell: 15,
+recentlyBooked: 1,
+recentlyBooked30min: 0,
+completionRate: "-",
+plannedRevenue: "42125000",
+revenue: "0",
+remainingRevenue: -42125000,
+opensellRevenue: "12075000",
+recentlyRevenue: "799000",
+recentlyRevenue30min: "1997500",
+targetPercentage: "0"
+},
+{
+name: "Nga",
+code: "nga",
+category: "international",
+level: "area",
+parentCode: "lien_bang_nga",
+planned: 0,
+sold: 29,
+remaining: -29,
+opensell: 44,
+recentlyBooked: 7,
+recentlyBooked30min: 2,
+completionRate: "-",
+plannedRevenue: "172600000",
+revenue: "0",
+remainingRevenue: -172600000,
+opensellRevenue: "248725000",
+recentlyRevenue: "43597000",
+recentlyRevenue30min: "14532333.3",
+targetPercentage: "0"
+},
+{
+name: "Liên Tuyến Đông Âu",
+code: "lien_tuyen_dong_au",
+category: "international",
+level: "area",
+parentCode: "dong_au",
+planned: 0,
+sold: 13,
+remaining: -13,
+opensell: 25,
+recentlyBooked: 3,
+recentlyBooked30min: 0,
+completionRate: "-",
+plannedRevenue: "8230000",
+revenue: "0",
+remainingRevenue: -8230000,
+opensellRevenue: "18030000",
+recentlyRevenue: "2300000",
+recentlyRevenue30min: "2877500",
+targetPercentage: "0"
+},
+
+
+
+
+  {
+    name: "Liên Tuyến Nam Âu",
+    code: "lien_tuyen_nam_au",
+    category: "international",
+    level: "area",
+    parentCode: "nam_au",
+  planned: 0,
+  sold: 7,
+  remaining: -7,
+  opensell: 16,
+  recentlyBooked: 0,
+  recentlyBooked30min: 2,
+  completionRate: "-",
+  plannedRevenue: "71080000",
+  revenue: "0",
+  remainingRevenue: "-71080000",
+  opensellRevenue: "16375000",
+  recentlyRevenue: "10919000",
+  recentlyRevenue30min: "0",
+  targetPercentage: "-"
+  },
+{
+name: "Thổ Nhĩ Kỳ",
+code: "tho_nhi_ki",
+category: "international",
+level: "area",
+parentCode: "chau_au",
+planned: 0,
+sold: 3,
+remaining: -3,
+opensell: 9,
+recentlyBooked: 3,
+recentlyBooked30min: 1,
+completionRate: "-",
+plannedRevenue: "13100000",
+revenue: "0",
+remainingRevenue: -13100000,
+opensellRevenue: "52625000",
+recentlyRevenue: "14997000",
+recentlyRevenue30min: "2499500",
+targetPercentage: "0"
+},
+{
+name: "Liên Tuyến Bắc Âu",
+code: "lien_tuyen_bac_au",
+category: "international",
+level: "area",
+parentCode: "bac_au",
+planned: 0,
+sold: 5,
+remaining: -5,
+opensell: 5,
+recentlyBooked: 2,
+recentlyBooked30min: 0,
+completionRate: "-",
+plannedRevenue: "47825000",
+revenue: "0",
+remainingRevenue: -47825000,
+opensellRevenue: "43000000",
+recentlyRevenue: "16198000",
+recentlyRevenue30min: "2314000",
+targetPercentage: "0"
+},
+{
+name: "Anh",
+code: "anh",
+category: "international",
+level: "area",
+parentCode: "lien_hiep_anh",
+planned: 246,
+sold: 1,
+remaining: 245,
+opensell: 1,
+recentlyBooked: 2,
+recentlyBooked30min: 0,
+completionRate: "0.0%",
+plannedRevenue: "1150000",
+revenue: "0",
+remainingRevenue: -1150000,
+opensellRevenue: "1150000",
+recentlyRevenue: "17380000",
+recentlyRevenue30min: "2172500",
+targetPercentage: "0%"
+},
+{
+name: "Úc",
+code: "nuoc_uc",
+category: "international",
+level: "area",
+parentCode: "chau_dai_duong",
+planned: 0,
+sold: 88,
+remaining: -88,
+opensell: 93,
+recentlyBooked: 3,
+recentlyBooked30min: 0,
+completionRate: "-",
+plannedRevenue: "3616000000",
+revenue: "0",
+remainingRevenue: -3616000000,
+opensellRevenue: "0",
+recentlyRevenue: "2100000",
+recentlyRevenue30min: "3000000",
+targetPercentage: "0%"
+},
+
+  {
+    name: "Mỹ",
+    code: "my",
+    category: "international",
+    level: "region",
+    parentCode: "bac_my",
+    planned: 98,
+    sold: 35,
+    remaining: 62,
+    opensell: 36,
+    recentlyBooked: 6,
+    recentlyBooked30min: 1,
+    completionRate: "36",
+    plannedRevenue: "521500000",
+    revenue: "121300000",
+    remainingRevenue: "474050000",
+    opensellRevenue: "113600000",
+    recentlyRevenue: "17598000",
+    recentlyRevenue30min: "1798000",
+    targetPercentage: "20"
+    },
+
+// Domestic - Geographic Regions (Level 1) - Tổng 30min = 6+4+2 = 12
+{
+name: "Nội Địa",
+code: "noi_dia",
+category: "domestic",
+level: "geo_region",
+parentCode: null,
+planned: 3281,
+sold: 3022,
+remaining: 259,
+opensell: 3418,
+recentlyBooked: 403,
+recentlyBooked30min: 67,
+completionRate: "92.1",
+plannedRevenue: "1555750000",
+revenue: "16036250000",
+remainingRevenue: "480500000",
+opensellRevenue: "1515700000",
+recentlyRevenue: "1778951308",
+recentlyRevenue30min: "296491884.7",
+targetPercentage: "97"
+},
+
+// Domestic - Regional Areas (Level 2) - 30min: Miền Bắc = 2+2+2 = 6, Miền Trung = 2+2 = 4, Miền Nam = 1+1 = 2
+{
+name: "MIỀN TRUNG - TÂY NGUYÊN",
+code: "mien_trung",
+category: "domestic",
+level: "region",
+parentCode: "noi_dia",
+planned: 1335,
+sold: 1520,
+remaining: -185,
+opensell: 1764,
+recentlyBooked: 295,
+recentlyBooked30min: 59,
+completionRate: "113.9",
+plannedRevenue: "774475000",
+revenue: "705500000",
+remainingRevenue: "-68975000",
+opensellRevenue: "764300000",
+recentlyRevenue: "1124870468",
+recentlyRevenue30min: "224974093",
+targetPercentage: "110"
+},
+{
+name: "MIỀN BẮC",
+code: "mien_bac",
+category: "domestic",
+level: "region",
+parentCode: "noi_dia",
+planned: 1313,
+sold: 613,
+remaining: 699,
+opensell: 655,
+recentlyBooked: 32,
+recentlyBooked30min: 5,
+completionRate: "46.7%",
+plannedRevenue: "438550000",
+revenue: "590400000",
+remainingRevenue: "151850000",
+opensellRevenue: "420400000",
+recentlyRevenue: "30923840",
+recentlyRevenue30min: "5139806.67",
+targetPercentage: "74%"
+},
+{
+name: "MIỀN NAM",
+code: "mien_nam",
+category: "domestic",
+level: "region",
+parentCode: "noi_dia",
+planned: 578,
+sold: 850,
+remaining: -272,
+opensell: 934,
+recentlyBooked: 59,
+recentlyBooked30min: 6,
+completionRate: "147.0%",
+plannedRevenue: "322800000",
+revenue: "266300000",
+remainingRevenue: "-56500000",
+opensellRevenue: "301750000",
+recentlyRevenue: "219409440",
+recentlyRevenue30min: "21940944",
+targetPercentage: "121%"
+},
+
+
+// Domestic - Specific Areas (Level 3) - Đã tính toán chính xác
+// Miền Bắc: 8.000 (kế hoạch) = 3.752 + 2.500 + 1.748, 6.200 (đã bán) = 2.845 + 1.890 + 1.465 = 6.200
+{
+name: "Bắc Trung Bộ",
+code: "bac_trung_bo",
+category: "domestic",
+level: "area",
+parentCode: "mien_trung",
+planned: 555,
+sold: 585,
+remaining: -30,
+opensell: 628,
+recentlyBooked: 50,
+recentlyBooked30min: 6,
+completionRate: "105.3",
+plannedRevenue: "3906500000",
+revenue: "3643750000",
+remainingRevenue: "-262750000",
+opensellRevenue: "3636000000",
+recentlyRevenue: "19082500",
+recentlyRevenue30min: "22005833.3",
+targetPercentage: "107"
+},
+{
+name: "Nam Trung Bộ",
+code: "nam_trung_bo",
+category: "domestic",
+level: "area",
+parentCode: "mien_trung",
+planned: 435,
+sold: 534,
+remaining: -100,
+opensell: 695,
+recentlyBooked: 11,
+recentlyBooked30min: 1,
+completionRate: "123.0",
+plannedRevenue: "2330500000",
+revenue: "1786500000",
+remainingRevenue: "-544000000",
+opensellRevenue: "2486250000",
+recentlyRevenue: "4100000",
+recentlyRevenue30min: "4100000",
+targetPercentage: "130"
+},
+{
+name: "Tây Nguyên",
+code: "tay_nguyen",
+category: "domestic",
+level: "area",
+parentCode: "mien_trung",
+planned: 196,
+sold: 215,
+remaining: -19,
+opensell: 220,
+recentlyBooked: 207,
+recentlyBooked30min: 35,
+completionRate: "109.4",
+plannedRevenue: "957750000",
+revenue: "867250000",
+remainingRevenue: "-90500000",
+opensellRevenue: "970250000",
+recentlyRevenue: "764947968",
+recentlyRevenue30min: "127491328",
+targetPercentage: "110"
+},
+{
+name: "Liên Tỉnh Miền Trung",
+code: "lien_tinh_mien_trung",
+category: "domestic",
+level: "area",
+parentCode: "mien_trung",
+planned: 149,
+sold: 6,
+remaining: 143,
+opensell: 16,
+recentlyBooked: 27,
+recentlyBooked30min: 5,
+completionRate: "3.9",
+plannedRevenue: "50750000",
+revenue: "7580000",
+remainingRevenue: "43170000",
+opensellRevenue: "49775000",
+recentlyRevenue: "12087000",
+recentlyRevenue30min: "2014500",
+targetPercentage: "7"
+},
+{
+name: "Đồng Bằng Sông Hồng & Duyên Hải",
+code: "dbsh_dh",
+category: "domestic",
+level: "area",
+parentCode: "mien_bac",
+planned: 14,
+sold: 477,
+remaining: -464,
+opensell: 506,
+recentlyBooked: 21,
+recentlyBooked30min: 5,
+completionRate: "3470.9",
+plannedRevenue: "3374500000",
+revenue: "38250000",
+remainingRevenue: "-3336250000",
+opensellRevenue: "3271750000",
+recentlyRevenue: "174348840",
+recentlyRevenue30min: "43587210",
+targetPercentage: "8822"
+},
+{
+name: "Tây Bắc",
+code: "tay_bac",
+category: "domestic",
+level: "area",
+parentCode: "mien_bac",
+planned: 13,
+sold: 89,
+remaining: -77,
+opensell: 94,
+recentlyBooked: 1,
+recentlyBooked30min: 0,
+completionRate: "700",
+plannedRevenue: "553250000",
+revenue: "65250000",
+remainingRevenue: "-488000000",
+opensellRevenue: "501750000",
+recentlyRevenue: "13090000",
+recentlyRevenue30min: "1454444",
+targetPercentage: "848"
+},
+{
+name: "Đông Bắc",
+code: "dong_bac",
+category: "domestic",
+level: "area",
+parentCode: "mien_bac",
+planned: 15,
+sold: 89,
+remaining: -74,
+opensell: 94,
+recentlyBooked: 1,
+recentlyBooked30min: 0,
+completionRate: "700.0",
+plannedRevenue: "553250000",
+revenue: "65250000",
+remainingRevenue: "-488000000",
+opensellRevenue: "50175000",
+recentlyRevenue: "1309000",
+recentlyRevenue30min: "154444.444",
+targetPercentage: "849"
+},
+{
+name: "Liên Tỉnh Miền Bắc",
+code: "lien_tinh_mien_bac",
+category: "domestic",
+level: "area",
+parentCode: "mien_bac",
+planned: 1271,
+sold: 0,
+remaining: 1271,
+opensell: 10,
+recentlyBooked: 1,
+recentlyBooked30min: 0,
+completionRate: "0",
+plannedRevenue: "2500000",
+revenue: "5751250000",
+remainingRevenue: "-5751250000",
+opensellRevenue: "11750000",
+recentlyRevenue: "48980000",
+recentlyRevenue30min: "6985714.29",
+targetPercentage: "0"
+},
+{
+name: "Tây Nam Bộ",
+code: "tay_nam_bo",
+category: "domestic",
+level: "area",
+parentCode: "mien_nam",
+planned: 451,
+sold: 685,
+remaining: -234,
+opensell: 751,
+recentlyBooked: 24,
+recentlyBooked30min: 3,
+completionRate: "151.7",
+plannedRevenue: "2755250000",
+revenue: "23800000",
+remainingRevenue: "-2731450000",
+opensellRevenue: "2567250000",
+recentlyRevenue: "55823440",
+recentlyRevenue30min: "6202604.444",
+targetPercentage: "117"
+},
+{
+name: "Đồng Nam Bộ",
+code: "dong_nam_bo",
+category: "domestic",
+level: "area",
+parentCode: "mien_nam",
+planned: 125,
+sold: 165,
+remaining: -40,
+opensell: 183,
+recentlyBooked: 24,
+recentlyBooked30min: 4,
+completionRate: "132.0",
+plannedRevenue: "47300000",
+revenue: "22875000",
+remainingRevenue: "-24425000",
+opensellRevenue: "45025000",
+recentlyRevenue: "4809600",
+recentlyRevenue30min: "801600",
+targetPercentage: "158"
+},
+
+];
+hierarchyData.forEach(levelData => {
+const level: HierarchyLevel = {
+id: randomUUID(),
+name: levelData.name,
+category: levelData.category,
+code: levelData.code,
+level: levelData.level,
+parentCode: levelData.parentCode || null,
+planned: levelData.planned || 0,
+sold: levelData.sold || 0,
+remaining: levelData.remaining || 0,
+recentlyBooked: levelData.recentlyBooked || 0,
+recentlyBooked30min: levelData.recentlyBooked30min || 0,
+completionRate: levelData.completionRate || "0",
+revenue: levelData.revenue || "0",
+plannedRevenue: levelData.plannedRevenue || "0",
+targetPercentage: levelData.targetPercentage || "0"
+};
+this.hierarchyLevels.set(level.id, level);
+});
+// Initialize tours with new structure
+const toursData: InsertTour[] = [
+// Domestic Tours - Individual Tours (Level 4)
+{
+name: "Đà Nẵng - Huế - Quảng Bình",
+category: "domestic",
+continent: null,
+geoRegion: "noi_dia",
+area: "bac_trung_bo",
+imageUrl: "https://images.unsplash.com/photo-1528127269322-539801943592?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=300",
+planned: 140,
+sold: 0,
+remaining: -140,
+recentlyBooked: 137,
+recentlyBooked30min: 2,
+completionRate: "0",
+dailyRevenue: "10660000000",
+revenue: "12605000000",
+plannedRevenue: "12605000000",
+openRevenue: "-12605000000",
+recentlyRevenue: "165800000",
+recentlyRevenue30min: "3316000",
+targetPercentage: "0",
+topSalesUnit: "HN"
+},
+{
+name: "Đà Nẵng",
+category: "domestic",
+continent: null,
+geoRegion: "noi_dia",
+area: "bac_trung_bo",
+imageUrl: "https://images.unsplash.com/photo-1528127269322-539801943592?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=300",
+planned: 212,
+sold: 0,
+remaining: -212,
+recentlyBooked: 229,
+recentlyBooked30min: 35,
+completionRate: "0",
+dailyRevenue: "11675000000",
+revenue: "12187500000",
+plannedRevenue: "12187500000",
+openRevenue: "-12187500000",
+recentlyRevenue: "85392500",
+recentlyRevenue30min: "14232083",
+targetPercentage: "0",
+topSalesUnit: "HN"
+},
+{
+name: "Đà Nẵng - Huế - Quảng Bình",
+category: "domestic",
+continent: null,
+geoRegion: "noi_dia",
+area: "bac_trung_bo",
+imageUrl: "https://images.unsplash.com/photo-1528127269322-539801943592?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=300",
+planned: 129,
+sold: 0,
+remaining: -129,
+recentlyBooked: 129,
+recentlyBooked30min: 13,
+completionRate: "0",
+dailyRevenue: "9525000000",
+revenue: "11102500000",
+plannedRevenue: "11102500000",
+openRevenue: "-11102500000",
+recentlyRevenue: "96080000",
+recentlyRevenue30min: "3202667",
+targetPercentage: "0",
+topSalesUnit: "HN"
+},
+{
+name: "Đà Nẵng - Huế",
+category: "domestic",
+continent: null,
+geoRegion: "noi_dia",
+area: "bac_trung_bo",
+imageUrl: "https://images.unsplash.com/photo-1528127269322-539801943592?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=300",
+planned: 23,
+sold: 0,
+remaining: -23,
+recentlyBooked: 23,
+recentlyBooked30min: 0,
+completionRate: "0",
+dailyRevenue: "1242500000",
+revenue: "1240000000",
+plannedRevenue: "1240000000",
+openRevenue: "-1240000000",
+recentlyRevenue: "0",
+recentlyRevenue30min: "0",
+targetPercentage: "0",
+topSalesUnit: "HN"
+},
+{
+name: "Quảng Bình",
+category: "domestic",
+continent: null,
+geoRegion: "noi_dia",
+area: "bac_trung_bo",
+imageUrl: "https://images.unsplash.com/photo-1528127269322-539801943592?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=300",
+planned: 17,
+sold: 0,
+remaining: -17,
+recentlyBooked: 17,
+recentlyBooked30min: 0,
+completionRate: "0",
+dailyRevenue: "1037500000",
+revenue: "1010000000",
+plannedRevenue: "1010000000",
+openRevenue: "-1010000000",
+recentlyRevenue: "0",
+recentlyRevenue30min: "0",
+targetPercentage: "0",
+topSalesUnit: "HN"
+},
+{
+name: "Quảng Nam",
+category: "domestic",
+continent: null,
+geoRegion: "noi_dia",
+area: "bac_trung_bo",
+imageUrl: "https://images.unsplash.com/photo-1528127269322-539801943592?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=300",
+planned: 22,
+sold: 0,
+remaining: -22,
+recentlyBooked: 24,
+recentlyBooked30min: 0,
+completionRate: "0",
+dailyRevenue: "505000000",
+revenue: "417500000",
+plannedRevenue: "417500000",
+openRevenue: "-417500000",
+recentlyRevenue: "0",
+recentlyRevenue30min: "0",
+targetPercentage: "0",
+topSalesUnit: "HN"
+},
+{
+name: "Huế",
+category: "domestic",
+continent: null,
+geoRegion: "noi_dia",
+area: "bac_trung_bo",
+imageUrl: "https://images.unsplash.com/photo-1528127269322-539801943592?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=300",
+planned: 37,
+sold: 0,
+remaining: -37,
+recentlyBooked: 38,
+recentlyBooked30min: 0,
+completionRate: "0",
+dailyRevenue: "432500000",
+revenue: "395000000",
+plannedRevenue: "395000000",
+openRevenue: "-395000000",
+recentlyRevenue: "0",
+recentlyRevenue30min: "0",
+targetPercentage: "0",
+topSalesUnit: "HN"
+},
+{
+name: "Thanh Hóa",
+category: "domestic",
+continent: null,
+geoRegion: "noi_dia",
+area: "bac_trung_bo",
+imageUrl: "https://images.unsplash.com/photo-1528127269322-539801943592?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=300",
+planned: 2,
+sold: 0,
+remaining: -2,
+recentlyBooked: 2,
+recentlyBooked30min: 0,
+completionRate: "0",
+dailyRevenue: "52500000",
+revenue: "45000000",
+plannedRevenue: "45000000",
+openRevenue: "-45000000",
+recentlyRevenue: "0",
+recentlyRevenue30min: "0",
+targetPercentage: "0",
+topSalesUnit: "HN"
+},
+{
+name: "Nghệ An",
+category: "domestic",
+continent: null,
+geoRegion: "noi_dia",
+area: "bac_trung_bo",
+imageUrl: "https://images.unsplash.com/photo-1528127269322-539801943592?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=300",
+planned: 1,
+sold: 1,
+remaining: -1,
+recentlyBooked: 26,
+recentlyBooked30min: 0,
+completionRate: "0",
+dailyRevenue: "119750000",
+revenue: "32500000",
+plannedRevenue: "32500000",
+openRevenue: "-32500000",
+recentlyRevenue: "0",
+recentlyRevenue30min: "0",
+targetPercentage: "0",
+topSalesUnit: "HN"
+},
+{
+name: "Quảng Ngãi",
+category: "domestic",
+continent: null,
+geoRegion: "noi_dia",
+area: "bac_trung_bo",
+imageUrl: "https://images.unsplash.com/photo-1528127269322-539801943592?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=300",
+planned: 2,
+sold: 0,
+remaining: -2,
+recentlyBooked: 2,
+recentlyBooked30min: 0,
+completionRate: "0",
+dailyRevenue: "27500000",
+revenue: "22500000",
+plannedRevenue: "22500000",
+openRevenue: "-22500000",
+recentlyRevenue: "0",
+recentlyRevenue30min: "0",
+targetPercentage: "0",
+topSalesUnit: "HN"
+},
+{
+name: "Hà Tĩnh",
+category: "domestic",
+continent: null,
+geoRegion: "noi_dia",
+area: "bac_trung_bo",
+imageUrl: "https://images.unsplash.com/photo-1528127269322-539801943592?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=300",
+planned: 1,
+sold: 0,
+remaining: -1,
+recentlyBooked: 1,
+recentlyBooked30min: 0,
+completionRate: "0",
+dailyRevenue: "7500000",
+revenue: "7500000",
+plannedRevenue: "7500000",
+openRevenue: "-7500000",
+recentlyRevenue: "0",
+recentlyRevenue30min: "0",
+targetPercentage: "0",
+topSalesUnit: "HN"
+},
+{
+name: "MIỀN TRUNG - TÂY NGUYÊN - KHÁC",
+category: "domestic",
+continent: null,
+geoRegion: "noi_dia",
+area: "bac_trung_bo",
+imageUrl: "https://images.unsplash.com/photo-1528127269322-539801943592?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=300",
+planned: 555,
+sold: 0,
+remaining: 555,
+recentlyBooked: 0,
+recentlyBooked30min: 0,
+completionRate: "0.0",
+dailyRevenue: "0",
+revenue: "36437500000",
+plannedRevenue: "36437500000",
+openRevenue: "36437500000",
+recentlyRevenue: "0",
+recentlyRevenue30min: "0",
+targetPercentage: "0",
+topSalesUnit: "HN"
+},
+{
+name: "Nghệ An - Hà Tĩnh",
+category: "domestic",
+continent: null,
+geoRegion: "noi_dia",
+area: "bac_trung_bo",
+imageUrl: "https://images.unsplash.com/photo-1528127269322-539801943592?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=300",
+planned: 0,
+sold: 0,
+remaining: 0,
+recentlyBooked: 0,
+recentlyBooked30min: 0,
+completionRate: "0",
+dailyRevenue: "0",
+revenue: "0",
+plannedRevenue: "0",
+openRevenue: "0",
+recentlyRevenue: "0",
+recentlyRevenue30min: "0",
+targetPercentage: "0",
+topSalesUnit: "HN"
+},
+{
+name: "Khánh Hòa",
+category: "domestic",
+continent: null,
+geoRegion: "noi_dia",
+area: "nam_trung_bo",
+imageUrl: "https://images.unsplash.com/photo-1528127269322-539801943592?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=300",
+planned: 179,
+sold: 216,
+remaining: -37,
+recentlyBooked: 349,
+recentlyBooked30min: 1,
+completionRate: "120.5",
+dailyRevenue: "9067500000",
+revenue: "8575000000",
+plannedRevenue: "6705000000",
+openRevenue: "-1870000000",
+recentlyRevenue: "5600000",
+recentlyRevenue30min: "9333333",
+targetPercentage: "128",
+topSalesUnit: "HN"
+},
+{
+name: "Bình Định",
+category: "domestic",
+continent: null,
+geoRegion: "noi_dia",
+area: "nam_trung_bo",
+imageUrl: "https://images.unsplash.com/photo-1528127269322-539801943592?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=300",
+planned: 98,
+sold: 112,
+remaining: -15,
+recentlyBooked: 127,
+recentlyBooked30min: 1,
+completionRate: "114.8",
+dailyRevenue: "8160000000",
+revenue: "7865000000",
+plannedRevenue: "5655000000",
+openRevenue: "-2200000000",
+recentlyRevenue: "1360000",
+recentlyRevenue30min: "456000",
+targetPercentage: "141",
+topSalesUnit: "HN"
+},
+{
+name: "Bình Thuận",
+category: "domestic",
+continent: null,
+geoRegion: "noi_dia",
+area: "nam_trung_bo",
+imageUrl: "https://images.unsplash.com/photo-1528127269322-539801943592?ixlib=rb-4.0.3&auto=format&fit=300",
+planned: 95,
+sold: 96,
+remaining: -1,
+recentlyBooked: 100,
+recentlyBooked30min: 0,
+completionRate: "100.5",
+dailyRevenue: "3082500000",
+revenue: "2685000000",
+plannedRevenue: "3085000000",
+openRevenue: "370000000",
+recentlyRevenue: "7380000",
+recentlyRevenue30min: "1024286",
+targetPercentage: "88",
+topSalesUnit: "HN"
+},
+{
+name: "Ninh Thuận",
+category: "domestic",
+continent: null,
+geoRegion: "noi_dia",
+area: "nam_trung_bo",
+imageUrl: "https://images.unsplash.com/photo-1528127269322-539801943592?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=300",
+planned: 40,
+sold: 70,
+remaining: -30,
+recentlyBooked: 75,
+recentlyBooked30min: 4,
+completionRate: "174.4",
+dailyRevenue: "1977500000",
+revenue: "1697500000",
+plannedRevenue: "1015000000",
+openRevenue: "-682500000",
+recentlyRevenue: "1360000",
+recentlyRevenue30min: "136000",
+targetPercentage: "167",
+topSalesUnit: "HN"
+},
+{
+name: "Bình Định - Phú Yên",
+category: "domestic",
+continent: null,
+geoRegion: "noi_dia",
+area: "nam_trung_bo",
+imageUrl: "https://images.unsplash.com/photo-1528127269322-539801943592?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=300",
+planned: 0,
+sold: 19,
+remaining: -19,
+recentlyBooked: 20,
+recentlyBooked30min: 0,
+completionRate: "0",
+dailyRevenue: "1610000000",
+revenue: "1502500000",
+plannedRevenue: "0",
+openRevenue: "-1502500000",
+recentlyRevenue: "0",
+recentlyRevenue30min: "0",
+targetPercentage: "0",
+topSalesUnit: "HN"
+},
+{
+name: "Khánh Hòa - Phú Yên",
+category: "domestic",
+continent: null,
+geoRegion: "noi_dia",
+area: "mien_trung",
+imageUrl: "https://images.unsplash.com/photo-1528127269322-539801943592?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=300",
+planned: 0,
+sold: 19,
+remaining: -19,
+recentlyBooked: 19,
+recentlyBooked30min: 0,
+completionRate: "0",
+dailyRevenue: "897500000",
+revenue: "902500000",
+plannedRevenue: "0",
+openRevenue: "-902500000",
+recentlyRevenue: "0",
+recentlyRevenue30min: "0",
+targetPercentage: "0",
+topSalesUnit: "HN"
+},
+{
+name: "Phú Yên",
+category: "domestic",
+continent: null,
+geoRegion: "noi_dia",
+area: "nam_trung_bo",
+imageUrl: "https://images.unsplash.com/photo-1528127269322-539801943592?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=300",
+planned: 0,
+sold: 3,
+remaining: -3,
+recentlyBooked: 6,
+recentlyBooked30min: 1,
+completionRate: "0",
+dailyRevenue: "12500000",
+revenue: "7500000",
+plannedRevenue: "0",
+openRevenue: "-7500000",
+recentlyRevenue: "1250000",
+recentlyRevenue30min: "3245000",
+targetPercentage: "0",
+topSalesUnit: "HN"
+},
+{
+name: "MIỀN TRUNG - TÂY NGUYÊN - KHÁC",
+category: "domestic",
+continent: null,
+geoRegion: "noi_dia",
+area: "nam_trung_bo",
+imageUrl: "https://images.unsplash.com/photo-1528127269322-539801943592?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=300",
+planned: 22,
+sold: 0,
+remaining: 22,
+recentlyBooked: 0,
+recentlyBooked30min: 0,
+completionRate: "0.0",
+dailyRevenue: "0",
+revenue: "1525000000",
+plannedRevenue: "1525000000",
+openRevenue: "1525000000",
+recentlyRevenue: "0",
+recentlyRevenue30min: "0",
+targetPercentage: "0",
+topSalesUnit: "HN"
+},
+{
+name: "Lâm Đồng",
+category: "domestic",
+continent: null,
+geoRegion: "noi_dia",
+area: "tay_nguyen",
+imageUrl: "https://images.unsplash.com/photo-1528127269322-539801943592?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=300",
+planned: 104,
+sold: 165,
+remaining: -61,
+recentlyBooked: 169,
+recentlyBooked30min: 21,
+completionRate: "158.8",
+dailyRevenue: "7935000000",
+revenue: "7185000000",
+plannedRevenue: "3895000000",
+openRevenue: "-3290000000",
+recentlyRevenue: "76494797",
+recentlyRevenue30min: "76494797",
+targetPercentage: "184",
+topSalesUnit: "HN"
+},
+{
+name: "Kon Tum",
+category: "domestic",
+continent: null,
+geoRegion: "noi_dia",
+area: "tay_nguyen",
+imageUrl: "https://images.unsplash.com/photo-1528127269322-539801943592?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=300",
+planned: 0,
+sold: 43,
+remaining: -43,
+recentlyBooked: 44,
+recentlyBooked30min: 0,
+completionRate: "0",
+dailyRevenue: "2167500000",
+revenue: "2280000000",
+plannedRevenue: "0",
+openRevenue: "-2280000000",
+recentlyRevenue: "0",
+recentlyRevenue30min: "0",
+targetPercentage: "0",
+topSalesUnit: "HN"
+},
+{
+name: "Gia Lai",
+category: "domestic",
+continent: null,
+geoRegion: "noi_dia",
+area: "tay_nguyen",
+imageUrl: "https://images.unsplash.com/photo-1528127269322-539801943592?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=300",
+planned: 0,
+sold: 2,
+remaining: -2,
+recentlyBooked: 2,
+recentlyBooked30min: 0,
+completionRate: "0",
+dailyRevenue: "4000000",
+revenue: "4000000",
+plannedRevenue: "0",
+openRevenue: "-4000000",
+recentlyRevenue: "0",
+recentlyRevenue30min: "0",
+targetPercentage: "1",
+topSalesUnit: "HN"
+},
+{
+name: "Lâm Đồng Đà Lạt",
+category: "domestic",
+continent: null,
+geoRegion: "noi_dia",
+area: "tay_nguyen",
+imageUrl: "https://images.unsplash.com/photo-1528127269322-539801943592?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=300",
+planned: 49,
+sold: 2,
+remaining: 48,
+recentlyBooked: 2,
+recentlyBooked30min: 0,
+completionRate: "3.1",
+dailyRevenue: "2500000",
+revenue: "2250000",
+plannedRevenue: "2542500000",
+openRevenue: "2520000000",
+recentlyRevenue: "0",
+recentlyRevenue30min: "0",
+targetPercentage: "1",
+topSalesUnit: "HN"
+},  
+{
+name: "MIEN TRUNG - TÂY NGUYEN - Khác",
+category: "domestic",
+continent: null,
+geoRegion: "noi_dia",
+area: "tay_nguyen",
+imageUrl: "https://images.unsplash.com/photo-1528127269322-539801943592?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=300",
+planned: 44,
+sold: 0,
+remaining: 44,
+recentlyBooked: 0,
+recentlyBooked30min: 0,
+completionRate: "0",
+dailyRevenue: "0",
+revenue: "0",
+plannedRevenue: "2235000000",
+openRevenue: "2235000000",
+recentlyRevenue: "0",
+recentlyRevenue30min: "0",
+targetPercentage: "0",
+topSalesUnit: "HN"
+},
+{
+name: "Liên tuyến Miền Trung - Tây Nguyên",
+category: "domestic",
+continent: null,
+geoRegion: "noi_dia",
+area: "lien_tinh_mien_trung",
+imageUrl: "https://images.unsplash.com/photo-1528127269322-539801943592?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=300",
+planned: 0,
+sold: 181,
+remaining: -181,
+recentlyBooked: 216,
+recentlyBooked30min: 27,
+completionRate: "0",
+dailyRevenue: "4977500000",
+revenue: "4991250000",
+plannedRevenue: "0",
+openRevenue: "-4991250000",
+recentlyRevenue: "12087000",
+recentlyRevenue30min: "40290000",
+targetPercentage: "0",
+topSalesUnit: "HN"
+},
+{
+name: "Liên tuyến Bắc Trung Bộ - Nam Trung Bộ",
+category: "domestic",
+continent: null,
+geoRegion: "noi_dia",
+area: "lien_tinh_mien_trung",
+imageUrl: "https://images.unsplash.com/photo-1528127269322-539801943592?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=300",
+planned: 0,
+sold: 6,
+remaining: -6,
+recentlyBooked: 6,
+recentlyBooked30min: 0,
+completionRate: "0",
+dailyRevenue: "53000000",
+revenue: "50750000",
+plannedRevenue: "0",
+openRevenue: "-50750000",
+recentlyRevenue: "0",
+recentlyRevenue30min: "0",
+targetPercentage: "0",
+topSalesUnit: "HN"
+},
+{
+name: "Quảng Ninh - Ninh Bình",
+category: "domestic",
+continent: null,
+geoRegion: "noi_dia",
+area: "dbsh_dh",
+imageUrl: "https://images.unsplash.com/photo-1528127269322-539801943592?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=300",
+planned: 0,
+sold: 121,
+remaining: -121,
+recentlyBooked: 124,
+recentlyBooked30min: 7,
+completionRate: "0",
+dailyRevenue: "1378500000",
+revenue: "1400750000",
+plannedRevenue: "0",
+openRevenue: "-1400750000",
+recentlyRevenue: "81238840",
+recentlyRevenue30min: "11605549",
+targetPercentage: "0",
+topSalesUnit: "HN"
+},
+{
+name: "Hà Nội - Quảng Ninh - Ninh Bình",
+category: "domestic",
+continent: null,
+geoRegion: "noi_dia",
+area: "dbsh_dh",
+imageUrl: "https://images.unsplash.com/photo-1528127269322-539801943592?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=300",
+planned: 0,
+sold: 126,
+remaining: -126,
+recentlyBooked: 128,
+recentlyBooked30min: 9,
+completionRate: "0",
+dailyRevenue: "983750000",
+revenue: "1144250000",
+plannedRevenue: "0",
+openRevenue: "-1144250000",
+recentlyRevenue: "80310000",
+recentlyRevenue30min: "10038750",
+targetPercentage: "0",
+topSalesUnit: "HN"
+},
+{
+name: "Hà Nội",
+category: "domestic",
+continent: null,
+geoRegion: "noi_dia",
+area: "dbsh_dh",
+imageUrl: "https://images.unsplash.com/photo-1528127269322-539801943592?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=300",
+planned: 0,
+sold: 162,
+remaining: -162,
+recentlyBooked: 169,
+recentlyBooked30min: 4,
+completionRate: "0",
+dailyRevenue: "462750000",
+revenue: "558750000",
+plannedRevenue: "0",
+openRevenue: "-558750000",
+recentlyRevenue: "1110000",
+recentlyRevenue30min: "0",
+targetPercentage: "0",
+topSalesUnit: "HN"
+},
+
+{
+name: "Quảng Ninh",
+category: "domestic",
+continent: null,
+geoRegion: "noi_dia",
+area: "dbsh_dh",
+imageUrl: "https://images.unsplash.com/photo-1528127269322-539801943592?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=300",
+planned: 0,
+sold: 43,
+remaining: -43,
+recentlyBooked: 55,
+recentlyBooked30min: 1,
+completionRate: "0",
+dailyRevenue: "221125000",
+revenue: "157750000",
+plannedRevenue: "0",
+openRevenue: "-157750000",
+recentlyRevenue: "170000",
+recentlyRevenue30min: "170000",
+targetPercentage: "0",
+topSalesUnit: "HN"
+},
+{
+name: "Hải Phòng",
+category: "domestic",
+continent: null,
+geoRegion: "noi_dia",
+area: "dbsh_dh",
+imageUrl: "https://images.unsplash.com/photo-1528127269322-539801943592?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=300",
+planned: 0,
+sold: 17,
+remaining: -17,
+recentlyBooked: 17,
+recentlyBooked30min: 0,
+completionRate: "0",
+dailyRevenue: "39000000",
+revenue: "36750000",
+plannedRevenue: "0",
+openRevenue: "-36750000",
+recentlyRevenue: "0",
+recentlyRevenue30min: "0",
+targetPercentage: "0",
+topSalesUnit: "HN"
+},
+{
+name: "Hà Nội - Quảng Ninh",
+category: "domestic",
+continent: null,
+geoRegion: "noi_dia",
+area: "dbsh_dh",
+imageUrl: "https://images.unsplash.com/photo-1528127269322-539801943592?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=300",
+planned: 0,
+sold: 3,
+remaining: -3,
+recentlyBooked: 3,
+recentlyBooked30min: 0,
+completionRate: "0",
+dailyRevenue: "29000000",
+revenue: "28500000",
+plannedRevenue: "0",
+openRevenue: "-28500000",
+recentlyRevenue: "0",
+recentlyRevenue30min: "0",
+targetPercentage: "0",
+topSalesUnit: "HN"
+},
+{
+name: "Hà Nội - Lào Cai - Quảng Ninh",
+category: "domestic",
+continent: null,
+geoRegion: "noi_dia",
+area: "dbsh_dh",
+imageUrl: "https://images.unsplash.com/photo-1528127269322-539801943592?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=300",
+planned: 0,
+sold: 3,
+remaining: -3,
+recentlyBooked: 3,
+recentlyBooked30min: 0,
+completionRate: "0",
+dailyRevenue: "34000000",
+revenue: "28250000",
+plannedRevenue: "0",
+openRevenue: "-28250000",
+recentlyRevenue: "0",
+recentlyRevenue30min: "0",
+targetPercentage: "0",
+topSalesUnit: "HN"
+},
+{
+name: "Ninh Bình",
+category: "domestic",
+continent: null,
+geoRegion: "noi_dia",
+area: "dbsh_dh",
+imageUrl: "https://images.unsplash.com/photo-1528127269322-539801943592?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=300",
+planned: 0,
+sold: 3,
+remaining: -3,
+recentlyBooked: 9,
+recentlyBooked30min: 0,
+completionRate: "0",
+dailyRevenue: "123250000",
+revenue: "19250000",
+plannedRevenue: "0",
+openRevenue: "-19250000",
+recentlyRevenue: "0",
+recentlyRevenue30min: "0",
+targetPercentage: "0",
+topSalesUnit: "HN"
+},
+{
+name: "MIỀN BẮC - Khác",
+category: "domestic",
+continent: null,
+geoRegion: "noi_dia",
+area: "dbsh_dh",
+imageUrl: "https://images.unsplash.com/photo-1528127269322-539801943592?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=300",
+planned: 14,
+sold: 0,
+remaining: 14,
+recentlyBooked: 0,
+recentlyBooked30min: 0,
+completionRate: "0.0",
+dailyRevenue: "0",
+revenue: "0",
+plannedRevenue: "38250000",
+openRevenue: "38250000",
+recentlyRevenue: "0",
+recentlyRevenue30min: "0",
+targetPercentage: "0",
+topSalesUnit: "HN"
+},
+{
+name: "Lào Cai",
+category: "domestic",
+continent: null,
+geoRegion: "noi_dia",
+area: "tay_bac",
+imageUrl: "https://images.unsplash.com/photo-1528127269322-539801943592?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=300",
+planned: 0,
+sold: 66,
+remaining: -66,
+recentlyBooked: 69,
+recentlyBooked30min: 0,
+completionRate: "0",
+dailyRevenue: "303000000",
+revenue: "307250000",
+plannedRevenue: "0",
+openRevenue: "-307250000",
+recentlyRevenue: "0",
+recentlyRevenue30min: "0",
+targetPercentage: "0",
+topSalesUnit: "HN"
+},
+{
+name: "Yên Bái - Lào Cai - Lai Châu - Điện Biên - Sơn La",
+category: "domestic",
+continent: null,
+geoRegion: "noi_dia",
+area: "tay_bac",
+imageUrl: "https://images.unsplash.com/photo-1528127269322-539801943592?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=300",
+planned: 0,
+sold: 17,
+remaining: -17,
+recentlyBooked: 17,
+recentlyBooked30min: 1,
+completionRate: "0",
+dailyRevenue: "14350000",
+revenue: "19350000",
+plannedRevenue: "0",
+openRevenue: "-19350000",
+recentlyRevenue: "1308000",
+recentlyRevenue30min: "2618000",
+targetPercentage: "0",
+topSalesUnit: "HN"
+},
+{
+name: "Hà Nội - Lào Cai",
+category: "domestic",
+continent: null,
+geoRegion: "noi_dia",
+area: "tay_bac",
+imageUrl: "https://images.unsplash.com/photo-1528127269322-539801943592?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=300",
+planned: 0,
+sold: 6,
+remaining: -6,
+recentlyBooked: 6,
+recentlyBooked30min: 0,
+completionRate: "0",
+dailyRevenue: "50750000",
+revenue: "49500000",
+plannedRevenue: "0",
+openRevenue: "-49500000",
+recentlyRevenue: "0",
+recentlyRevenue30min: "0",
+targetPercentage: "0",
+topSalesUnit: "HN"
+},
+{
+name: "Điện Biên",
+category: "domestic",
+continent: null,
+geoRegion: "noi_dia",
+area: "tay_bac",
+imageUrl: "https://images.unsplash.com/photo-1528127269322-539801943592?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=300",
+planned: 0,
+sold: 1,
+remaining: -1,
+recentlyBooked: 2,
+recentlyBooked30min: 0,
+completionRate: "0",
+dailyRevenue: "4500000",
+revenue: "3250000",
+plannedRevenue: "0",
+openRevenue: "-3250000",
+recentlyRevenue: "0",
+recentlyRevenue30min: "0",
+targetPercentage: "0",
+topSalesUnit: "HN"
+},
+{
+name: "MIỀN BẮC - Khác",
+category: "domestic",
+continent: null,
+geoRegion: "noi_dia",
+area: "tay_bac",
+imageUrl: "https://images.unsplash.com/photo-1528127269322-539801943592?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=300",
+planned: 13,
+sold: 0,
+remaining: 13,
+recentlyBooked: 0,
+recentlyBooked30min: 0,
+completionRate: "0.0",
+dailyRevenue: "0",
+revenue: "0",
+plannedRevenue: "65250000",
+openRevenue: "65250000",
+recentlyRevenue: "0",
+recentlyRevenue30min: "0",
+targetPercentage: "0",
+topSalesUnit: "HN"
+},
+{
+name: "Hà Giang - Cao Bằng - Bắc Cạn",
+category: "domestic",
+continent: null,
+geoRegion: "noi_dia",
+area: "dong_bac",
+imageUrl: "https://images.unsplash.com/photo-1528127269322-539801943592?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=300",
+planned: 0,
+sold: 31,
+remaining: -31,
+recentlyBooked: 31,
+recentlyBooked30min: 0,
+completionRate: "0",
+dailyRevenue: "30625000",
+revenue: "35250000",
+plannedRevenue: "0",
+openRevenue: "-35250000",
+recentlyRevenue: "0",
+recentlyRevenue30min: "0",
+targetPercentage: "0",
+topSalesUnit: "HN"
+},
+{
+name: "Tuyên Quang",
+category: "domestic",
+continent: null,
+geoRegion: "noi_dia",
+area: "dong_bac",
+imageUrl: "https://images.unsplash.com/photo-1528127269322-539801943592?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=300",
+planned: 0,
+sold: 8,
+remaining: -8,
+recentlyBooked: 8,
+recentlyBooked30min: 0,
+completionRate: "0",
+dailyRevenue: "7550000",
+revenue: "5900000",
+plannedRevenue: "0",
+openRevenue: "-5900000",
+recentlyRevenue: "0",
+recentlyRevenue30min: "0",
+targetPercentage: "0",
+topSalesUnit: "HN"
+},
+{
+name: "Hà Giang",
+category: "domestic",
+continent: null,
+geoRegion: "noi_dia",
+area: "dong_bac",
+imageUrl: "https://images.unsplash.com/photo-1528127269322-539801943592?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=300",
+planned: 0,
+sold: 7,
+remaining: -7,
+recentlyBooked: 8,
+recentlyBooked30min: 1,
+completionRate: "0",
+dailyRevenue: "37800000",
+revenue: "40750000",
+plannedRevenue: "0",
+openRevenue: "-40750000",
+recentlyRevenue: "6792000",
+recentlyRevenue30min: "6792000",
+targetPercentage: "0",
+topSalesUnit: "HN"
+},
+{
+name: "Cao Bằng",
+category: "domestic",
+continent: null,
+geoRegion: "noi_dia",
+area: "dong_bac",
+imageUrl: "https://images.unsplash.com/photo-1528127269322-539801943592?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=300",
+planned: 0,
+sold: 1,
+remaining: -1,
+recentlyBooked: 1,
+recentlyBooked30min: 0,
+completionRate: "0",
+dailyRevenue: "5500000",
+revenue: "5500000",
+plannedRevenue: "0",
+openRevenue: "-5500000",
+recentlyRevenue: "4890000",
+recentlyRevenue30min: "1222500",
+targetPercentage: "0",
+topSalesUnit: "HN"
+},
+{
+name: "MIỀN BẮC - Khác",
+category: "domestic",
+continent: null,
+geoRegion: "noi_dia",
+area: "dong_bac",
+imageUrl: "https://images.unsplash.com/photo-1528127269322-539801943592?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=300",
+planned: 15,
+sold: 0,
+remaining: 15,
+recentlyBooked: 0,
+recentlyBooked30min: 0,
+completionRate: "0.0",
+dailyRevenue: "0",
+revenue: "0",
+plannedRevenue: "49250000",
+openRevenue: "49250000",
+recentlyRevenue: "0",
+recentlyRevenue30min: "0",
+targetPercentage: "0",
+topSalesUnit: "HN"
+},
+  {
+  name: "Liên Tỉnh Miền Bắc",
+  code: "lien_tinh_mien_bac",
+  category: "domestic",
+  level: "area",
+  parentCode: "lien_tinh_mien_bac",
+  planned: 1271,
+  sold: 0,
+  remaining: 1271,
+  opensell: 10,
+  recentlyBooked: 1,
+  recentlyBooked30min: 0,
+  completionRate: "0",
+  plannedRevenue: "2500000",
+  revenue: "5751250000",
+  remainingRevenue: "-5751250000",
+  opensellRevenue: "11750000",
+  recentlyRevenue: "48980000",
+  recentlyRevenue30min: "6985714.29",
+  targetPercentage: "0"
+  },
+{
+name: "Phú Quốc",
+category: "domestic",
+continent: null,
+geoRegion: "noi_dia",
+area: "tay_nam_bo",
+imageUrl: "https://images.unsplash.com/photo-1528127269322-539801943592?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=300",
+planned: 237,
+sold: 438,
+remaining: -201,
+recentlyBooked: 472,
+recentlyBooked30min: 13,
+completionRate: "184.7",
+dailyRevenue: "1771500000",
+revenue: "1849500000",
+plannedRevenue: "1601000000",
+openRevenue: "-248500000",
+recentlyRevenue: "20170440",
+recentlyRevenue30min: "2241160",
+targetPercentage: "116",
+topSalesUnit: "HN"
+},
+{
+name: "Cần Thơ - Sóc Trăng - Bạc Liêu - Cà Mau",
+category: "domestic",
+continent: null,
+geoRegion: "noi_dia",
+area: "tay_nam_bo",
+imageUrl: "https://images.unsplash.com/photo-1528127269322-539801943592?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=300",
+planned: 44,
+sold: 58,
+remaining: -14,
+recentlyBooked: 58,
+recentlyBooked30min: 5,
+completionRate: "131.6",
+dailyRevenue: "298750000",
+revenue: "336250000",
+plannedRevenue: "287000000",
+openRevenue: "-49250000",
+recentlyRevenue: "2545000",
+recentlyRevenue30min: "2827778",
+targetPercentage: "117",
+topSalesUnit: "HN"
+},
+{
+name: "Cà Mau",
+category: "domestic",
+continent: null,
+geoRegion: "noi_dia",
+area: "tay_nam_bo",
+imageUrl: "https://images.unsplash.com/photo-1528127269322-539801943592?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=300",
+planned: 0,
+sold: 62,
+remaining: -62,
+recentlyBooked: 67,
+recentlyBooked30min: 1,
+completionRate: "0",
+dailyRevenue: "24025000",
+revenue: "29050000",
+plannedRevenue: "0",
+openRevenue: "-29050000",
+recentlyRevenue: "3035000",
+recentlyRevenue30min: "758750",
+targetPercentage: "0",
+topSalesUnit: "HN"
+},
+{
+name: "Cần Thơ",
+category: "domestic",
+continent: null,
+geoRegion: "noi_dia",
+area: "tay_nam_bo",
+imageUrl: "https://images.unsplash.com/photo-1528127269322-539801943592?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=300",
+planned: 166,
+sold: 82,
+remaining: 85,
+recentlyBooked: 93,
+recentlyBooked30min: 0,
+completionRate: "49.2",
+dailyRevenue: "108750000",
+revenue: "187000000",
+plannedRevenue: "462500000",
+openRevenue: "275500000",
+recentlyRevenue: "0",
+recentlyRevenue30min: "0",
+targetPercentage: "40",
+topSalesUnit: "HN"
+},
+{
+name: "Kiên Giang",
+category: "domestic",
+continent: null,
+geoRegion: "noi_dia",
+area: "tay_nam_bo",
+imageUrl: "https://images.unsplash.com/photo-1528127269322-539801943592?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=300",
+planned: 0,
+sold: 1,
+remaining: -1,
+recentlyBooked: 6,
+recentlyBooked30min: 0,
+completionRate: "0",
+dailyRevenue: "0",
+revenue: "3725000",
+plannedRevenue: "0",
+openRevenue: "-3725000",
+recentlyRevenue: "0",
+recentlyRevenue30min: "0",
+targetPercentage: "0",
+topSalesUnit: "HN"
+},
+{
+name: "Đồng Tháp",
+category: "domestic",
+continent: null,
+geoRegion: "noi_dia",
+area: "tay_nam_bo",
+imageUrl: "https://images.unsplash.com/photo-1528127269322-539801943592?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=300",
+planned: 0,
+sold: 8,
+remaining: -8,
+recentlyBooked: 8,
+recentlyBooked30min: 0,
+completionRate: "0",
+dailyRevenue: "29750000",
+revenue: "21250000",
+plannedRevenue: "0",
+openRevenue: "-21250000",
+recentlyRevenue: "0",
+recentlyRevenue30min: "0",
+targetPercentage: "0",
+topSalesUnit: "HN"
+},
+{
+name: "An Giang",
+category: "domestic",
+continent: null,
+geoRegion: "noi_dia",
+area: "tay_nam_bo",
+imageUrl: "https://images.unsplash.com/photo-1528127269322-539801943592?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=300",
+planned: 0,
+sold: 6,
+remaining: -6,
+recentlyBooked: 9,
+recentlyBooked30min: 3,
+completionRate: "0",
+dailyRevenue: "18000000",
+revenue: "15250000",
+plannedRevenue: "0",
+openRevenue: "-15250000",
+recentlyRevenue: "5970000",
+recentlyRevenue30min: "1194000",
+targetPercentage: "0",
+topSalesUnit: "HN"
+},
+{
+name: "Tiền Giang",
+category: "domestic",
+continent: null,
+geoRegion: "noi_dia",
+area: "tay_nam_bo",
+imageUrl: "https://images.unsplash.com/photo-1528127269322-539801943592?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=300",
+planned: 0,
+sold: 21,
+remaining: -21,
+recentlyBooked: 25,
+recentlyBooked30min: 2,
+completionRate: "0",
+dailyRevenue: "14750000",
+revenue: "12250000",
+plannedRevenue: "0",
+openRevenue: "-12250000",
+recentlyRevenue: "1138000",
+recentlyRevenue30min: "299500",
+targetPercentage: "0",
+topSalesUnit: "HN"
+},
+{
+name: "Bến Tre",
+category: "domestic",
+continent: null,
+geoRegion: "noi_dia",
+area: "tay_nam_bo",
+imageUrl: "https://images.unsplash.com/photo-1528127269322-539801943592?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=300",
+planned: 4,
+sold: 10,
+remaining: -6,
+recentlyBooked: 15,
+recentlyBooked30min: 0,
+completionRate: "253.3",
+dailyRevenue: "9750000",
+revenue: "6000000",
+plannedRevenue: "750000",
+openRevenue: "-1500000",
+recentlyRevenue: "0",
+recentlyRevenue30min: "0",
+targetPercentage: "80",
+topSalesUnit: "HN"
+},
+{
+name: "TPHCM",
+category: "domestic",
+continent: null,
+geoRegion: "noi_dia",
+area: "dong_nam_bo",
+imageUrl: "https://images.unsplash.com/photo-1528127269322-539801943592?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=300",
+planned: 3,
+sold: 62,
+remaining: -60,
+recentlyBooked: 62,
+recentlyBooked30min: 16,
+completionRate: "248.0",
+dailyRevenue: "17600000",
+revenue: "18500000",
+plannedRevenue: "12250000",
+openRevenue: "-173250000",
+recentlyRevenue: "29856000",
+recentlyRevenue30min: "2985600",
+targetPercentage: "1514",
+topSalesUnit: "HN"
+},
+{
+name: "Côn Đảo",
+category: "domestic",
+continent: null,
+geoRegion: "noi_dia",
+area: "dong_nam_bo",
+imageUrl: "https://images.unsplash.com/photo-1528127269322-539801943592?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=300",
+planned: 6,
+sold: 9,
+remaining: -3,
+recentlyBooked: 11,
+recentlyBooked30min: 2,
+completionRate: "154.5",
+dailyRevenue: "13125000",
+revenue: "12575000",
+plannedRevenue: "5350000",
+openRevenue: "-7225000",
+recentlyRevenue: "9900000",
+recentlyRevenue30min: "990000",
+targetPercentage: "154",
+topSalesUnit: "HN"
+},
+{
+name: "Vũng Tàu - Long Hải",
+category: "domestic",
+continent: null,
+geoRegion: "noi_dia",
+area: "dong_nam_bo",
+imageUrl: "https://images.unsplash.com/photo-1528127269322-539801943592?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=300",
+planned: 6,
+sold: 57,
+remaining: -51,
+recentlyBooked: 60,
+recentlyBooked30min: 0,
+completionRate: "991.3",
+dailyRevenue: "78250000",
+revenue: "113250000",
+plannedRevenue: "12750000",
+openRevenue: "-100500000",
+recentlyRevenue: "0",
+recentlyRevenue30min: "0",
+targetPercentage: "888",
+topSalesUnit: "HN"
+},
+{
+name: "Tây Ninh",
+category: "domestic",
+continent: null,
+geoRegion: "noi_dia",
+area: "dong_nam_bo",
+imageUrl: "https://images.unsplash.com/photo-1528127269322-539801943592?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=300",
+planned: 9,
+sold: 38,
+remaining: -29,
+recentlyBooked: 50,
+recentlyBooked30min: 6,
+completionRate: "428.6",
+dailyRevenue: "64750000",
+revenue: "40500000",
+plannedRevenue: "5750000",
+openRevenue: "-9000000",
+recentlyRevenue: "8340000",
+recentlyRevenue30min: "834000",
+targetPercentage: "94",
+topSalesUnit: "HN"
+},
+{
+name: "MIỀN NAM - Khác",
+category: "domestic",
+continent: null,
+geoRegion: "noi_dia",
+area: "dong_nam_bo",
+imageUrl: "https://images.unsplash.com/photo-1528127269322-539801943592?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=300",
+planned: 103,
+sold: 0,
+remaining: 103,
+recentlyBooked: 0,
+recentlyBooked30min: 0,
+completionRate: "0.0",
+dailyRevenue: "0",
+revenue: "0",
+plannedRevenue: "16250000",
+openRevenue: "16250000",
+recentlyRevenue: "0",
+recentlyRevenue30min: "0",
+targetPercentage: "0",
+topSalesUnit: "HN"
+},
+
+
+// Domestic Tours - Miền Nam
+{
+name: "Phú Quốc",
+category: "domestic",
+continent: null,
+geoRegion: "noi_dia",
+area: "dong_nam_bo",
+duration: "4N3D",
+imageUrl: "https://images.unsplash.com/photo-1559827260-dc66d52bef19?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=300",
+planned: 2634,
+sold: 2156,
+remaining: 643,
+recentlyBooked: 5,
+recentlyBooked30min: 2,
+completionRate: "81.8",
+dailyRevenue: "8500000000", // Doanh thư hôm nay
+revenue: "52000000000",
+plannedRevenue: "65000000000", // Doanh thu kế hoạch
+targetPercentage: "4.2",
+topSalesUnit: "HCM"
+},
+// International Tours - Đông Bắc Á
+{
+name: "Nhật Bản",
+category: "international",
+continent: "chau_a",
+geoRegion: null,
+area: "nhat_ban",
+duration: "6N5D",
+imageUrl: "https://images.unsplash.com/photo-1493976040374-85c8e12f0c0e?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=300",
+planned: 2156,
+sold: 1987,
+remaining: 169,
+recentlyBooked: 10,
+recentlyBooked30min: 2,
+completionRate: "92.2",
+dailyRevenue: "18500000000", // Doanh thư hôm nay
+revenue: "287350000000",
+plannedRevenue: "320000000000", // Doanh thu kế hoạch
+targetPercentage: "15.2",
+topSalesUnit: "HCM"
+},
+// International Tours - Đông Nam Á
+{
+name: "Singapore - Malaysia",
+category: "international",
+continent: "chau_a",
+geoRegion: null,
+area: "singapore_malaysia",
+duration: "5N4D",
+imageUrl: "https://images.unsplash.com/photo-1525625293386-3f8f99389edd?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=300",
+planned: 1987,
+sold: 1534,
+remaining: 453,
+recentlyBooked: 6,
+recentlyBooked30min: 2,
+completionRate: "77.2",
+dailyRevenue: "9200000000", // Doanh thư hôm nay
+revenue: "198700000000",
+plannedRevenue: "210000000000", // Doanh thu kế hoạch
+targetPercentage: "9.8",
+topSalesUnit: "HN"
+},
+// Thêm các tour quốc tế khác
+{
+name: "Hàn Quốc",
+category: "international",
+continent: "chau_a",
+geoRegion: null,
+area: "han_quoc",
+duration: "5N4D",
+imageUrl: "https://images.unsplash.com/photo-1517154421773-0529f29ea451?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=300",
+planned: 2800,
+sold: 2100,
+remaining: 700,
+recentlyBooked: 7,
+recentlyBooked30min: 2,
+completionRate: "75.0",
+dailyRevenue: "8500000000",
+revenue: "165000000000",
+plannedRevenue: "190000000000",
+targetPercentage: "8.2",
+topSalesUnit: "HCM"
+},
+{
+name: "Trung Quốc",
+category: "international",
+continent: "chau_a",
+geoRegion: null,
+area: "trung_quoc",
+duration: "6N5D",
+imageUrl: "https://images.unsplash.com/photo-1508804185872-d7badad00f7d?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=300",
+planned: 3200,
+sold: 2400,
+remaining: 800,
+recentlyBooked: 4,
+recentlyBooked30min: 2,
+completionRate: "75.0",
+dailyRevenue: "12000000000",
+revenue: "180000000000",
+plannedRevenue: "210000000000",
+targetPercentage: "9.5",
+topSalesUnit: "HN"
+},
+{
+name: "Thái Lan",
+category: "international",
+continent: "chau_a",
+geoRegion: null,
+area: "thai_lan",
+duration: "5N4D",
+imageUrl: "https://images.unsplash.com/photo-1552465011-b4e21bf6e79a?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=300",
+planned: 2800,
+sold: 2200,
+remaining: 600,
+recentlyBooked: 3,
+recentlyBooked30min: 2,
+completionRate: "78.6",
+dailyRevenue: "9500000000",
+revenue: "132000000000",
+plannedRevenue: "155000000000",
+targetPercentage: "10.5",
+topSalesUnit: "HCM"
+},
+{
+name: "Indonesia",
+category: "international",
+continent: "chau_a",
+geoRegion: null,
+area: "indonesia",
+duration: "5N4D",
+imageUrl: "https://images.unsplash.com/photo-1555333145-4acf190da336?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=300",
+planned: 1494,
+sold: 716,
+remaining: 778,
+recentlyBooked: 2,
+recentlyBooked30min: 2,
+completionRate: "47.9",
+dailyRevenue: "4200000000",
+revenue: "56365000000",
+plannedRevenue: "70000000000",
+targetPercentage: "8.7",
+topSalesUnit: "HN"
+},
+{
+name: "Mongolia",
+category: "international",
+continent: "chau_a",
+geoRegion: null,
+area: "mongolia",
+duration: "4N3D",
+imageUrl: "https://images.unsplash.com/photo-1559827260-dc66d52bef19?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=300",
+planned: 597,
+sold: 105,
+remaining: 492,
+recentlyBooked: 1,
+recentlyBooked30min: 2,
+completionRate: "17.6",
+dailyRevenue: "1500000000",
+revenue: "12286000000",
+plannedRevenue: "25000000000",
+targetPercentage: "2.8",
+topSalesUnit: "CT"
+},
+{
+name: "Lào",
+category: "international",
+continent: "chau_a",
+geoRegion: null,
+area: "lao",
+duration: "4N3D",
+imageUrl: "https://images.unsplash.com/photo-1528181304800-259b08848526?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=300",
+planned: 800,
+sold: 600,
+remaining: 200,
+recentlyBooked: 1,
+recentlyBooked30min: 2,
+completionRate: "75.0",
+dailyRevenue: "3000000000",
+revenue: "45000000000",
+plannedRevenue: "55000000000",
+targetPercentage: "7.2",
+topSalesUnit: "HCM"
+},
+{
+name: "Campuchia",
+category: "international",
+continent: "chau_a",
+geoRegion: null,
+area: "campuchia",
+duration: "4N3D",
+imageUrl: "https://images.unsplash.com/photo-1571211905393-9ffd0dd5b9a5?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=300",
+planned: 700,
+sold: 500,
+remaining: 200,
+recentlyBooked: 1,
+recentlyBooked30min: 2,
+completionRate: "71.4",
+dailyRevenue: "2800000000",
+revenue: "43000000000",
+plannedRevenue: "50000000000",
+targetPercentage: "6.8",
+topSalesUnit: "HN"
+}
+];
+toursData.forEach(tourData => {
+const tour: Tour = {
+id: randomUUID(),
+createdAt: new Date(),
+updatedAt: new Date(),
+name: tourData.name,
+category: tourData.category,
+continent: tourData.continent || null,
+geoRegion: tourData.geoRegion || null,
+area: tourData.area,
+duration: tourData.duration,
+imageUrl: tourData.imageUrl || null,
+planned: tourData.planned || 0,
+sold: tourData.sold || 0,
+remaining: tourData.remaining || 0,
+recentlyBooked: tourData.recentlyBooked || 0,
+recentlyBooked30min: tourData.recentlyBooked30min || 0,
+completionRate: tourData.completionRate || "0",
+dailyRevenue: tourData.dailyRevenue || "0",
+revenue: tourData.revenue || "0",
+plannedRevenue: tourData.plannedRevenue || "0",
+targetPercentage: tourData.targetPercentage || "0",
+topSalesUnit: tourData.topSalesUnit || "HN",
+isActive: true
+};
+this.tours.set(tour.id, tour);
+});
+// Initialize regional performance
+const performanceData: InsertRegionalPerformance[] = [
+{ cityName: "TP. Hồ Chí Minh", performanceRate: "85.2", status: "good" },
+{ cityName: "Hà Nội", performanceRate: "78.9", status: "good" },
+{ cityName: "Đà Nẵng", performanceRate: "72.4", status: "moderate" },
+{ cityName: "Cần Thơ", performanceRate: "68.1", status: "moderate" },
+{ cityName: "Nha Trang", performanceRate: "61.7", status: "poor" },
+];
+performanceData.forEach(perfData => {
+const performance: RegionalPerformance = {
+id: randomUUID(),
+cityName: perfData.cityName,
+performanceRate: perfData.performanceRate || "0",
+status: perfData.status || "good"
+};
+this.regionalPerformance.set(performance.id, performance);
+});
+// Initialize recent activities
+const activitiesData: InsertActivity[] = [
+{
+type: "booking",
+message: "Tour Hạ Long - Sapa đã bán +25 chỗ",
+location: "Hồ Chí Minh"
+},
+{
+type: "price_update",
+message: "Tour Châu Âu đã mở thêm +30 chỗ",
+location: "Hà Nội"
+},
+{
+type: "new_tour",
+message: "Tour Tây Nguyên cập nhật kế hoạch - 500 chỗ",
+location: "Đà Nẵng"
+}
+];
+activitiesData.forEach(actData => {
+const activity: Activity = {
+id: randomUUID(),
+type: actData.type,
+message: actData.message,
+location: actData.location,
+tourId: null,
+timestamp: new Date()
+};
+this.activities.set(activity.id, activity);
+});
+}
+async getTours(): Promise<Tour[]> {
+return Array.from(this.tours.values())
+.sort((a, b) => b.recentlyBooked - a.recentlyBooked);
+}
+async getToursByCategory(category: string): Promise<Tour[]> {
+return Array.from(this.tours.values())
+.filter(tour => tour.category === category)
+.sort((a, b) => b.recentlyBooked - a.recentlyBooked);
+}
+async getToursByArea(areaCode: string): Promise<Tour[]> {
+return Array.from(this.tours.values())
+.filter(tour => tour.area === areaCode)
+.sort((a, b) => b.recentlyBooked - a.recentlyBooked);
+}
+async getToursBySalesUnit(salesUnitCode: string): Promise<Tour[]> {
+return Array.from(this.tours.values())
+.filter(tour => tour.topSalesUnit === salesUnitCode)
+.sort((a, b) => b.recentlyBooked - a.recentlyBooked);
+}
+async createTour(insertTour: InsertTour): Promise<Tour> {
+const id = randomUUID();
+const tour: Tour = {
+id,
+createdAt: new Date(),
+updatedAt: new Date(),
+name: insertTour.name,
+category: insertTour.category,
+continent: insertTour.continent ?? null,
+geoRegion: insertTour.geoRegion ?? null,
+area: insertTour.area,
+duration: insertTour.duration,
+imageUrl: insertTour.imageUrl ?? null,
+planned: insertTour.planned ?? 0,
+sold: insertTour.sold ?? 0,
+remaining: insertTour.remaining ?? 0,
+recentlyBooked: insertTour.recentlyBooked ?? 0,
+recentlyBooked30min: insertTour.recentlyBooked30min ?? 0,
+completionRate: insertTour.completionRate ?? "0",
+dailyRevenue: insertTour.dailyRevenue ?? "0",
+revenue: insertTour.revenue ?? "0",
+plannedRevenue: insertTour.plannedRevenue ?? "0",
+targetPercentage: insertTour.targetPercentage ?? "0",
+topSalesUnit: insertTour.topSalesUnit ?? "HCM",
+isActive: insertTour.isActive ?? true
+};
+this.tours.set(id, tour);
+return tour;
+}
+async updateTour(id: string, tourUpdate: Partial<Tour>): Promise<Tour | undefined> {
+const tour = this.tours.get(id);
+if (!tour) return undefined;
+const updatedTour: Tour = { ...tour, ...tourUpdate, updatedAt: new Date() };
+this.tours.set(id, updatedTour);
+return updatedTour;
+}
+async getHierarchyLevels(): Promise<HierarchyLevel[]> {
+return Array.from(this.hierarchyLevels.values())
+.sort((a, b) => b.recentlyBooked - a.recentlyBooked);
+}
+async getHierarchyLevelsByCategory(category: string): Promise<HierarchyLevel[]> {
+return Array.from(this.hierarchyLevels.values())
+.filter(level => level.category === category)
+.sort((a, b) => b.recentlyBooked - a.recentlyBooked);
+}
+async getHierarchyLevelsByLevel(level: string): Promise<HierarchyLevel[]> {
+return Array.from(this.hierarchyLevels.values())
+.filter(h => h.level === level)
+.sort((a, b) => b.recentlyBooked - a.recentlyBooked);
+}
+async createHierarchyLevel(insertLevel: InsertHierarchyLevel): Promise<HierarchyLevel> {
+const id = randomUUID();
+const level: HierarchyLevel = {
+id,
+name: insertLevel.name,
+category: insertLevel.category,
+code: insertLevel.code,
+level: insertLevel.level,
+parentCode: insertLevel.parentCode ?? null,
+planned: insertLevel.planned ?? 0,
+sold: insertLevel.sold ?? 0,
+remaining: insertLevel.remaining ?? 0,
+recentlyBooked: insertLevel.recentlyBooked ?? 0,
+recentlyBooked30min: insertLevel.recentlyBooked30min ?? 0,
+completionRate: insertLevel.completionRate ?? "0",
+revenue: insertLevel.revenue ?? "0",
+plannedRevenue: insertLevel.plannedRevenue ?? "0",
+targetPercentage: insertLevel.targetPercentage ?? "0"
+};
+this.hierarchyLevels.set(id, level);
+return level;
+}
+async updateHierarchyLevel(id: string, levelUpdate: Partial<HierarchyLevel>): Promise<HierarchyLevel | undefined> {
+const level = this.hierarchyLevels.get(id);
+if (!level) return undefined;
+const updatedLevel: HierarchyLevel = { ...level, ...levelUpdate };
+this.hierarchyLevels.set(id, updatedLevel);
+return updatedLevel;
+}
+async getSalesUnits(): Promise<SalesUnit[]> {
+return Array.from(this.salesUnits.values());
+}
+async createSalesUnit(insertUnit: InsertSalesUnit): Promise<SalesUnit> {
+const id = randomUUID();
+const unit: SalesUnit = {
+id,
+name: insertUnit.name,
+code: insertUnit.code,
+performanceRate: insertUnit.performanceRate ?? "0",
+status: insertUnit.status ?? "good"
+};
+this.salesUnits.set(id, unit);
+return unit;
+}
+async updateSalesUnit(id: string, unitUpdate: Partial<SalesUnit>): Promise<SalesUnit | undefined> {
+const unit = this.salesUnits.get(id);
+if (!unit) return undefined;
+const updatedUnit: SalesUnit = { ...unit, ...unitUpdate };
+this.salesUnits.set(id, updatedUnit);
+return updatedUnit;
+}
+async getRecentActivities(limit: number = 10): Promise<Activity[]> {
+return Array.from(this.activities.values())
+.sort((a, b) => (b.timestamp?.getTime() || 0) - (a.timestamp?.getTime() || 0))
+.slice(0, limit);
+}
+async createActivity(insertActivity: InsertActivity): Promise<Activity> {
+const id = randomUUID();
+const activity: Activity = {
+id,
+type: insertActivity.type,
+message: insertActivity.message,
+location: insertActivity.location,
+tourId: insertActivity.tourId ?? null,
+timestamp: new Date()
+};
+this.activities.set(id, activity);
+return activity;
+}
+async getRegionalPerformance(): Promise<RegionalPerformance[]> {
+return Array.from(this.regionalPerformance.values())
+.sort((a, b) => parseFloat(b.performanceRate) - parseFloat(a.performanceRate));
+}
+async createRegionalPerformance(insertPerformance: InsertRegionalPerformance): Promise<RegionalPerformance> {
+const id = randomUUID();
+const performance: RegionalPerformance = {
+id,
+cityName: insertPerformance.cityName,
+performanceRate: insertPerformance.performanceRate ?? "0",
+status: insertPerformance.status ?? "good"
+};
+this.regionalPerformance.set(id, performance);
+return performance;
+}
+async getDashboardMetrics(): Promise<DashboardMetrics> {
+const tours = Array.from(this.tours.values());
+const hierarchyLevels = Array.from(this.hierarchyLevels.values());
+const totalActiveTours = tours.length;
+// Calculate from hierarchy levels data (more comprehensive than tours data)
+const totalSold = hierarchyLevels.reduce((sum, level) => sum + level.sold, 0);
+const totalPlanned = hierarchyLevels.reduce((sum, level) => sum + level.planned, 0);
+const totalRevenue = hierarchyLevels.reduce((sum, level) => sum + parseFloat(level.revenue), 0);
+const totalPlannedRevenue = hierarchyLevels.reduce((sum, level) => sum + parseFloat(level.plannedRevenue), 0);
+const totalDailyBookings = hierarchyLevels.reduce((sum, level) => sum + level.recentlyBooked30min, 0);
+// Calculate total daily revenue from all tours
+const totalDailyRevenue = tours.reduce((sum, tour) => sum + parseFloat(tour.dailyRevenue || "0"), 0);
+// Calculate percentage vs plan for tours sold
+const toursSoldPlanPercentage = totalPlanned > 0 ? parseFloat(((totalSold / totalPlanned) * 100).toFixed(1)) : 0;
+// Calculate revenue percentage vs plan: Tổng Doanh Thu / Doanh thu Kế Hoạch
+const revenuePlanPercentage = totalPlannedRevenue > 0 ? parseFloat(((totalRevenue / totalPlannedRevenue) * 100).toFixed(1)) : 0;
+// Previous values for change calculation
+const yesterdayBookings = Math.floor(Math.random() * 5) + 2;
+const dailyBookingsChange = totalDailyBookings - yesterdayBookings;
+return {
+totalActiveTours: totalActiveTours,
+totalActiveToursChange: 12.5,
+dailyBookings: totalDailyBookings, // Tổng từ cột "Số Chỗ Bán Hôm Nay"
+dailyBookingsChange: dailyBookingsChange,
+dailyRevenue: (totalDailyRevenue / 1000000000).toFixed(1) + "B VND", // Tổng từ cột "Doanh thư hôm nay"
+dailyRevenueChange: 8.3,
+toursSold: totalSold, // Tổng từ cột "Đã bán"
+toursSoldChange: -3.2, // Keep for compatibility, but will show percentage instead
+toursSoldPlanPercentage: toursSoldPlanPercentage, // % so với kế hoạch
+revenue: (totalRevenue / 1000000000).toFixed(1) + "B VND", // Tổng từ cột "Doanh Thu"
+revenueChange: 5.2, // Revenue change percentage
+revenuePlanPercentage: revenuePlanPercentage, // % = Tổng Doanh Thu / Doanh thu Kế Hoạch
+completionRate: totalPlanned > 0 ? parseFloat(((totalSold / totalPlanned) * 100).toFixed(1)) : 0,
+};
+}
+}
 export const storage = new MemStorage();
