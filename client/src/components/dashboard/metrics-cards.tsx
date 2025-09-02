@@ -83,7 +83,7 @@ export default function MetricsCards() {
       color: "purple",
       testId: "metric-revenue",
       detailLabel: "KH Doanh Thu",
-      detailValue: `${(parseFloat(metrics.revenue?.replace(/[^\d.]/g, '') || '0') / 1000000).toFixed(0)}Tr VND`
+      detailValue: `${(parseFloat(metrics.revenue?.replace(/[^\d.]/g, '') || '0') / 1000000).toLocaleString()}Tr VND`
     },
   ];
 

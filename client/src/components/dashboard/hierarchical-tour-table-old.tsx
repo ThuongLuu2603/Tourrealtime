@@ -48,7 +48,7 @@ export default function HierarchicalTourTable() {
 
   const formatCurrency = (value: string) => {
     const num = parseFloat(value) / 1000000;
-    return `${num.toFixed(0)}Tr`;
+    return `${num.toLocaleString()}Tr`;
   };
 
   const getSalesUnitName = (code: string) => {
