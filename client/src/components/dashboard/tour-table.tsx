@@ -863,18 +863,7 @@ export default function TourTable() {
   };
 
   // Always add main categories first, then their content when expanded
-  if (domesticRoot && showSections.includes('domestic')) {
-    allRows.push({
-      type: 'section',
-      section: 'domestic',
-      data: domesticRoot,
-      isExpanded: expandedSections.domestic
-    });
-
-    // Add content when expanded
-    addExpandedContent('domestic');
-  }
-
+  // Tour Quốc Tế xuất hiện trước Tour Nội Địa
   if (internationalRoot && showSections.includes('international')) {
     allRows.push({
       type: 'section',
@@ -885,6 +874,18 @@ export default function TourTable() {
 
     // Add content when expanded
     addExpandedContent('international');
+  }
+
+  if (domesticRoot && showSections.includes('domestic')) {
+    allRows.push({
+      type: 'section',
+      section: 'domestic',
+      data: domesticRoot,
+      isExpanded: expandedSections.domestic
+    });
+
+    // Add content when expanded
+    addExpandedContent('domestic');
   }
 
   return (
