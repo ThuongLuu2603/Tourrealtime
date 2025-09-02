@@ -77,7 +77,7 @@ recentlyBooked30min: 143,
 completionRate: "13.4%",
 plannedRevenue: "60962750000",
 revenue: "8089550000",
-openRevenue: "0",
+openRevenue: "0",,
 targetPercentage: "75%"
 },
 // International - Level 2: Châu lục - Châu Á 30min = 8+10+2 = 20, Châu Âu = 1
@@ -97,7 +97,7 @@ recentlyBooked30min: 84,
 completionRate: "51.1",
 plannedRevenue: "40395500000",
 revenue: "57968250000",
-openRevenue: "0",
+openRevenue: "0",,
 targetPercentage: "70"
 },
 {
@@ -116,7 +116,7 @@ recentlyBooked30min: 9,
 completionRate: "90.3",
 plannedRevenue: "15235250000",
 revenue: "13165750000",
-openRevenue: "0",
+openRevenue: "0",,
 targetPercentage: "116"
 },
 {
@@ -135,7 +135,7 @@ recentlyBooked30min: 0,
 completionRate: "108",
 plannedRevenue: "3616000000",
 revenue: "2433750000",
-openRevenue: "0",
+openRevenue: "0",,
 targetPercentage: "149"
 },
 {
@@ -154,7 +154,7 @@ recentlyBooked30min: 1,
 completionRate: "36",
 plannedRevenue: "521500000",
 revenue: "121300000",
-openRevenue: "0",
+openRevenue: "0",,
 targetPercentage: "20"
 },
 
@@ -175,7 +175,7 @@ recentlyBooked30min: 83,
 completionRate: "77.6",
 plannedRevenue: "30738250000",
 revenue: "34971750000",
-openRevenue: "0",
+openRevenue: "0",,
 targetPercentage: "88"
 },
 {
@@ -194,7 +194,7 @@ recentlyBooked30min: 26,
 completionRate: "28.0",
 plannedRevenue: "8548250000",
 revenue: "20341250000",
-openRevenue: "0",
+openRevenue: "0",,
 targetPercentage: "42"
 },
 {
@@ -213,7 +213,7 @@ recentlyBooked30min: 1,
 completionRate: "78",
 plannedRevenue: "569000000",
 revenue: "973000000",
-openRevenue: "0",
+openRevenue: "0",,
 targetPercentage: "58"
 },
 {
@@ -232,7 +232,7 @@ recentlyBooked30min: 1,
 completionRate: "78.0",
 plannedRevenue: "56800000",
 revenue: "97300000",
-openRevenue: "0",
+openRevenue: "0",,
 targetPercentage: "32"
 },
 {
@@ -251,7 +251,7 @@ recentlyBooked30min: 3,
 completionRate: "-",
 plannedRevenue: "1089500000",
 revenue: "0",
-openRevenue: "0",
+openRevenue: "0",,
 targetPercentage: "-"
 },
 {
@@ -270,7 +270,7 @@ recentlyBooked30min: 2,
 completionRate: "-",
 plannedRevenue: "17250000",
 revenue: "0",
-openRevenue: "0",
+openRevenue: "0",,
 targetPercentage: "-"
 },
 {
@@ -289,7 +289,7 @@ recentlyBooked30min: 0,
 completionRate: "-",
 plannedRevenue: "8230000",
 revenue: "0",
-openRevenue: "0",
+openRevenue: "0",,
 targetPercentage: "-"
 },
 {
@@ -308,7 +308,7 @@ recentlyBooked30min: 2,
 completionRate: "-",
 plannedRevenue: "71080000",
 revenue: "0",
-openRevenue: "0",
+openRevenue: "0",,
 targetPercentage: "-"
 },
 {
@@ -327,7 +327,7 @@ recentlyBooked30min: 0,
 completionRate: "-",
 plannedRevenue: "47825000",
 revenue: "0",
-openRevenue: "0",
+openRevenue: "0",,
 targetPercentage: "-"
 },
   {
@@ -414,7 +414,7 @@ recentlyBooked30min: 22,
 completionRate: "89.7",
 plannedRevenue: "1418450000",
 revenue: "1405175000",
-openRevenue: "0",
+openRevenue: "0",,
 targetPercentage: "101"
 },
 {
@@ -433,7 +433,7 @@ recentlyBooked30min: 1,
 completionRate: "72.9",
 plannedRevenue: "6612750000",
 revenue: "725900000",
-openRevenue: "0",
+openRevenue: "0",,
 targetPercentage: "91"
 },
 {
@@ -452,7 +452,7 @@ recentlyBooked30min: 9,
 completionRate: "92.5",
 plannedRevenue: "602800000",
 revenue: "56325000",
-openRevenue: "0",
+openRevenue: "0",,
 targetPercentage: "106"
 },
 {
@@ -471,7 +471,7 @@ recentlyBooked30min: 1,
 completionRate: "122.3",
 plannedRevenue: "1652050000",
 revenue: "946500000",
-openRevenue: "0",
+openRevenue: "0",,
 targetPercentage: "174"
 },
 {
@@ -490,7 +490,7 @@ recentlyBooked30min: 4,
 completionRate: "68.3",
 plannedRevenue: "42775000",
 revenue: "51605000",
-openRevenue: "0",
+openRevenue: "0",,
 targetPercentage: "42"
 },
 {
@@ -509,7 +509,7 @@ recentlyBooked30min: 5,
 completionRate: "13.5",
 plannedRevenue: "19440000",
 revenue: "1243025000",
-openRevenue: "0",
+openRevenue: "0",,
 targetPercentage: "16"
 },
 {
@@ -528,7 +528,7 @@ recentlyBooked30min: 3,
 completionRate: "78.4",
 plannedRevenue: "11080000",
 revenue: "105275000",
-openRevenue: "0",
+openRevenue: "0",,
 targetPercentage: "105"
 },
 {
@@ -547,7 +547,7 @@ recentlyBooked30min: 1,
 completionRate: "137.6",
 plannedRevenue: "90575000",
 revenue: "55625000",
-openRevenue: "0",
+openRevenue: "0",,
 targetPercentage: "163"
 },
 {
@@ -566,7 +566,7 @@ recentlyBooked30min: 1,
 completionRate: "47.4",
 plannedRevenue: "21250000",
 revenue: "37300000",
-openRevenue: "0",
+openRevenue: "0",,
 targetPercentage: "58"
 },
 {
@@ -585,7 +585,7 @@ recentlyBooked30min: 0,
 completionRate: "2.1",
 plannedRevenue: "1800000",
 revenue: "67075000",
-openRevenue: "0",
+openRevenue: "0",,
 targetPercentage: "3"
 },
 {
@@ -604,7 +604,7 @@ recentlyBooked30min: 0,
 completionRate: "0.0%",
 plannedRevenue: "0",
 revenue: "6000000",
-openRevenue: "0",
+openRevenue: "0",,
 targetPercentage: "0%"
 },
 
@@ -668,7 +668,7 @@ recentlyBooked30min: 1,
 completionRate: "-",
 plannedRevenue: "526925000",
 revenue: "0",
-openRevenue: "0",
+openRevenue: "0",,
 targetPercentage: "0"
 },
 {
@@ -687,7 +687,7 @@ recentlyBooked30min: 0,
 completionRate: "-",
 plannedRevenue: "255325000",
 revenue: "0",
-openRevenue: "0",
+openRevenue: "0",,
 targetPercentage: "0"
 },
 {
@@ -706,7 +706,7 @@ recentlyBooked30min: 0,
 completionRate: "-",
 plannedRevenue: "42125000",
 revenue: "0",
-openRevenue: "0",
+openRevenue: "0",,
 targetPercentage: "0"
 },
 {
@@ -725,7 +725,7 @@ recentlyBooked30min: 2,
 completionRate: "-",
 plannedRevenue: "172600000",
 revenue: "0",
-openRevenue: "0",
+openRevenue: "0",,
 targetPercentage: "0"
 },
 {
@@ -744,7 +744,7 @@ recentlyBooked30min: 0,
 completionRate: "-",
 plannedRevenue: "8230000",
 revenue: "0",
-openRevenue: "0",
+openRevenue: "0",,
 targetPercentage: "0"
 },
 
@@ -787,7 +787,7 @@ recentlyBooked30min: 1,
 completionRate: "-",
 plannedRevenue: "13100000",
 revenue: "0",
-openRevenue: "0",
+openRevenue: "0",,
 targetPercentage: "0"
 },
 {
@@ -806,7 +806,7 @@ recentlyBooked30min: 0,
 completionRate: "-",
 plannedRevenue: "47825000",
 revenue: "0",
-openRevenue: "0",
+openRevenue: "0",,
 targetPercentage: "0"
 },
 {
@@ -825,7 +825,7 @@ recentlyBooked30min: 0,
 completionRate: "0.0%",
 plannedRevenue: "1150000",
 revenue: "0",
-openRevenue: "0",
+openRevenue: "0",,
 targetPercentage: "0%"
 },
 {
@@ -844,7 +844,7 @@ recentlyBooked30min: 0,
 completionRate: "-",
 plannedRevenue: "3616000000",
 revenue: "0",
-openRevenue: "0",
+openRevenue: "0",,
 targetPercentage: "0%"
 },
 
@@ -886,7 +886,7 @@ recentlyBooked30min: 67,
 completionRate: "92.1",
 plannedRevenue: "1555750000",
 revenue: "16036250000",
-openRevenue: "0",
+openRevenue: "0",,
 targetPercentage: "97"
 },
 
@@ -907,7 +907,7 @@ recentlyBooked30min: 59,
 completionRate: "113.9",
 plannedRevenue: "774475000",
 revenue: "705500000",
-openRevenue: "0",
+openRevenue: "0",,
 targetPercentage: "110"
 },
 {
@@ -926,7 +926,7 @@ recentlyBooked30min: 5,
 completionRate: "46.7%",
 plannedRevenue: "438550000",
 revenue: "590400000",
-openRevenue: "0",
+openRevenue: "0",,
 targetPercentage: "74%"
 },
 {
@@ -945,7 +945,7 @@ recentlyBooked30min: 6,
 completionRate: "147.0%",
 plannedRevenue: "322800000",
 revenue: "266300000",
-openRevenue: "0",
+openRevenue: "0",,
 targetPercentage: "121%"
 },
 
@@ -968,7 +968,7 @@ recentlyBooked30min: 6,
 completionRate: "105.3",
 plannedRevenue: "3906500000",
 revenue: "3643750000",
-openRevenue: "0",
+openRevenue: "0",,
 targetPercentage: "107"
 },
 {
@@ -987,7 +987,7 @@ recentlyBooked30min: 1,
 completionRate: "123.0",
 plannedRevenue: "2330500000",
 revenue: "1786500000",
-openRevenue: "0",
+openRevenue: "0",,
 targetPercentage: "130"
 },
 {
@@ -1006,7 +1006,7 @@ recentlyBooked30min: 35,
 completionRate: "109.4",
 plannedRevenue: "957750000",
 revenue: "867250000",
-openRevenue: "0",
+openRevenue: "0",,
 targetPercentage: "110"
 },
 {
@@ -1025,7 +1025,7 @@ recentlyBooked30min: 5,
 completionRate: "3.9",
 plannedRevenue: "50750000",
 revenue: "7580000",
-openRevenue: "0",
+openRevenue: "0",,
 targetPercentage: "7"
 },
 {
@@ -1044,7 +1044,7 @@ recentlyBooked30min: 5,
 completionRate: "3470.9",
 plannedRevenue: "3374500000",
 revenue: "38250000",
-openRevenue: "0",
+openRevenue: "0",,
 targetPercentage: "8822"
 },
 {
@@ -1063,7 +1063,7 @@ recentlyBooked30min: 0,
 completionRate: "700",
 plannedRevenue: "553250000",
 revenue: "65250000",
-openRevenue: "0",
+openRevenue: "0",,
 targetPercentage: "848"
 },
 {
@@ -1082,7 +1082,7 @@ recentlyBooked30min: 0,
 completionRate: "700.0",
 plannedRevenue: "553250000",
 revenue: "65250000",
-openRevenue: "0",
+openRevenue: "0",,
 targetPercentage: "849"
 },
 {
@@ -1101,7 +1101,7 @@ recentlyBooked30min: 0,
 completionRate: "0",
 plannedRevenue: "2500000",
 revenue: "5751250000",
-openRevenue: "0",
+openRevenue: "0",,
 targetPercentage: "0"
 },
 {
@@ -1120,7 +1120,7 @@ recentlyBooked30min: 3,
 completionRate: "151.7",
 plannedRevenue: "2755250000",
 revenue: "23800000",
-openRevenue: "0",
+openRevenue: "0",,
 targetPercentage: "117"
 },
 {
@@ -1139,7 +1139,7 @@ recentlyBooked30min: 4,
 completionRate: "132.0",
 plannedRevenue: "47300000",
 revenue: "22875000",
-openRevenue: "0",
+openRevenue: "0",,
 targetPercentage: "158"
 },
 

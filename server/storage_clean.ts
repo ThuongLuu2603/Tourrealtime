@@ -347,7 +347,6 @@ opensell: 0,
   plannedRevenue: "1150000",
   revenue: "0",
 openRevenue: "0",
-  openRevenue: "1150000",
   targetPercentage: "0%"
   },
 
@@ -369,7 +368,6 @@ opensell: 0,
   plannedRevenue: "3616000000",
   revenue: "2433750000",
 openRevenue: "0",
-  openRevenue: "328850000",
   targetPercentage: "149"
   },
 
@@ -392,7 +390,6 @@ opensell: 0,
   plannedRevenue: "521500000",
   revenue: "121300000",
 openRevenue: "0",
-  openRevenue: "113600000",
   targetPercentage: "20"
   },
 
@@ -625,7 +622,6 @@ opensell: 0,
   plannedRevenue: "569000000",
   revenue: "973000000",
 openRevenue: "0",
-  openRevenue: "735500000",
   targetPercentage: "58"
   },
 
@@ -649,7 +645,6 @@ opensell: 0,
   plannedRevenue: "56800000",
   revenue: "97300000",
 openRevenue: "0",
-  openRevenue: "73500000",
   targetPercentage: "32"
   },
 {
@@ -768,7 +763,6 @@ opensell: 0,
   plannedRevenue: "71080000",
   revenue: "0",
 openRevenue: "0",
-  openRevenue: "16375000",
   targetPercentage: "-"
   },
 {
@@ -865,7 +859,6 @@ opensell: 0,
     plannedRevenue: "521500000",
     revenue: "121300000",
 openRevenue: "0",
-    openRevenue: "113600000",
     targetPercentage: "20"
     },
 
