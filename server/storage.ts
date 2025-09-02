@@ -976,7 +976,7 @@ targetPercentage: "74.72"
       targetPercentage: "0.00%",
     },
   // Châu Đại Dương
-  
+
     {
       name: "Úc",
       code: "uc",
@@ -1065,13 +1065,36 @@ targetPercentage: "74.72"
       targetPercentage: "0.00%",
     },
 
-// Domestic - Geographic Regions (Level 1) - Tổng 30min = 6+4+2 = 12
+// Domestic - Level 1: Tour Nội Địa (Main Category)
+{
+name: "TOUR NỘI ĐỊA",
+code: "tour_noi_dia",
+category: "domestic", 
+level: "tour_category",
+parentCode: null,
+planned: 3226,
+sold: 2968,
+remaining: 258,
+opensell: 3328,
+recentlyBooked: 374,
+recentlyBooked30min: 12,
+completionRate: "92.0%",
+plannedRevenue: "15616000000",
+revenue: "15263000000",
+remainingRevenue: "353000000",
+openRevenue: "14757500000",
+dailyRevenue: "1489038748",
+recentlyRevenue30min: "218796662",
+targetPercentage: "97.74%"
+},
+
+// Domestic - Geographic Regions (Level 2) - Tổng 30min = 6+4+2 = 12
 {
 name: "Nội Địa",
 code: "noi_dia", 
 category: "domestic",
 level: "geo_region",
-parentCode: null,
+parentCode: "tour_noi_dia",
 planned: 3226,
 sold: 2968,
 remaining: 258,
@@ -1890,7 +1913,7 @@ const toursData: InsertTour[] = [
       topSalesUnit: "HCM"
     },
 
-  
+
 /// Tây Nguyên
   {
   name: "Lâm Đồng",
