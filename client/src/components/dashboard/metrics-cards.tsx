@@ -56,7 +56,7 @@ export default function MetricsCards() {
     },
     {
       title: "Doanh Số Hôm Nay",
-      value: metrics.dailyRevenue,
+      value: `${(parseFloat(metrics.dailyRevenue?.replace(/[^\d.]/g, '') || '0') / 1000000).toLocaleString()}Tr VND`,
       change: metrics.dailyRevenueChange,
       changeType: "percentage",
       icon: DollarSign,
