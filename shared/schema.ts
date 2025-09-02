@@ -15,11 +15,13 @@ export const tours = pgTable("tours", {
   planned: integer("planned").notNull().default(0),
   sold: integer("sold").notNull().default(0),
   remaining: integer("remaining").notNull().default(0),
+  opensell: integer("opensell").notNull().default(0), // LK Mở bán
   recentlyBooked: integer("recently_booked").notNull().default(0),
   recentlyBooked30min: integer("recently_booked_30min").notNull().default(0),
   completionRate: decimal("completion_rate", { precision: 5, scale: 2 }).notNull().default("0"),
   dailyRevenue: decimal("daily_revenue", { precision: 15, scale: 2 }).notNull().default("0"), // Doanh thư hôm nay
   revenue: decimal("revenue", { precision: 15, scale: 2 }).notNull().default("0"),
+  openRevenue: decimal("open_revenue", { precision: 15, scale: 2 }).notNull().default("0"), // DS Mở bán
   plannedRevenue: decimal("planned_revenue", { precision: 15, scale: 2 }).notNull().default("0"), // Doanh thu kế hoạch
   targetPercentage: decimal("target_percentage", { precision: 5, scale: 2 }).notNull().default("0"),
   topSalesUnit: text("top_sales_unit").notNull().default("HCM"), // 'HCM', 'HN', 'CT'
@@ -39,10 +41,12 @@ export const hierarchyLevels = pgTable("hierarchy_levels", {
   planned: integer("planned").notNull().default(0),
   sold: integer("sold").notNull().default(0),
   remaining: integer("remaining").notNull().default(0),
+  opensell: integer("opensell").notNull().default(0), // LK Mở bán
   recentlyBooked: integer("recently_booked").notNull().default(0),
   recentlyBooked30min: integer("recently_booked_30min").notNull().default(0),
   completionRate: decimal("completion_rate", { precision: 5, scale: 2 }).notNull().default("0"),
   revenue: decimal("revenue", { precision: 15, scale: 2 }).notNull().default("0"),
+  openRevenue: decimal("open_revenue", { precision: 15, scale: 2 }).notNull().default("0"), // DS Mở bán
   plannedRevenue: decimal("planned_revenue", { precision: 15, scale: 2 }).notNull().default("0"), // Doanh thu kế hoạch
   targetPercentage: decimal("target_percentage", { precision: 5, scale: 2 }).notNull().default("0"),
 });
