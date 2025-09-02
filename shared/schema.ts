@@ -10,7 +10,6 @@ export const tours = pgTable("tours", {
   continent: text("continent"), // For international: 'chau_a', 'chau_au', etc.
   geoRegion: text("geo_region"), // For domestic: 'mien_bac', 'mien_trung', 'mien_nam'
   area: text("area").notNull(), // Specific area like 'dong_bac_a', 'tay_nguyen', etc.
-  duration: text("duration").notNull(), // '3N2D', '4N3D', etc.
   imageUrl: text("image_url"),
   planned: integer("planned").notNull().default(0),
   sold: integer("sold").notNull().default(0),

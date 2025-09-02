@@ -16,7 +16,7 @@ const DEFAULT_COLUMNS: ColumnConfig[] = [
   { id: 'opensell', label: 'LK Mở bán', visible: true, width: '9%' },
   { id: 'recentlyBooked', label: 'Số Chỗ Bán Hôm Nay', visible: true, width: '10%' },
   { id: 'completionRate', label: '% LK Hoàn Thành', visible: true, width: '9%' },
-  { id: 'dailyRevenue', label: 'Doanh Thư Hôm Nay', visible: true, width: '10%' },
+  { id: 'dailyRevenue', label: 'Doanh Thu Hôm Nay', visible: true, width: '10%' },
   { id: 'revenue', label: 'Doanh Số', visible: false, width: '10%' }, // Mặc định ẩn
   { id: 'openRevenue', label: 'DS Mở bán', visible: true, width: '9%' },
   { id: 'plannedRevenue', label: 'Doanh Số Kế Hoạch', visible: false, width: '10%' }, // Mặc định ẩn
