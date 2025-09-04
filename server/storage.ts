@@ -116,14 +116,14 @@ targetPercentage: "74.72"
       opensell: 287,
       recentlyBooked: 21,
       recentlyBooked30min: 4,
-      completionRate: "75.6%",
+      completionRate: "75.6",
       plannedRevenue: "13865000000",
       revenue: "12861000000",
       remainingRevenue: "304750000",
       openRevenue: "17263750000",
       dailyRevenue: "1442085000",
       recentlyRevenue30min: "277452857",
-      targetPercentage: "97.69%"
+      targetPercentage: "97.69"
     },
     {
       name: "Châu Mỹ",
@@ -504,7 +504,7 @@ targetPercentage: "74.72"
       revenue: "1418450000",
       remainingRevenue: "-92750000",
       openRevenue: "1489500000",
-          dailyRevenue: "261834000",
+      dailyRevenue: "261834000",
       recentlyRevenue30min: "442765231",
       targetPercentage: "100.66%"
     },
