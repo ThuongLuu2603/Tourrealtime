@@ -386,26 +386,11 @@ export default function TourTable() {
         );
         
       case 'dailyRevenue':
-        if (isSection) {
-          return (
-            <span className="text-center text-sm font-semibold text-blue-600">
-              {formatCurrency(calculateSectionDailyRevenue(rowData.section))}
-            </span>
-          );
-        } else if (isContinent || isRegion || isArea) {
-          return (
-            <span className={`text-center text-sm ${getDataTextColor(rowData.type, true)} text-blue-600`}>
-              {formatCurrency(calculateDailyRevenueForLevel(rowData.data.code, rowData.data.level, rowData.data.category))}
-            </span>
-          );
-        } else if (isTour) {
-          return (
-            <span className={`text-center text-sm ${getDataTextColor(rowData.type, true)} text-blue-600`}>
-              {formatCurrency(rowData.data.dailyRevenue || "0")}
-            </span>
-          );
-        }
-        break;
+        return (
+          <span className={`text-center text-sm ${getDataTextColor(rowData.type, true)} text-blue-600`}>
+            {formatCurrency(rowData.data.dailyRevenue || "0")}
+          </span>
+        );
         
       case 'revenue':
         return (
@@ -443,14 +428,14 @@ export default function TourTable() {
         }
         
       case 'targetPercentage':
-        const completionRate = parseFloat(rowData.data.completionRate);
+        const targetRate = parseFloat(rowData.data.targetPercentage || "0");
         return (
           <div className="flex flex-col items-center">
             <span className="text-xs text-green-600 leading-tight">
-              +{(completionRate * 0.1).toFixed(1)}%
+              +{(targetRate * 0.1).toFixed(1)}%
             </span>
-            <span className={`text-sm font-medium ${getCompletionRateColor(rowData.data.completionRate)}`}>
-              {completionRate.toFixed(1)}%
+            <span className={`text-sm font-medium ${getCompletionRateColor(rowData.data.targetPercentage || "0")}`}>
+              {targetRate.toFixed(1)}%
             </span>
           </div>
         );
