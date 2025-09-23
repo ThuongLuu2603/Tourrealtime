@@ -27,9 +27,10 @@ const DEFAULT_COLUMNS: ColumnConfig[] = [
 interface TourTableProps {
   selectedSalesUnit: string;
   onSalesUnitChange: (unit: string) => void;
+  displayMode: 'sales' | 'revenue';
 }
 
-export default function TourTable({ selectedSalesUnit, onSalesUnitChange }: TourTableProps) {
+export default function TourTable({ selectedSalesUnit, onSalesUnitChange, displayMode }: TourTableProps) {
   const [expandedSections, setExpandedSections] = useState<Record<string, boolean>>({
     domestic: true,
     international: true
@@ -43,6 +44,46 @@ export default function TourTable({ selectedSalesUnit, onSalesUnitChange }: Tour
     level3: { domestic: false, international: false }
   });
   const [columns, setColumns] = useState<ColumnConfig[]>(DEFAULT_COLUMNS);
+
+  // Cập nhật nhãn cột dựa trên displayMode
+  const getUpdatedColumns = () => {
+    return columns.map(col => {
+      if (displayMode === 'revenue') {
+        switch (col.id) {
+          case 'dailyRevenue':
+            return { ...col, label: 'Doanh Thu Hôm Nay' };
+          case 'revenue':
+            return { ...col, label: 'Doanh Thu Lũy Kế' };
+          case 'openRevenue':
+            return { ...col, label: 'DT Mở bán' };
+          case 'plannedRevenue':
+            return { ...col, label: 'Doanh Thu Kế Hoạch' };
+          case 'targetPercentage':
+            return { ...col, label: '% DT KH' };
+          default:
+            return col;
+        }
+      } else {
+        // displayMode === 'sales'
+        switch (col.id) {
+          case 'dailyRevenue':
+            return { ...col, label: 'Doanh Số Hôm Nay' };
+          case 'revenue':
+            return { ...col, label: 'Doanh Số Lũy Kế' };
+          case 'openRevenue':
+            return { ...col, label: 'DS Mở bán' };
+          case 'plannedRevenue':
+            return { ...col, label: 'Doanh Số Kế Hoạch' };
+          case 'targetPercentage':
+            return { ...col, label: '% DS KH' };
+          default:
+            return col;
+        }
+      }
+    });
+  };
+
+  const updatedColumns = getUpdatedColumns();
 
   const { data: tours = [], isLoading: toursLoading } = useQuery<Tour[]>({
     queryKey: ["/api/tours"],
@@ -925,7 +966,9 @@ export default function TourTable({ selectedSalesUnit, onSalesUnitChange }: Tour
             <tr>
               {columns
                 .filter(col => col.visible && (col.id !== 'topSalesUnit' || selectedSalesUnit === "all"))
-                .map(column => (
+                .map(column => {
+                  const updatedColumn = updatedColumns.find(c => c.id === column.id) || column;
+                  return (
                   <th 
                     key={column.id}
                     className={`px-2 py-2 text-xs font-medium text-gray-500 uppercase tracking-wider ${
@@ -933,9 +976,10 @@ export default function TourTable({ selectedSalesUnit, onSalesUnitChange }: Tour
                     }`}
                     style={{ width: column.width }}
                   >
-                    {column.label}
+                    {updatedColumn.label}
                   </th>
-                ))}
+                  );
+                })}
             </tr>
           </thead>
           <tbody className="bg-white divide-y divide-gray-200">

@@ -83,7 +83,7 @@ export default function Dashboard() {
                 <span className="ml-2">| Cập nhật: 9s trước</span>
               </div>
               {/* Thêm dropdown chọn Hiển thị theo Doanh thu/Doanh số */}
-              <Select value={displayMode} onValueChange={setDisplayMode}>
+              <Select value={displayMode} onValueChange={(value: 'sales' | 'revenue') => setDisplayMode(value)}>
                 <SelectTrigger className="w-56" data-testid="display-mode-selector">
                   <SelectValue placeholder="Chọn chế độ hiển thị" />
                 </SelectTrigger>

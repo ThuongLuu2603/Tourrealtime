@@ -4,7 +4,11 @@ import { Button } from "@/components/ui/button";
 import type { Tour } from "@shared/schema";
 import { useState } from "react";
 
-export default function TopToursPanel() {
+interface TopToursPanelProps {
+  displayMode: 'sales' | 'revenue';
+}
+
+export default function TopToursPanel({ displayMode }: TopToursPanelProps) {
   const [showAll, setShowAll] = useState(false);
   const { data: tours = [], isLoading } = useQuery<Tour[]>({
     queryKey: ["/api/tours"],
@@ -99,7 +103,7 @@ export default function TopToursPanel() {
                 {tour.name}
               </p>
               <p className="text-xs text-gray-500">
-                {getRegionLabel(tour.region)}
+                {getRegionLabel(tour.geoRegion || tour.area)}
               </p>
             </div>
             <div className="text-right">
