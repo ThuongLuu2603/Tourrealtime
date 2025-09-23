@@ -76,7 +76,7 @@ export default function MetricsCards({ displayMode }: MetricsCardsProps) {
       color: "amber",
       testId: "metric-tours-sold",
       detailLabel: displayMode === 'revenue' ? "KH doanh thu" : "KH lượt khách",
-      detailValue: `${metrics.toursSold.toLocaleString()} ${displayMode === 'revenue' ? 'VND' : 'LK'}`
+      detailValue: displayMode === 'revenue' ? `${metrics.toursSold.toLocaleString()} VND` : `${metrics.toursSold.toLocaleString()} LK`
     },
     {
       title: displayMode === 'revenue' ? "Mục tiêu Doanh Thu" : "Mục tiêu Doanh Số",
