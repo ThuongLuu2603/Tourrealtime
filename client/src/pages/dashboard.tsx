@@ -78,7 +78,23 @@ export default function Dashboard() {
                 <span data-testid="current-time">{formatTime(currentTime)}</span>
                 <span className="ml-2">| Cập nhật: 9s trước</span>
               </div>
-              
+              {/* Sales Unit Filter in Header */}
+              <div className="flex items-center space-x-2">
+                <Filter className="w-4 h-4 text-gray-500" />
+                <Select value={selectedSalesUnit} onValueChange={setSelectedSalesUnit}>
+                  <SelectTrigger className="w-48" data-testid="header-sales-unit-filter">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all">Tất cả đơn vị</SelectItem>
+                    {salesUnits.map(unit => (
+                      <SelectItem key={unit.id} value={unit.code}>
+                        {unit.name}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
               <DateFilterDropdown 
                 onSelectionChange={(type, values) => {
                   console.log(`Selected ${type}:`, values);
