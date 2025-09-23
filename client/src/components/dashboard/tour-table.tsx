@@ -919,9 +919,9 @@ export default function TourTable({ selectedSalesUnit, onSalesUnitChange }: Tour
         </div>
       </CardHeader>
       
-      <div className="overflow-x-auto custom-scrollbar">
+      <div className="overflow-x-auto custom-scrollbar max-h-[calc(100vh-300px)]">
         <table className="w-full table-responsive">
-          <thead className="bg-gray-50">
+          <thead className="bg-gray-50 sticky top-0 z-20">
             <tr>
               {columns
                 .filter(col => col.visible && (col.id !== 'topSalesUnit' || selectedSalesUnit === "all"))
