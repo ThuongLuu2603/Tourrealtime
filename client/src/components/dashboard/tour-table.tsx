@@ -24,7 +24,12 @@ const DEFAULT_COLUMNS: ColumnConfig[] = [
   { id: 'topSalesUnit', label: 'Đơn Vị Top 1', visible: true, width: '12%' },
 ];
 
-export default function TourTable() {
+interface TourTableProps {
+  selectedSalesUnit: string;
+  onSalesUnitChange: (unit: string) => void;
+}
+
+export default function TourTable({ selectedSalesUnit, onSalesUnitChange }: TourTableProps) {
   const [expandedSections, setExpandedSections] = useState<Record<string, boolean>>({
     domestic: true,
     international: true
@@ -32,7 +37,6 @@ export default function TourTable() {
   const [expandedContinents, setExpandedContinents] = useState<Record<string, boolean>>({});
   const [expandedRegions, setExpandedRegions] = useState<Record<string, boolean>>({});
   const [expandedAreas, setExpandedAreas] = useState<Record<string, boolean>>({});
-  const [selectedSalesUnit, setSelectedSalesUnit] = useState<string>("all");
   const [levelFilters, setLevelFilters] = useState<LevelFilters>({
     level1: { domestic: false, international: false },
     level2: { domestic: false, international: false },
@@ -50,7 +54,7 @@ export default function TourTable() {
     refetchInterval: 5000,
   });
 
-  const { data: salesUnits = [], isLoading: salesUnitsLoading } = useQuery<SalesUnit[]>({
+  const { data: salesUnits = [] } = useQuery<SalesUnit[]>({
     queryKey: ["/api/sales-units"],
     refetchInterval: 30000,
   });
@@ -469,7 +473,7 @@ export default function TourTable() {
   };
 
   const handleSalesUnitClick = (unitCode: string) => {
-    setSelectedSalesUnit(unitCode);
+    onSalesUnitChange(unitCode);
   };
 
   // Filter tours by selected sales unit
@@ -540,7 +544,7 @@ export default function TourTable() {
     return acc;
   }, {} as Record<string, Tour[]>);
 
-  if (toursLoading || hierarchyLoading || salesUnitsLoading) {
+  if (toursLoading || hierarchyLoading) {
     return (
       <Card className="bg-white rounded-xl shadow-sm border border-gray-200">
         <CardHeader>
@@ -897,7 +901,7 @@ export default function TourTable() {
             {/* Sales Unit Filter */}
             <div className="flex items-center space-x-2">
               <Filter className="w-4 h-4 text-gray-500" />
-              <Select value={selectedSalesUnit} onValueChange={setSelectedSalesUnit}>
+              <Select value={selectedSalesUnit} onValueChange={onSalesUnitChange}>
                 <SelectTrigger className="w-48" data-testid="sales-unit-filter">
                   <SelectValue />
                 </SelectTrigger>

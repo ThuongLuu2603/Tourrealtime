@@ -8,12 +8,20 @@ import RecentActivities from "@/components/dashboard/recent-activities";
 import DateFilterDropdown from "@/components/dashboard/date-filter-dropdown";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { FileSpreadsheet, Clock } from "lucide-react";
+import { FileSpreadsheet, Clock, Filter } from "lucide-react";
+import type { SalesUnit } from "@shared/schema";
 
 export default function Dashboard() {
   const [currentTime, setCurrentTime] = useState(new Date());
   const [autoRefresh, setAutoRefresh] = useState(true);
   const [selectedMonth, setSelectedMonth] = useState("7");
+  const [selectedSalesUnit, setSelectedSalesUnit] = useState<string>("all");
+
+  // Fetch sales units data for dropdown
+  const { data: salesUnits = [] } = useQuery<SalesUnit[]>({
+    queryKey: ["/api/sales-units"],
+    refetchInterval: 30000,
+  });
 
   // Update current time every second
   useEffect(() => {
@@ -78,6 +86,24 @@ export default function Dashboard() {
                 }}
               />
               
+              {/* Sales Unit Filter in Header */}
+              <div className="flex items-center space-x-2">
+                <Filter className="w-4 h-4 text-gray-500" />
+                <Select value={selectedSalesUnit} onValueChange={setSelectedSalesUnit}>
+                  <SelectTrigger className="w-48" data-testid="header-sales-unit-filter">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all">Tất cả đơn vị</SelectItem>
+                    {salesUnits.map(unit => (
+                      <SelectItem key={unit.id} value={unit.code}>
+                        {unit.name}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+              
               <Select value={selectedMonth} onValueChange={setSelectedMonth}>
                 <SelectTrigger className="w-32" data-testid="month-selector">
                   <SelectValue />
@@ -124,7 +150,10 @@ export default function Dashboard() {
         <div className="grid grid-cols-1 xl:grid-cols-4 gap-6 mt-8">
           {/* Main Dashboard Table */}
           <div className="xl:col-span-3">
-            <TourTable />
+            <TourTable 
+              selectedSalesUnit={selectedSalesUnit}
+              onSalesUnitChange={setSelectedSalesUnit}
+            />
           </div>
 
           {/* Right Sidebar */}
