@@ -16,11 +16,11 @@ const DEFAULT_COLUMNS: ColumnConfig[] = [
   { id: 'opensell', label: 'LK Mở bán', visible: false, width: '9%' },// Mặc định ẩn
   { id: 'recentlyBooked', label: 'Số Chỗ Bán Hôm Nay', visible: true, width: '10%' },
   { id: 'completionRate', label: '% LK Hoàn Thành', visible: true, width: '9%' },
-  { id: 'dailyRevenue', label: 'Doanh Thu Hôm Nay', visible: true, width: '10%' },
-  { id: 'revenue', label: 'Doanh Số', visible: true, width: '10%' }, 
+  { id: 'dailyRevenue', label: 'Doanh Số Hôm Nay', visible: true, width: '10%' },
+  { id: 'revenue', label: 'Doanh Số lũy kế', visible: true, width: '10%' }, 
   { id: 'openRevenue', label: 'DS Mở bán', visible: false, width: '9%' },// Mặc định ẩn
   { id: 'plannedRevenue', label: 'Doanh Số Kế Hoạch', visible: false, width: '10%' }, // Mặc định ẩn
-  { id: 'targetPercentage', label: '% DS KH', visible: true, width: '8%' },
+  { id: 'targetPercentage', label: '% DT KH', visible: true, width: '8%' },
   { id: 'topSalesUnit', label: 'Đơn Vị Top 1', visible: true, width: '12%' },
 ];
 
@@ -103,7 +103,7 @@ export default function TourTable() {
       case 'section':
         return {
           bg: isDomestic ? 'bg-green-50 hover:bg-green-100' : 'bg-blue-50 hover:bg-blue-100',
-          text: 'text-gray-900 font-semibold',
+          text: 'text-gray-700 font-semibold',
           indicator: isDomestic ? 'bg-brand-green' : 'bg-brand-blue'
         };
       case 'continent':

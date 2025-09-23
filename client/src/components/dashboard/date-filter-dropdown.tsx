@@ -71,15 +71,15 @@ export default function DateFilterDropdown({ onSelectionChange }: DateFilterDrop
 
   const getDisplayText = () => {
     if (selectedType === 'week') {
-      if (selectedWeeks.length === 0) return 'Chọn tuần';
-      if (selectedWeeks.length === 1) return `Tuần ${selectedWeeks[0]}`;
-      return `${selectedWeeks.length} tuần đã chọn`;
+      if (selectedWeeks.length === 0) return 'Chọn Kế hoạch tuần';
+      if (selectedWeeks.length === 1) return `Kế hoạch Tuần ${selectedWeeks[0]}`;
+      return `${selectedWeeks.length} Kế hoạch tuần đã chọn`;
     } else if (selectedType === 'month') {
-      if (selectedMonths.length === 0) return 'Chọn tháng';
-      if (selectedMonths.length === 1) return `Tháng ${selectedMonths[0]}`;
-      return `${selectedMonths.length} tháng đã chọn`;
+      if (selectedMonths.length === 0) return 'Chọn Kế hoạch tháng';
+      if (selectedMonths.length === 1) return `Kế hoạch Tháng ${selectedMonths[0]}`;
+      return `${selectedMonths.length} kế hoạch tháng đã chọn`;
     } else {
-      return `Toàn năm`;
+      return `Kế hoạch cả năm`;
     }
   };
 
@@ -123,7 +123,7 @@ export default function DateFilterDropdown({ onSelectionChange }: DateFilterDrop
         <DropdownMenuSub>
           <DropdownMenuSubTrigger className="flex items-center">
             <span className="text-pink-500 mr-2">●</span>
-            Tuần
+            Kế hoạch Tuần
           </DropdownMenuSubTrigger>
           <DropdownMenuSubContent className="max-h-64 overflow-y-auto">
             {weekOptions.map((week) => (
@@ -136,7 +136,7 @@ export default function DateFilterDropdown({ onSelectionChange }: DateFilterDrop
                 className="cursor-pointer flex items-center justify-between"
                 data-testid={`week-${week}`}
               >
-                <span>Tuần {week}</span>
+                <span>Kế hoạch Tuần {week}</span>
                 <div className="flex items-center">
                   {getCurrentWeek() === week && (
                     <span className="text-xs text-green-600 mr-2">(Hiện tại)</span>
@@ -156,7 +156,7 @@ export default function DateFilterDropdown({ onSelectionChange }: DateFilterDrop
         <DropdownMenuSub>
           <DropdownMenuSubTrigger className="flex items-center">
             <span className="text-pink-500 mr-2">●</span>
-            Tháng
+            Kế hoạch Tháng
           </DropdownMenuSubTrigger>
           <DropdownMenuSubContent>
             {monthOptions.map((month) => (
@@ -197,7 +197,7 @@ export default function DateFilterDropdown({ onSelectionChange }: DateFilterDrop
         >
           <div className="flex items-center">
             <span className="text-pink-500 mr-2">●</span>
-            <span>Toàn năm</span>
+            <span>Kế hoạch cả năm</span>
           </div>
           {selectedType === 'year' && (
             <Check className="w-4 h-4 text-blue-600" />
