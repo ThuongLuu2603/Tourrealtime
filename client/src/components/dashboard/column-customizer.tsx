@@ -18,9 +18,10 @@ interface ColumnCustomizerProps {
   columns: ColumnConfig[];
   onColumnsChange: (columns: ColumnConfig[]) => void;
   className?: string;
+  displayMode?: 'sales' | 'revenue';
 }
 
-export default function ColumnCustomizer({ columns, onColumnsChange, className }: ColumnCustomizerProps) {
+export default function ColumnCustomizer({ columns, onColumnsChange, className, displayMode = 'sales' }: ColumnCustomizerProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [draggedIndex, setDraggedIndex] = useState<number | null>(null);
   const [dragOverIndex, setDragOverIndex] = useState<number | null>(null);
@@ -54,6 +55,28 @@ export default function ColumnCustomizer({ columns, onColumnsChange, className }
 
   const visibleColumns = columns.filter(col => col.visible);
   const hiddenColumns = columns.filter(col => !col.visible);
+
+  const getDisplayLabel = (column: ColumnConfig, mode: 'sales' | 'revenue') => {
+    if (mode === 'revenue') {
+      switch (column.id) {
+        case 'dailyRevenue': return 'Doanh Thu Hôm Nay';
+        case 'revenue': return 'Doanh Thu Lũy Kế';
+        case 'openRevenue': return 'DT Mở bán';
+        case 'plannedRevenue': return 'Doanh Thu Kế Hoạch';
+        case 'targetPercentage': return '% DT KH';
+        default: return column.label;
+      }
+    } else {
+      switch (column.id) {
+        case 'dailyRevenue': return 'Doanh Số Hôm Nay';
+        case 'revenue': return 'Doanh Số Lũy Kế';
+        case 'openRevenue': return 'DS Mở bán';
+        case 'plannedRevenue': return 'Doanh Số Kế Hoạch';
+        case 'targetPercentage': return '% DS KH';
+        default: return column.label;
+      }
+    }
+  };
 
   const resetToDefault = () => {
     const defaultColumns = columns.map(col => ({
@@ -175,7 +198,7 @@ export default function ColumnCustomizer({ columns, onColumnsChange, className }
 
                   {/* Column Label */}
                   <div className="flex-1">
-                    <div className="font-medium text-gray-900">{column.label}</div>
+                    <div className="font-medium text-gray-900">{getDisplayLabel(column, displayMode)}</div>
                     {column.fixed && (
                       <div className="text-xs text-gray-500 mt-1">Cột bắt buộc</div>
                     )}
@@ -202,7 +225,7 @@ export default function ColumnCustomizer({ columns, onColumnsChange, className }
               <div className="flex flex-wrap gap-1">
                 {hiddenColumns.map(col => (
                   <Badge key={col.id} variant="secondary" className="text-xs">
-                    {col.label}
+                    {getDisplayLabel(col, displayMode)}
                   </Badge>
                 ))}
               </div>

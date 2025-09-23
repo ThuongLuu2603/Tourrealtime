@@ -52,7 +52,7 @@ export default function RegionalPerformance({ displayMode }: RegionalPerformance
     <Card className="bg-white rounded-xl shadow-sm border border-gray-200" data-testid="regional-performance">
       <CardHeader className="px-6 py-4 border-b border-gray-200">
         <CardTitle className="text-lg font-semibold text-gray-900">
-          Hiệu Suất Doanh Số Theo Khu Vực
+          {displayMode === 'revenue' ? 'Hiệu Suất Doanh Thu Theo Khu Vực' : 'Hiệu Suất Doanh Số Theo Khu Vực'}
         </CardTitle>
       </CardHeader>
       <CardContent className="p-6 space-y-4">
