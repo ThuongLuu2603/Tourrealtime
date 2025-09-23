@@ -929,8 +929,9 @@ export default function TourTable({ selectedSalesUnit, onSalesUnitChange, displa
           <div className="flex items-center space-x-4">
             {/* Column Customizer */}
             <ColumnCustomizer 
-              columns={columns}
+              columns={updatedColumns}
               onColumnsChange={setColumns}
+              displayMode={displayMode}
             />
             
             {/* Level Filter */}

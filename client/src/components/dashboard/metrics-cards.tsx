@@ -86,7 +86,7 @@ export default function MetricsCards({ displayMode }: MetricsCardsProps) {
       icon: PieChart,
       color: "purple",
       testId: "metric-revenue",
-      detailLabel: "KH Doanh Số",
+      detailLabel: displayMode === 'revenue' ? "KH Doanh Thu" : "KH Doanh Số",
       detailValue: `${(parseFloat(metrics.revenue?.replace(/[^\d.]/g, '') || '0') / 1000000).toLocaleString()}Tr VND`
     },
   ];
