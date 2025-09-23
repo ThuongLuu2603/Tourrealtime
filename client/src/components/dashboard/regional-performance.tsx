@@ -2,7 +2,11 @@ import { useQuery } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import type { RegionalPerformance } from "@shared/schema";
 
-export default function RegionalPerformance() {
+interface RegionalPerformanceProps {
+  displayMode: 'sales' | 'revenue';
+}
+
+export default function RegionalPerformance({ displayMode }: RegionalPerformanceProps) {
   const { data: performance = [], isLoading } = useQuery<RegionalPerformance[]>({
     queryKey: ["/api/regional-performance"],
     refetchInterval: 30000,
