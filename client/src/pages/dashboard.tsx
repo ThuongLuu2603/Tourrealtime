@@ -16,6 +16,8 @@ export default function Dashboard() {
   const [autoRefresh, setAutoRefresh] = useState(true);
   const [selectedMonth, setSelectedMonth] = useState("7");
   const [selectedSalesUnit, setSelectedSalesUnit] = useState<string>("all");
+  // Thêm state để quản lý lựa chọn hiển thị: 'sales' cho Doanh số, 'revenue' cho Doanh thu
+  const [displayMode, setDisplayMode] = useState<'sales' | 'revenue'>('sales');
 
   // Fetch sales units data for dropdown
   const { data: salesUnits = [] } = useQuery<SalesUnit[]>({
@@ -34,11 +36,11 @@ export default function Dashboard() {
   // Auto refresh data every 10 seconds
   useEffect(() => {
     if (!autoRefresh) return;
-    
+
     const refreshTimer = setInterval(() => {
       // Refetch data here if needed
     }, 10000);
-    
+
     return () => clearInterval(refreshTimer);
   }, [autoRefresh]);
 
@@ -71,13 +73,25 @@ export default function Dashboard() {
                 <span className="text-sm text-gray-600 font-medium" data-testid="live-status">Live Updates</span>
               </div>
             </div>
-            
+
             <div className="flex items-center space-x-4">
+
+
               <div className="text-sm text-gray-600 flex items-center">
                 <Clock className="w-4 h-4 mr-1" />
                 <span data-testid="current-time">{formatTime(currentTime)}</span>
                 <span className="ml-2">| Cập nhật: 9s trước</span>
               </div>
+              {/* Thêm dropdown chọn Hiển thị theo Doanh thu/Doanh số */}
+              <Select value={displayMode} onValueChange={setDisplayMode}>
+                <SelectTrigger className="w-56" data-testid="display-mode-selector">
+                  <SelectValue placeholder="Chọn chế độ hiển thị" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="sales">Hiển thị theo Doanh số</SelectItem>
+                  <SelectItem value="revenue">Hiển thị theo Doanh thu</SelectItem>
+                </SelectContent>
+              </Select>
               {/* Sales Unit Filter in Header */}
               <div className="flex items-center space-x-2">
                 <Filter className="w-4 h-4 text-gray-500" />
@@ -95,15 +109,14 @@ export default function Dashboard() {
                   </SelectContent>
                 </Select>
               </div>
-              <DateFilterDropdown 
+              <DateFilterDropdown
                 onSelectionChange={(type, values) => {
                   console.log(`Selected ${type}:`, values);
                   // Handle date filter change here
                 }}
               />
-              
 
-              
+
               <Select value={selectedMonth} onValueChange={setSelectedMonth}>
                 <SelectTrigger className="w-32" data-testid="month-selector">
                   <SelectValue />
@@ -114,8 +127,8 @@ export default function Dashboard() {
                   <SelectItem value="5">Năm 2027</SelectItem>
                 </SelectContent>
               </Select>
-              
-              <Button 
+
+              <Button
                 onClick={handleExportExcel}
                 className="bg-brand-blue hover:bg-blue-600"
                 data-testid="button-export-excel"
@@ -123,14 +136,14 @@ export default function Dashboard() {
                 <FileSpreadsheet className="w-4 h-4 mr-2" />
                 Xuất Excel
               </Button>
-              
+
               <div className="flex items-center space-x-2">
                 <span className="text-sm text-gray-600">Auto-refresh:</span>
                 <Button
                   onClick={() => setAutoRefresh(!autoRefresh)}
                   className={`px-3 py-1 rounded-full text-xs font-medium ${
-                    autoRefresh 
-                      ? 'bg-brand-green hover:bg-green-600 text-white' 
+                    autoRefresh
+                      ? 'bg-brand-green hover:bg-green-600 text-white'
                       : 'bg-gray-400 hover:bg-gray-500 text-white'
                   }`}
                   data-testid="button-auto-refresh"
@@ -144,24 +157,25 @@ export default function Dashboard() {
       </header>
 
       <main className="w-full px-4 sm:px-6 lg:px-8 py-6">
-        {/* Key Metrics Cards - Sticky below header */}
-        <div className="sticky top-16 z-30 bg-gray-50 pb-6">
-          <MetricsCards />
-        </div>
+        {/* Key Metrics Cards */}
+        {/* Truyền trạng thái lựa chọn vào các component con */}
+        <MetricsCards displayMode={displayMode} />
 
         <div className="grid grid-cols-1 xl:grid-cols-4 gap-6 mt-8">
           {/* Main Dashboard Table */}
           <div className="xl:col-span-3">
-            <TourTable 
+            {/* Truyền trạng thái lựa chọn vào các component con */}
+            <TourTable
               selectedSalesUnit={selectedSalesUnit}
               onSalesUnitChange={setSelectedSalesUnit}
+              displayMode={displayMode}
             />
           </div>
 
           {/* Right Sidebar */}
           <div className="xl:col-span-1 space-y-6">
-            <TopToursPanel />
-            <RegionalPerformance />
+            <TopToursPanel displayMode={displayMode} />
+            <RegionalPerformance displayMode={displayMode} />
             <RecentActivities />
           </div>
         </div>
