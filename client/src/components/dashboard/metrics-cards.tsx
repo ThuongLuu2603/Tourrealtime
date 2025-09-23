@@ -82,7 +82,7 @@ export default function MetricsCards() {
       icon: PieChart,
       color: "purple",
       testId: "metric-revenue",
-      detailLabel: "KH Doanh Thu",
+      detailLabel: "KH Doanh Số",
       detailValue: `${(parseFloat(metrics.revenue?.replace(/[^\d.]/g, '') || '0') / 1000000).toLocaleString()}Tr VND`
     },
   ];
