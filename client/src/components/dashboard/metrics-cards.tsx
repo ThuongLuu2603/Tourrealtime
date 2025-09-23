@@ -3,7 +3,11 @@ import { Card, CardContent } from "@/components/ui/card";
 import { TrendingUp, TrendingDown, Route, DollarSign, ShoppingCart, PieChart } from "lucide-react";
 import type { DashboardMetrics } from "@shared/schema";
 
-export default function MetricsCards() {
+interface MetricsCardsProps {
+  displayMode: 'sales' | 'revenue';
+}
+
+export default function MetricsCards({ displayMode }: MetricsCardsProps) {
   const { data: metrics, isLoading } = useQuery<DashboardMetrics>({
     queryKey: ["/api/dashboard/metrics"],
     refetchInterval: 30000, // Refresh every 30 seconds
@@ -55,7 +59,7 @@ export default function MetricsCards() {
       testId: "metric-daily-bookings"
     },
     {
-      title: "Doanh Số Hôm Nay",
+      title: displayMode === 'revenue' ? "Doanh Thu Hôm Nay" : "Doanh Số Hôm Nay",
       value: `${(parseFloat(metrics.dailyRevenue?.replace(/[^\d.]/g, '') || '0') / 1000000).toLocaleString()}Tr VND`,
       change: metrics.dailyRevenueChange,
       changeType: "percentage",
@@ -64,18 +68,18 @@ export default function MetricsCards() {
       testId: "metric-daily-revenue"
     },
     {
-      title: "Mục tiêu lượt khách",
+      title: displayMode === 'revenue' ? "Mục tiêu doanh thu KH" : "Mục tiêu lượt khách",
       value: `${metrics.toursSoldPlanPercentage || 0}%`,
       change: metrics.toursSold.toLocaleString(),
       changeType: "tours_sold_total", // Hiển thị tổng SL đã bán
       icon: ShoppingCart,
       color: "amber",
       testId: "metric-tours-sold",
-      detailLabel: "KH lượt khách",
-      detailValue: `${metrics.toursSold.toLocaleString()} LK`
+      detailLabel: displayMode === 'revenue' ? "KH doanh thu" : "KH lượt khách",
+      detailValue: `${metrics.toursSold.toLocaleString()} ${displayMode === 'revenue' ? 'VND' : 'LK'}`
     },
     {
-      title: "Mục tiêu Doanh Số",
+      title: displayMode === 'revenue' ? "Mục tiêu Doanh Thu" : "Mục tiêu Doanh Số",
       value: `${metrics.revenuePlanPercentage || 0}%`,
       change: metrics.revenue || metrics.dailyRevenue,
       changeType: "revenue_total", // Hiển thị tổng doanh số
