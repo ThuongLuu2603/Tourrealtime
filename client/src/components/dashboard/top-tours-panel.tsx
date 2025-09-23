@@ -12,21 +12,25 @@ export default function TopToursPanel() {
   });
 
   // Get top 10 tours by sold count
-  const allTopTours = tours
-    .sort((a, b) => b.sold - a.sold)
-    .slice(0, 10);
-  
+  const allTopTours = tours.sort((a, b) => b.sold - a.sold).slice(0, 10);
+
   // Show only 5 initially, or all if showAll is true
   const topTours = showAll ? allTopTours : allTopTours.slice(0, 5);
 
   const getRegionLabel = (region: string) => {
     switch (region) {
-      case 'mien_bac': return 'Miền Bắc';
-      case 'mien_trung': return 'Miền Trung';
-      case 'mien_nam': return 'Miền Nam';
-      case 'chau_a': return 'Châu Á';
-      case 'chau_au': return 'Châu Âu';
-      default: return region;
+      case "mien_bac":
+        return "Miền Bắc";
+      case "mien_trung":
+        return "Miền Trung";
+      case "mien_nam":
+        return "Miền Nam";
+      case "chau_a":
+        return "Châu Á";
+      case "chau_au":
+        return "Châu Âu";
+      default:
+        return region;
     }
   };
 
@@ -58,19 +62,26 @@ export default function TopToursPanel() {
   }
 
   return (
-    <Card className="bg-white rounded-xl shadow-sm border border-gray-200" data-testid="top-tours-panel">
+    <Card
+      className="bg-white rounded-xl shadow-sm border border-gray-200"
+      data-testid="top-tours-panel"
+    >
       <CardHeader className="px-6 py-4 border-b border-gray-200">
         <CardTitle className="text-lg font-semibold text-gray-900">
-          {showAll ? 'Top 10' : 'Top 5'} Tuyến Tour Bán Chạy
+          {showAll ? "Top 10" : "Top 5"} Tuyến Tour Bán Chạy
         </CardTitle>
       </CardHeader>
       <CardContent className="p-6 space-y-4">
         {topTours.map((tour, index) => (
-          <div key={tour.id} className="flex items-center space-x-3" data-testid={`top-tour-${index}`}>
+          <div
+            key={tour.id}
+            className="flex items-center space-x-3"
+            data-testid={`top-tour-${index}`}
+          >
             <div className="flex-shrink-0">
               {tour.imageUrl ? (
-                <img 
-                  src={tour.imageUrl} 
+                <img
+                  src={tour.imageUrl}
                   alt={tour.name}
                   className="w-10 h-10 rounded-lg object-cover"
                 />
@@ -81,13 +92,20 @@ export default function TopToursPanel() {
               )}
             </div>
             <div className="flex-1">
-              <p className="text-sm font-medium text-gray-900 line-clamp-1" title={tour.name}>
+              <p
+                className="text-sm font-medium text-gray-900 line-clamp-1"
+                title={tour.name}
+              >
                 {tour.name}
               </p>
-              <p className="text-xs text-gray-500">{getRegionLabel(tour.region)}</p>
+              <p className="text-xs text-gray-500">
+                {getRegionLabel(tour.region)}
+              </p>
             </div>
             <div className="text-right">
-              <p className="text-sm font-semibold text-gray-900">{tour.sold.toLocaleString()}</p>
+              <p className="text-sm font-semibold text-gray-900">
+                {tour.sold.toLocaleString()}
+              </p>
               <p className="text-xs text-gray-500">Khách</p>
             </div>
           </div>
@@ -108,7 +126,9 @@ export default function TopToursPanel() {
               onClick={() => setShowAll(!showAll)}
               className="text-blue-600 hover:text-blue-700 hover:bg-blue-50"
             >
-              {showAll ? 'Thu gọn' : `Xem thêm (${allTopTours.length - 5} tour)`}
+              {showAll
+                ? "Thu gọn"
+                : `Xem thêm (${allTopTours.length - 5} tour)`}
             </Button>
           </div>
         )}
