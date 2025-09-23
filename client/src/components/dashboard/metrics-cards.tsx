@@ -68,15 +68,15 @@ export default function MetricsCards({ displayMode }: MetricsCardsProps) {
       testId: "metric-daily-revenue"
     },
     {
-      title: displayMode === 'revenue' ? "Mục tiêu doanh thu KH" : "Mục tiêu lượt khách",
+      title: "Mục tiêu lượt khách",
       value: `${metrics.toursSoldPlanPercentage || 0}%`,
       change: metrics.toursSold.toLocaleString(),
       changeType: "tours_sold_total", // Hiển thị tổng SL đã bán
       icon: ShoppingCart,
       color: "amber",
       testId: "metric-tours-sold",
-      detailLabel: displayMode === 'revenue' ? "KH doanh thu" : "KH lượt khách",
-      detailValue: displayMode === 'revenue' ? `${metrics.toursSold.toLocaleString()} VND` : `${metrics.toursSold.toLocaleString()} LK`
+      detailLabel: "KH lượt khách",
+      detailValue: `${metrics.toursSold.toLocaleString()} LK`
     },
     {
       title: displayMode === 'revenue' ? "Mục tiêu Doanh Thu" : "Mục tiêu Doanh Số",
