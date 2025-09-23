@@ -20,7 +20,7 @@ const DEFAULT_COLUMNS: ColumnConfig[] = [
   { id: 'revenue', label: 'Doanh Số lũy kế', visible: true, width: '10%' }, 
   { id: 'openRevenue', label: 'DS Mở bán', visible: false, width: '9%' },// Mặc định ẩn
   { id: 'plannedRevenue', label: 'Doanh Số Kế Hoạch', visible: false, width: '10%' }, // Mặc định ẩn
-  { id: 'targetPercentage', label: '% DT KH', visible: true, width: '8%' },
+  { id: 'targetPercentage', label: '% DS KH', visible: true, width: '8%' },
   { id: 'topSalesUnit', label: 'Đơn Vị Top 1', visible: true, width: '12%' },
 ];
 
