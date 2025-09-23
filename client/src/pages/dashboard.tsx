@@ -144,8 +144,10 @@ export default function Dashboard() {
       </header>
 
       <main className="w-full px-4 sm:px-6 lg:px-8 py-6">
-        {/* Key Metrics Cards */}
-        <MetricsCards />
+        {/* Key Metrics Cards - Sticky below header */}
+        <div className="sticky top-16 z-30 bg-gray-50 pb-6">
+          <MetricsCards />
+        </div>
 
         <div className="grid grid-cols-1 xl:grid-cols-4 gap-6 mt-8">
           {/* Main Dashboard Table */}
