@@ -45,13 +45,15 @@ export default function TourTable({ selectedSalesUnit, onSalesUnitChange, displa
   });
   const [columns, setColumns] = useState<ColumnConfig[]>(DEFAULT_COLUMNS);
 
-  // Cập nhật nhãn cột dựa trên displayMode
+  // Cập nhật nhãn cột và visibility dựa trên displayMode
   const getUpdatedColumns = () => {
     return columns.map(col => {
       if (displayMode === 'revenue') {
         switch (col.id) {
+          case 'recentlyBooked':
+            return { ...col, visible: false }; // Ẩn cột "Số Chỗ Bán Hôm Nay"
           case 'dailyRevenue':
-            return { ...col, label: 'Doanh Thu Hôm Nay' };
+            return { ...col, visible: false }; // Ẩn cột "Doanh Thu Hôm Nay"
           case 'revenue':
             return { ...col, label: 'Doanh Thu Lũy Kế' };
           case 'openRevenue':
@@ -66,8 +68,10 @@ export default function TourTable({ selectedSalesUnit, onSalesUnitChange, displa
       } else {
         // displayMode === 'sales'
         switch (col.id) {
+          case 'recentlyBooked':
+            return { ...col, visible: true }; // Hiện cột "Số Chỗ Bán Hôm Nay"
           case 'dailyRevenue':
-            return { ...col, label: 'Doanh Số Hôm Nay' };
+            return { ...col, visible: true, label: 'Doanh Số Hôm Nay' }; // Hiện cột và update label
           case 'revenue':
             return { ...col, label: 'Doanh Số Lũy Kế' };
           case 'openRevenue':
