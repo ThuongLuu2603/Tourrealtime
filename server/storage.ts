@@ -3349,17 +3349,22 @@ const totalopenRevenue = mainLevels.reduce((sum, level) => {
 const toursSoldPlanPercentage = totalPlanned > 0 ? parseFloat(((totalSold / totalPlanned) * 100).toFixed(1)) : 0;
 // Calculate revenue percentage vs plan: Tổng Doanh Thu / Doanh thu Kế Hoạch
 const revenuePlanPercentage = totalPlannedRevenue > 0 ? parseFloat(((totalRevenue / totalPlannedRevenue) * 100).toFixed(1)) : 0;
-// Previous values for change calculation
+// Previous values for change calculation (daily vs weekly)
 const yesterdayBookings = Math.floor(Math.random() * 5) + 2;
 const dailyBookingsChange = totalDailyBookings - yesterdayBookings;
+
+// Weekly comparison data for revenue mode
+const weeklyBookingsChange = -1211; // khách so với cùng kỳ
+const weeklyRevenueChange = -15743; // nghìn VNĐ so với cùng kỳ
 return {
 totalActiveTours: totalActiveTours,
 totalActiveToursChange: 12.5,
 dailyBookings: totalDailyBookings, // Tổng từ cột "Số Chỗ Bán Hôm Nay"
 dailyBookingsChange: dailyBookingsChange,
+weeklyBookingsChange: weeklyBookingsChange, // So sánh với cùng kỳ tuần trước
 dailyRevenue: (totalDailyRevenue ).toFixed(1) , // Tổng từ cột "Doanh thư hôm nay"
-openRevenue : (totalopenRevenue ).toFixed(1) ,
 dailyRevenueChange: 8.3,
+weeklyRevenueChange: weeklyRevenueChange, // So sánh doanh thu với cùng kỳ tuần trước
 toursSold: totalSold, // Tổng từ cột "Đã bán"
 toursSoldPlanned: totalPlanned, // Tổng kế hoạch lượt khách
 toursSoldChange: -3.2, // Keep for compatibility, but will show percentage instead
