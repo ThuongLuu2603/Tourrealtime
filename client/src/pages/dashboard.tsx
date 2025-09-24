@@ -182,8 +182,16 @@ export default function Dashboard() {
 
           {/* Right Sidebar */}
           <div className="xl:col-span-1 space-y-6">
-            <TopToursPanel displayMode={displayMode} />
-            <RegionalPerformance displayMode={displayMode} />
+            <TopToursPanel 
+              displayMode={displayMode}
+              dateFilterType={dateFilterType}
+              dateFilterValues={dateFilterValues}
+            />
+            <RegionalPerformance 
+              displayMode={displayMode}
+              dateFilterType={dateFilterType}
+              dateFilterValues={dateFilterValues}
+            />
             <RecentActivities />
           </div>
         </div>
