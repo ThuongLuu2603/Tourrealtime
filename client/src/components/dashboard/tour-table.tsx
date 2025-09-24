@@ -16,11 +16,12 @@ const DEFAULT_COLUMNS: ColumnConfig[] = [
   { id: 'opensell', label: 'LK Mở bán', visible: false, width: '9%' },// Mặc định ẩn
   { id: 'recentlyBooked', label: 'Số Chỗ Bán Hôm Nay', visible: true, width: '10%' },
   { id: 'completionRate', label: '% LK Hoàn Thành', visible: true, width: '9%' },
-  { id: 'dailyRevenue', label: 'Doanh Số Hôm Nay', visible: true, width: '10%' },
   { id: 'plannedRevenue', label: 'Doanh Số Kế Hoạch', visible: false, width: '10%' }, // Mặc định ẩn
   { id: 'revenue', label: 'Doanh Số lũy kế', visible: true, width: '10%' }, 
   { id: 'openRevenue', label: 'DS Mở bán', visible: false, width: '9%' },// Mặc định ẩn
-  { id: 'targetPercentage', label: '% DS KH', visible: true, width: '8%' },
+  { id: 'dailyRevenue', label: 'Doanh Số Hôm Nay', visible: true, width: '10%' },
+
+  { id: 'targetPercentage', label: '% Doanh số KH', visible: true, width: '8%' },
   { id: 'topSalesUnit', label: 'Đơn Vị Top 1', visible: true, width: '12%' },
 ];
 
@@ -75,11 +76,11 @@ export default function TourTable({ selectedSalesUnit, onSalesUnitChange, displa
           case 'revenue':
             return { ...col, label: 'Doanh Số Lũy Kế' };
           case 'openRevenue':
-            return { ...col, label: 'DS Mở bán' };
+            return { ...col, label: 'Doanh số Mở bán' };
           case 'plannedRevenue':
             return { ...col, label: 'Doanh Số Kế Hoạch' };
           case 'targetPercentage':
-            return { ...col, label: '% DS KH' };
+            return { ...col, label: '% Doanh số KH' };
           default:
             return col;
         }
