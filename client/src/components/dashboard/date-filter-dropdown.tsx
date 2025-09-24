@@ -11,17 +11,25 @@ import {
   DropdownMenuSubTrigger,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { DayPicker, DateRange } from "react-day-picker";
+import { format } from "date-fns";
+import { vi } from "date-fns/locale";
+import "react-day-picker/dist/style.css";
 
-type FilterType = 'week' | 'month' | 'year';
+type FilterType = 'week' | 'month' | 'year' | 'day' | 'custom';
 
 interface DateFilterDropdownProps {
-  onSelectionChange?: (type: FilterType, values: number[]) => void;
+  onSelectionChange?: (type: FilterType, values: number[], dates?: { selectedDay?: Date; dateRange?: { from: Date; to?: Date } }) => void;
 }
 
 export default function DateFilterDropdown({ onSelectionChange }: DateFilterDropdownProps) {
   const [selectedType, setSelectedType] = useState<FilterType>('week');
   const [selectedWeeks, setSelectedWeeks] = useState<number[]>([]);
   const [selectedMonths, setSelectedMonths] = useState<number[]>([]);
+  const [selectedDay, setSelectedDay] = useState<Date | undefined>();
+  const [dateRange, setDateRange] = useState<{ from: Date; to?: Date } | undefined>();
+  const [showDayPicker, setShowDayPicker] = useState(false);
+  const [showRangePicker, setShowRangePicker] = useState(false);
 
   // Calculate current week number from current date
   const getCurrentWeek = () => {
@@ -69,6 +77,29 @@ export default function DateFilterDropdown({ onSelectionChange }: DateFilterDrop
     onSelectionChange?.('year', []);
   };
 
+  const handleDaySelection = (day: Date | undefined) => {
+    setSelectedDay(day);
+    setSelectedType('day');
+    setShowDayPicker(false);
+    if (day) {
+      onSelectionChange?.('day', [], { selectedDay: day });
+    }
+  };
+
+  const handleRangeSelection = (range: DateRange | undefined) => {
+    if (range && range.from) {
+      const validRange = { from: range.from, to: range.to };
+      setDateRange(validRange);
+      setSelectedType('custom');
+      onSelectionChange?.('custom', [], { dateRange: validRange });
+      if (range.to) {
+        setShowRangePicker(false);
+      }
+    } else {
+      setDateRange(undefined);
+    }
+  };
+
   const getDisplayText = () => {
     if (selectedType === 'week') {
       if (selectedWeeks.length === 0) return 'Chọn Kế hoạch tuần';
@@ -78,6 +109,15 @@ export default function DateFilterDropdown({ onSelectionChange }: DateFilterDrop
       if (selectedMonths.length === 0) return 'Chọn Kế hoạch tháng';
       if (selectedMonths.length === 1) return `Kế hoạch Tháng ${selectedMonths[0]}`;
       return `${selectedMonths.length} kế hoạch tháng đã chọn`;
+    } else if (selectedType === 'day') {
+      return selectedDay ? `Kế hoạch Ngày ${format(selectedDay, 'dd/MM/yyyy', { locale: vi })}` : 'Chọn Kế hoạch ngày';
+    } else if (selectedType === 'custom') {
+      if (dateRange?.from) {
+        const fromStr = format(dateRange.from, 'dd/MM/yyyy', { locale: vi });
+        const toStr = dateRange.to ? format(dateRange.to, 'dd/MM/yyyy', { locale: vi }) : '';
+        return dateRange.to ? `${fromStr} - ${toStr}` : `Từ ${fromStr}`;
+      }
+      return 'Chọn khoảng thời gian';
     } else {
       return `Kế hoạch cả năm`;
     }
@@ -119,6 +159,25 @@ export default function DateFilterDropdown({ onSelectionChange }: DateFilterDrop
       </DropdownMenuTrigger>
       
       <DropdownMenuContent className="w-56" align="end">
+        {/* Day Selection */}
+        <DropdownMenuSub open={showDayPicker} onOpenChange={setShowDayPicker}>
+          <DropdownMenuSubTrigger className="flex items-center">
+            <span className="text-pink-500 mr-2">●</span>
+            Kế hoạch Ngày
+          </DropdownMenuSubTrigger>
+          <DropdownMenuSubContent className="w-auto p-3">
+            <DayPicker
+              mode="single"
+              selected={selectedDay}
+              onSelect={handleDaySelection}
+              locale={vi}
+              className="rdp-small"
+            />
+          </DropdownMenuSubContent>
+        </DropdownMenuSub>
+
+        <DropdownMenuSeparator />
+
         {/* Week Selection */}
         <DropdownMenuSub>
           <DropdownMenuSubTrigger className="flex items-center">
@@ -203,6 +262,25 @@ export default function DateFilterDropdown({ onSelectionChange }: DateFilterDrop
             <Check className="w-4 h-4 text-blue-600" />
           )}
         </DropdownMenuItem>
+
+        <DropdownMenuSeparator />
+
+        {/* Custom Range Selection */}
+        <DropdownMenuSub open={showRangePicker} onOpenChange={setShowRangePicker}>
+          <DropdownMenuSubTrigger className="flex items-center">
+            <span className="text-pink-500 mr-2">●</span>
+            Chọn trên Calendar
+          </DropdownMenuSubTrigger>
+          <DropdownMenuSubContent className="w-auto p-3">
+            <DayPicker
+              mode="range"
+              selected={dateRange}
+              onSelect={handleRangeSelection}
+              locale={vi}
+              className="rdp-small"
+            />
+          </DropdownMenuSubContent>
+        </DropdownMenuSub>
       </DropdownMenuContent>
     </DropdownMenu>
   );
