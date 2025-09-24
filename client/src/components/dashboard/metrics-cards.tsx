@@ -45,6 +45,33 @@ export default function MetricsCards({ displayMode, dateFilterType = 'week', dat
   };
 
   if (isLoading) {
+    if (displayMode === 'revenue') {
+      // Revenue mode loading: Tất cả cards trong 1 hàng
+      return (
+        <div>
+          <div className="mb-4">
+            <div className="h-6 bg-gray-200 rounded w-64 animate-pulse"></div>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            {Array.from({ length: 4 }).map((_, i) => (
+              <Card key={i} className="animate-pulse">
+                <CardContent className="p-6">
+                  <div className="flex items-center justify-between">
+                    <div className="space-y-2">
+                      <div className="h-4 bg-gray-200 rounded w-24"></div>
+                      <div className="h-8 bg-gray-200 rounded w-16"></div>
+                      <div className="h-4 bg-gray-200 rounded w-32"></div>
+                    </div>
+                    <div className="w-12 h-12 bg-gray-200 rounded-lg"></div>
+                  </div>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        </div>
+      );
+    }
+
     return (
       <div className="flex gap-8">
         {/* Bên trái - Loading */}
@@ -70,31 +97,33 @@ export default function MetricsCards({ displayMode, dateFilterType = 'week', dat
           </div>
         </div>
 
-        {/* Vách ngăn */}
-        <div className="w-px bg-gray-300"></div>
+        {/* Vách ngăn - chỉ hiển thị khi không phải revenue mode */}
+        {displayMode !== 'revenue' && <div className="w-px bg-gray-300"></div>}
 
-        {/* Bên phải - Loading */}
-        <div className="flex-1">
-          <div className="mb-4">
-            <div className="h-6 bg-gray-200 rounded w-32 animate-pulse"></div>
-          </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {Array.from({ length: 2 }).map((_, i) => (
-              <Card key={i + 2} className="animate-pulse">
-                <CardContent className="p-6">
-                  <div className="flex items-center justify-between">
-                    <div className="space-y-2">
-                      <div className="h-4 bg-gray-200 rounded w-24"></div>
-                      <div className="h-8 bg-gray-200 rounded w-16"></div>
-                      <div className="h-4 bg-gray-200 rounded w-32"></div>
+        {/* Bên phải - Loading - chỉ hiển thị khi không phải revenue mode */}
+        {displayMode !== 'revenue' && (
+          <div className="flex-1">
+            <div className="mb-4">
+              <div className="h-6 bg-gray-200 rounded w-32 animate-pulse"></div>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              {Array.from({ length: 2 }).map((_, i) => (
+                <Card key={i + 2} className="animate-pulse">
+                  <CardContent className="p-6">
+                    <div className="flex items-center justify-between">
+                      <div className="space-y-2">
+                        <div className="h-4 bg-gray-200 rounded w-24"></div>
+                        <div className="h-8 bg-gray-200 rounded w-16"></div>
+                        <div className="h-4 bg-gray-200 rounded w-32"></div>
+                      </div>
+                      <div className="w-12 h-12 bg-gray-200 rounded-lg"></div>
                     </div>
-                    <div className="w-12 h-12 bg-gray-200 rounded-lg"></div>
-                  </div>
-                </CardContent>
-              </Card>
-            ))}
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
           </div>
-        </div>
+        )}
       </div>
     );
   }
@@ -144,14 +173,14 @@ export default function MetricsCards({ displayMode, dateFilterType = 'week', dat
       detailValue: `${metrics.toursSold.toLocaleString()} / ${metrics.toursSoldPlanned?.toLocaleString() || '0'} LK`
     },
     {
-      title: "Mục tiêu Doanh Số đạt",
+      title: displayMode === 'revenue' ? "Mục tiêu Doanh Thu đạt" : "Mục tiêu Doanh Số đạt",
       value: `${metrics.revenuePlanPercentage || 0}% Kế hoạch`,
       change: metrics.revenue || metrics.dailyRevenue,
       changeType: "revenue_total", // Hiển thị tổng doanh số
       icon: PieChart,
       color: "purple",
       testId: "metric-revenue",
-      detailLabel: "Doanh số",
+      detailLabel: displayMode === 'revenue' ? "Doanh thu" : "Doanh số",
       detailValue: `${(parseFloat(metrics.revenue?.replace(/[^\d.]/g, '') || '0') / 1000000).toLocaleString()} / ${(parseFloat(metrics.revenuePlanned?.replace(/[^\d.]/g, '') || '0') / 1000000).toLocaleString()}Tr VND`
     },
   ];
@@ -167,8 +196,8 @@ export default function MetricsCards({ displayMode, dateFilterType = 'week', dat
   };
 
   // Chia cards thành 2 nhóm
-  const leftCards = cards.slice(0, 2); // 2 cards đầu tiên
-  const rightCards = cards.slice(2, 4); // 2 cards cuối
+  const leftCards = displayMode === 'revenue' ? cards : cards.slice(0, 2); // Nếu revenue mode thì tất cả cards ở bên trái
+  const rightCards = displayMode === 'revenue' ? [] : cards.slice(2, 4); // Nếu revenue mode thì không có cards bên phải
 
   const renderCard = (card: CardProps, index: number) => {
     const IconComponent = card.icon;
@@ -236,13 +265,30 @@ export default function MetricsCards({ displayMode, dateFilterType = 'week', dat
     );
   };
 
+  if (displayMode === 'revenue') {
+    // Revenue mode: Hiển thị tất cả cards trong 1 phần, không có vách ngăn
+    return (
+      <div>
+        <div className="mb-4">
+          <h2 className="text-xl font-bold text-gray-900" data-testid="section-title-left">
+            {getRightSectionTitle()}
+          </h2>
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          {cards.map((card, index) => renderCard(card, index))}
+        </div>
+      </div>
+    );
+  }
+
+  // Sales mode: Layout 2 phần như cũ
   return (
     <div className="flex gap-8">
       {/* Bên trái */}
       <div className="flex-1">
         <div className="mb-4">
           <h2 className="text-xl font-bold text-gray-900" data-testid="section-title-left">
-            {displayMode === 'revenue' ? getRightSectionTitle() : 'Ngày'}
+            Ngày
           </h2>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
