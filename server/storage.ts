@@ -3355,7 +3355,7 @@ const dailyBookingsChange = totalDailyBookings - yesterdayBookings;
 
 // Weekly comparison data for revenue mode
 const weeklyBookingsChange = -1211; // khách so với cùng kỳ
-const weeklyRevenueChange = -15743; // nghìn VNĐ so với cùng kỳ
+const weeklyRevenueChange = -15743000; // nghìn VNĐ so với cùng kỳ
 return {
 totalActiveTours: totalActiveTours,
 totalActiveToursChange: 12.5,
