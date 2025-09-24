@@ -117,7 +117,7 @@ export default function MetricsCards({ displayMode, dateFilterType = 'week', dat
     {
       title: displayMode === 'revenue' ? "Số lượng Đã bán" : "SL Đã Bán hôm nay",
       value: displayMode === 'revenue' ? metrics.toursSold.toLocaleString() : (metrics.dailyBookings?.toLocaleString() || "0"),
-      change: displayMode === 'revenue' ? metrics.toursSoldChange : metrics.dailyBookingsChange,
+      change: displayMode === 'revenue' ? metrics.weeklyBookingsChange : metrics.dailyBookingsChange,
       changeType: "customers", // Hiển thị số khách thay vì phần trăm
       icon: Route,
       color: "blue",
@@ -126,8 +126,8 @@ export default function MetricsCards({ displayMode, dateFilterType = 'week', dat
     {
       title: displayMode === 'revenue' ? "Doanh Thu lũy kế" : "Doanh Số Hôm Nay",
       value: displayMode === 'revenue' ? `${(parseFloat(metrics.revenue?.replace(/[^\d.]/g, '') || '0') / 1000000).toLocaleString()}Tr VND` : `${(parseFloat(metrics.dailyRevenue?.replace(/[^\d.]/g, '') || '0') / 1000000).toLocaleString()}Tr VND`,
-      change: displayMode === 'revenue' ? metrics.revenueChange : metrics.dailyRevenueChange,
-      changeType: "percentage",
+      change: displayMode === 'revenue' ? metrics.weeklyRevenueChange : metrics.dailyRevenueChange,
+      changeType: displayMode === 'revenue' ? "revenue_weekly" : "percentage",
       icon: DollarSign,
       color: "green",
       testId: "metric-daily-revenue"
@@ -206,6 +206,8 @@ export default function MetricsCards({ displayMode, dateFilterType = 'week', dat
                         `${isPositive ? '+' : ''}${changeValue} khách so với hôm qua`
                     ) : card.changeType === "plan_percentage" ? (
                       `= ${changeValue}% kế hoạch`
+                    ) : card.changeType === "revenue_weekly" ? (
+                      `${isPositive ? '+' : ''}${(changeValue / 1000).toLocaleString()}tr VNĐ so với cùng kỳ`
                     ) : card.changeType === "revenue_total" ? (
                       `${card.change}`
                     ) : card.changeType === "tours_sold_total" ? (
