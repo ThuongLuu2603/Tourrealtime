@@ -23,24 +23,24 @@ export default function MetricsCards({ displayMode, dateFilterType = 'week', dat
       if (dateFilterValues.length > 0) {
         const weekNumbers = dateFilterValues.sort((a, b) => a - b);
         if (weekNumbers.length === 1) {
-          return `Kế hoạch Tuần ${weekNumbers[0]}`;
+          return `Lũy kế tính đến ngày hôm nay của Tuần ${weekNumbers[0]} - năm ${currentYear}`;
         } else {
-          return `Kế hoạch Tuần ${weekNumbers[0]}-${weekNumbers[weekNumbers.length - 1]}`;
+          return `Lũy kế tính đến ngày hôm nay của Tuần ${weekNumbers[0]}-${weekNumbers[weekNumbers.length - 1]} - năm ${currentYear}`;
         }
       }
-      return 'Kế hoạch Tuần';
+      return `Lũy kế tính đến ngày hôm nay của Tuần - năm ${currentYear}`;
     } else if (dateFilterType === 'month') {
       if (dateFilterValues.length > 0) {
         const monthNumbers = dateFilterValues.sort((a, b) => a - b);
         if (monthNumbers.length === 1) {
-          return `Kế hoạch Tháng ${monthNumbers[0]}`;
+          return `Lũy kế tính đến ngày hôm nay của Tháng ${monthNumbers[0]} - năm ${currentYear}`;
         } else {
-          return `Kế hoạch Tháng ${monthNumbers[0]}-${monthNumbers[monthNumbers.length - 1]}`;
+          return `Lũy kế tính đến ngày hôm nay của Tháng ${monthNumbers[0]}-${monthNumbers[monthNumbers.length - 1]} - năm ${currentYear}`;
         }
       }
-      return 'Kế hoạch Tháng';
+      return `Lũy kế tính đến ngày hôm nay của Tháng - năm ${currentYear}`;
     } else {
-      return `Kế hoạch Năm ${currentYear}`;
+      return `Lũy kế tính đến ngày hôm nay của Năm ${currentYear}`;
     }
   };
 
@@ -133,25 +133,25 @@ export default function MetricsCards({ displayMode, dateFilterType = 'week', dat
       testId: "metric-daily-revenue"
     },
     {
-      title: "Mục tiêu lượt khách",
-      value: `${metrics.toursSoldPlanPercentage || 0}%`,
+      title: "Mục tiêu lượt khách đạt",
+      value: `${metrics.toursSoldPlanPercentage || 0}% Kế hoạch`,
       change: metrics.toursSold.toLocaleString(),
       changeType: "tours_sold_total", // Hiển thị tổng SL đã bán
       icon: ShoppingCart,
       color: "amber",
       testId: "metric-tours-sold",
-      detailLabel: "KH lượt khách",
+      detailLabel: "Lượt khách",
       detailValue: `${metrics.toursSold.toLocaleString()} / ${metrics.toursSoldPlanned?.toLocaleString() || '0'} LK`
     },
     {
-      title: displayMode === 'revenue' ? "Mục tiêu Doanh Thu" : "Mục tiêu Doanh Số",
-      value: `${metrics.revenuePlanPercentage || 0}%`,
+      title: "Mục tiêu Doanh Số đạt",
+      value: `${metrics.revenuePlanPercentage || 0}% Kế hoạch`,
       change: metrics.revenue || metrics.dailyRevenue,
       changeType: "revenue_total", // Hiển thị tổng doanh số
       icon: PieChart,
       color: "purple",
       testId: "metric-revenue",
-      detailLabel: displayMode === 'revenue' ? "KH Doanh Thu" : "KH Doanh Số",
+      detailLabel: "Doanh số",
       detailValue: `${(parseFloat(metrics.revenue?.replace(/[^\d.]/g, '') || '0') / 1000000).toLocaleString()} / ${(parseFloat(metrics.revenuePlanned?.replace(/[^\d.]/g, '') || '0') / 1000000).toLocaleString()}Tr VND`
     },
   ];
