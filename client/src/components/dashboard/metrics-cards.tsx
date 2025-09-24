@@ -43,12 +43,12 @@ export default function MetricsCards({ displayMode, dateFilterType = 'week', dat
       return `Lũy kế tính đến ngày hôm nay của Tháng - năm ${currentYear}`;
     } else if (dateFilterType === 'day') {
       if (selectedDay) {
-        return `Lũy kế tính đến ngày ${selectedDay.toLocaleDateString('vi-VN')} - năm ${currentYear}`;
+        return `Lũy kế tính đến hôm nay của kế hoạch ngày ${selectedDay.toLocaleDateString('vi-VN')} - năm ${currentYear}`;
       }
       return `Lũy kế tính đến ngày đã chọn - năm ${currentYear}`;
     } else if (dateFilterType === 'custom') {
       if (dateRange?.from && dateRange?.to) {
-        return `Lũy kế từ ${dateRange.from.toLocaleDateString('vi-VN')} đến ${dateRange.to.toLocaleDateString('vi-VN')}`;
+        return `Lũy kế tính từ hôm nay của kế hoạch từ ${dateRange.from.toLocaleDateString('vi-VN')} đến ${dateRange.to.toLocaleDateString('vi-VN')}`;
       } else if (dateRange?.from) {
         return `Lũy kế từ ${dateRange.from.toLocaleDateString('vi-VN')}`;
       }
@@ -302,7 +302,7 @@ export default function MetricsCards({ displayMode, dateFilterType = 'week', dat
       <div className="flex-1">
         <div className="mb-4">
           <h2 className="text-xl font-bold text-gray-900" data-testid="section-title-left">
-            Thống Kê theo Ngày
+            Thống Kê Ngày Hôm Nay
           </h2>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
