@@ -3121,11 +3121,11 @@ this.tours.set(tour.id, tour);
 });
 // Initialize regional performance
 const performanceData: InsertRegionalPerformance[] = [
-{ cityName: "TP. Hồ Chí Minh", performanceRate: "85.2", status: "good" },
-{ cityName: "Hà Nội", performanceRate: "78.9", status: "good" },
-{ cityName: "Đà Nẵng", performanceRate: "72.4", status: "moderate" },
-{ cityName: "Cần Thơ", performanceRate: "68.1", status: "moderate" },
-{ cityName: "Nha Trang", performanceRate: "61.7", status: "poor" },
+{ cityName: "TP. Hồ Chí Minh", performanceRate: "93.2", status: "good" },
+{ cityName: "Hà Nội", performanceRate: "89.8", status: "good" },
+{ cityName: "Đà Nẵng", performanceRate: "73.4", status: "moderate" },
+{ cityName: "Cần Thơ", performanceRate: "70.9", status: "moderate" },
+{ cityName: "Nha Trang", performanceRate: "65.7", status: "poor" },
 ];
 performanceData.forEach(perfData => {
 const performance: RegionalPerformance = {
