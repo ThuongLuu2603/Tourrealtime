@@ -37,9 +37,14 @@ export default function TopToursPanel({ displayMode, dateFilterType = 'week', da
       case 'year':
         return ` - Năm ${dateFilterValues[0]}`;
       case 'day':
-        return ` - Ngày ${dateFilterValues[0]}`;
+        return selectedDay ? ` - Ngày ${selectedDay.toLocaleDateString('vi-VN')}` : "";
       case 'custom':
-        return ` - ${dateFilterValues[0]}`;
+        if (dateRange?.from && dateRange?.to) {
+          return ` - ${dateRange.from.toLocaleDateString('vi-VN')} – ${dateRange.to.toLocaleDateString('vi-VN')}`;
+        } else if (dateRange?.from) {
+          return ` - Từ ${dateRange.from.toLocaleDateString('vi-VN')}`;
+        }
+        return "";
       default:
         return "";
     }
