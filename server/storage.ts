@@ -3361,9 +3361,11 @@ dailyRevenue: (totalDailyRevenue ).toFixed(1) , // Tổng từ cột "Doanh thư
 openRevenue : (totalopenRevenue ).toFixed(1) ,
 dailyRevenueChange: 8.3,
 toursSold: totalSold, // Tổng từ cột "Đã bán"
+toursSoldPlanned: totalPlanned, // Tổng kế hoạch lượt khách
 toursSoldChange: -3.2, // Keep for compatibility, but will show percentage instead
 toursSoldPlanPercentage: toursSoldPlanPercentage, // % so với kế hoạch
 revenue: (totalRevenue ).toFixed(1) , // Tổng từ cột "Doanh Thu"
+revenuePlanned: (totalPlannedRevenue ).toFixed(1), // Tổng kế hoạch doanh thu
 revenueChange: 5.2, // Revenue change percentage
 revenuePlanPercentage: revenuePlanPercentage, // % = Tổng Doanh Thu / Doanh thu Kế Hoạch
 completionRate: totalPlanned > 0 ? parseFloat(((totalSold / totalPlanned) * 100).toFixed(1)) : 0,

@@ -122,9 +122,11 @@ export type DashboardMetrics = {
   dailyRevenue: string;
   dailyRevenueChange: number;
   toursSold: number; // Tổng từ cột "Đã bán" (sold)
+  toursSoldPlanned: number; // Tổng kế hoạch lượt khách
   toursSoldChange: number; // % kế hoạch thay vì -3.2%
   toursSoldPlanPercentage: number; // % so với kế hoạch cho SL Đã Bán
   revenue: string; // Tổng từ cột "Doanh số" (revenue)
+  revenuePlanned: string; // Tổng kế hoạch doanh thu
   revenueChange: number; // % kế hoạch cho Doanh số
   revenuePlanPercentage: number; // % so với kế hoạch cho Doanh số
   completionRate: number;
