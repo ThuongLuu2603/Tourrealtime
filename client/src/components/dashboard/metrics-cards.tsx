@@ -141,7 +141,7 @@ export default function MetricsCards({ displayMode, dateFilterType = 'week', dat
       color: "amber",
       testId: "metric-tours-sold",
       detailLabel: "KH lượt khách",
-      detailValue: `${metrics.toursSold.toLocaleString()} LK`
+      detailValue: `${metrics.toursSold.toLocaleString()} / ${metrics.toursSoldPlanned?.toLocaleString() || '0'} LK`
     },
     {
       title: displayMode === 'revenue' ? "Mục tiêu Doanh Thu" : "Mục tiêu Doanh Số",
@@ -152,7 +152,7 @@ export default function MetricsCards({ displayMode, dateFilterType = 'week', dat
       color: "purple",
       testId: "metric-revenue",
       detailLabel: displayMode === 'revenue' ? "KH Doanh Thu" : "KH Doanh Số",
-      detailValue: `${(parseFloat(metrics.revenue?.replace(/[^\d.]/g, '') || '0') / 1000000).toLocaleString()}Tr VND`
+      detailValue: `${(parseFloat(metrics.revenue?.replace(/[^\d.]/g, '') || '0') / 1000000).toLocaleString()} / ${(parseFloat(metrics.revenuePlanned?.replace(/[^\d.]/g, '') || '0') / 1000000).toLocaleString()}Tr VND`
     },
   ];
 
