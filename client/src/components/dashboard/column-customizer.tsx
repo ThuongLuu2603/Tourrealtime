@@ -61,18 +61,18 @@ export default function ColumnCustomizer({ columns, onColumnsChange, className, 
       switch (column.id) {
         case 'dailyRevenue': return 'Doanh Thu Hôm Nay';
         case 'revenue': return 'Doanh Thu Lũy Kế';
-        case 'openRevenue': return 'DT Mở bán';
+        case 'openRevenue': return 'Doanh Thu Mở bán';
         case 'plannedRevenue': return 'Doanh Thu Kế Hoạch';
-        case 'targetPercentage': return '% DT KH';
+        case 'targetPercentage': return '% Doanh Thu KH';
         default: return column.label;
       }
     } else {
       switch (column.id) {
         case 'dailyRevenue': return 'Doanh Số Hôm Nay';
         case 'revenue': return 'Doanh Số Lũy Kế';
-        case 'openRevenue': return 'DS Mở bán';
+        case 'openRevenue': return 'Doanh Số Mở bán';
         case 'plannedRevenue': return 'Doanh Số Kế Hoạch';
-        case 'targetPercentage': return '% DS KH';
+        case 'targetPercentage': return '% Doanh Số KH';
         default: return column.label;
       }
     }
