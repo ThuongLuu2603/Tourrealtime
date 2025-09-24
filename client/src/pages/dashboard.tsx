@@ -196,11 +196,15 @@ export default function Dashboard() {
               displayMode={displayMode}
               dateFilterType={dateFilterType}
               dateFilterValues={dateFilterValues}
+              selectedDay={selectedDay}
+              dateRange={dateRange}
             />
             <RegionalPerformance 
               displayMode={displayMode}
               dateFilterType={dateFilterType}
               dateFilterValues={dateFilterValues}
+              selectedDay={selectedDay}
+              dateRange={dateRange}
             />
             <RecentActivities />
           </div>

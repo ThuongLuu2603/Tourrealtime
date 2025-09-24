@@ -8,9 +8,11 @@ interface TopToursPanelProps {
   displayMode: 'sales' | 'revenue';
   dateFilterType?: 'week' | 'month' | 'year' | 'day' | 'custom';
   dateFilterValues?: number[];
+  selectedDay?: Date;
+  dateRange?: { from: Date; to?: Date };
 }
 
-export default function TopToursPanel({ displayMode, dateFilterType = 'week', dateFilterValues = [] }: TopToursPanelProps) {
+export default function TopToursPanel({ displayMode, dateFilterType = 'week', dateFilterValues = [], selectedDay, dateRange }: TopToursPanelProps) {
   const [showAll, setShowAll] = useState(false);
   const { data: tours = [], isLoading } = useQuery<Tour[]>({
     queryKey: ["/api/tours"],
@@ -35,9 +37,9 @@ export default function TopToursPanel({ displayMode, dateFilterType = 'week', da
       case 'year':
         return ` - Năm ${dateFilterValues[0]}`;
       case 'day':
-        return ` - Ngày đã chọn`;
+        return ` - Ngày ${dateFilterValues[0]}`;
       case 'custom':
-        return ` - Khoảng thời gian đã chọn`;
+        return ` - ${dateFilterValues[0]}`;
       default:
         return "";
     }
