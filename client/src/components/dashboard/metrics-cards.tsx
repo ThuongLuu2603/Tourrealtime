@@ -115,18 +115,18 @@ export default function MetricsCards({ displayMode, dateFilterType = 'week', dat
 
   const cards: CardProps[] = [
     {
-      title: "SL Đã Bán hôm nay",
-      value: metrics.dailyBookings?.toLocaleString() || "0",
-      change: metrics.dailyBookingsChange,
+      title: displayMode === 'revenue' ? "Số lượng Đã bán" : "SL Đã Bán hôm nay",
+      value: displayMode === 'revenue' ? metrics.toursSold.toLocaleString() : (metrics.dailyBookings?.toLocaleString() || "0"),
+      change: displayMode === 'revenue' ? metrics.toursSoldChange : metrics.dailyBookingsChange,
       changeType: "customers", // Hiển thị số khách thay vì phần trăm
       icon: Route,
       color: "blue",
       testId: "metric-daily-bookings"
     },
     {
-      title: displayMode === 'revenue' ? "Doanh Thu Hôm Nay" : "Doanh Số Hôm Nay",
-      value: `${(parseFloat(metrics.dailyRevenue?.replace(/[^\d.]/g, '') || '0') / 1000000).toLocaleString()}Tr VND`,
-      change: metrics.dailyRevenueChange,
+      title: displayMode === 'revenue' ? "Doanh Thu lũy kế" : "Doanh Số Hôm Nay",
+      value: displayMode === 'revenue' ? `${(parseFloat(metrics.revenue?.replace(/[^\d.]/g, '') || '0') / 1000000).toLocaleString()}Tr VND` : `${(parseFloat(metrics.dailyRevenue?.replace(/[^\d.]/g, '') || '0') / 1000000).toLocaleString()}Tr VND`,
+      change: displayMode === 'revenue' ? metrics.revenueChange : metrics.dailyRevenueChange,
       changeType: "percentage",
       icon: DollarSign,
       color: "green",
