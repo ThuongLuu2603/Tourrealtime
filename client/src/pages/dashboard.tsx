@@ -91,8 +91,8 @@ export default function Dashboard() {
                   <SelectValue placeholder="Chọn chế độ hiển thị" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="sales">Hiển thị theo Doanh số</SelectItem>
-                  <SelectItem value="revenue">Hiển thị theo Doanh thu</SelectItem>
+                  <SelectItem value="sales">Báo cáo theo Doanh số</SelectItem>
+                  <SelectItem value="revenue">Báo cáo theo Doanh thu</SelectItem>
                 </SelectContent>
               </Select>
               {/* Sales Unit Filter in Header */}
