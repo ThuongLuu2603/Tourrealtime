@@ -4,7 +4,7 @@ import type { RegionalPerformance } from "@shared/schema";
 
 interface RegionalPerformanceProps {
   displayMode: 'sales' | 'revenue';
-  dateFilterType?: 'week' | 'month' | 'year';
+  dateFilterType?: 'week' | 'month' | 'year' | 'day' | 'custom';
   dateFilterValues?: number[];
 }
 
@@ -16,7 +16,7 @@ export default function RegionalPerformance({ displayMode, dateFilterType = 'wee
 
   // Format date period text based on filter type and values
   const getDatePeriodText = () => {
-    if (dateFilterValues.length === 0) return "";
+    if (dateFilterValues.length === 0 && !['day', 'custom'].includes(dateFilterType)) return "";
     
     switch (dateFilterType) {
       case 'week':
@@ -25,6 +25,10 @@ export default function RegionalPerformance({ displayMode, dateFilterType = 'wee
         return ` - Tháng ${dateFilterValues[0]}`;
       case 'year':
         return ` - Năm ${dateFilterValues[0]}`;
+      case 'day':
+        return ` - Ngày đã chọn`;
+      case 'custom':
+        return ` - Khoảng thời gian đã chọn`;
       default:
         return "";
     }
