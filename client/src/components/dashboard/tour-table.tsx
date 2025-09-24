@@ -77,7 +77,7 @@ export default function TourTable({ selectedSalesUnit, onSalesUnitChange, displa
           case 'openRevenue':
             return { ...col, label: 'DS Mở bán' };
           case 'plannedRevenue':
-            return { ...col, visible: false, label: 'Doanh Số Kế Hoạch' };
+            return { ...col, label: 'Doanh Số Kế Hoạch' };
           case 'targetPercentage':
             return { ...col, label: '% DS KH' };
           default:
