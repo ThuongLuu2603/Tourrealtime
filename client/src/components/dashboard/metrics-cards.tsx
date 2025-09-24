@@ -5,9 +5,11 @@ import type { DashboardMetrics } from "@shared/schema";
 
 interface MetricsCardsProps {
   displayMode: 'sales' | 'revenue';
+  dateFilterType?: 'week' | 'month' | 'year';
+  dateFilterValues?: number[];
 }
 
-export default function MetricsCards({ displayMode }: MetricsCardsProps) {
+export default function MetricsCards({ displayMode, dateFilterType = 'week', dateFilterValues = [] }: MetricsCardsProps) {
   const { data: metrics, isLoading } = useQuery<DashboardMetrics>({
     queryKey: ["/api/dashboard/metrics"],
     refetchInterval: 30000, // Refresh every 30 seconds
