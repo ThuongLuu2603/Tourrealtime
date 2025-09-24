@@ -4,13 +4,31 @@ import type { RegionalPerformance } from "@shared/schema";
 
 interface RegionalPerformanceProps {
   displayMode: 'sales' | 'revenue';
+  dateFilterType?: 'week' | 'month' | 'year';
+  dateFilterValues?: number[];
 }
 
-export default function RegionalPerformance({ displayMode }: RegionalPerformanceProps) {
+export default function RegionalPerformance({ displayMode, dateFilterType = 'week', dateFilterValues = [] }: RegionalPerformanceProps) {
   const { data: performance = [], isLoading } = useQuery<RegionalPerformance[]>({
     queryKey: ["/api/regional-performance"],
     refetchInterval: 30000,
   });
+
+  // Format date period text based on filter type and values
+  const getDatePeriodText = () => {
+    if (dateFilterValues.length === 0) return "";
+    
+    switch (dateFilterType) {
+      case 'week':
+        return ` - Tuần ${dateFilterValues[0]}`;
+      case 'month':
+        return ` - Tháng ${dateFilterValues[0]}`;
+      case 'year':
+        return ` - Năm ${dateFilterValues[0]}`;
+      default:
+        return "";
+    }
+  };
 
   const getStatusColor = (status: string) => {
     switch (status) {
@@ -29,7 +47,7 @@ export default function RegionalPerformance({ displayMode }: RegionalPerformance
     return (
       <Card className="bg-white rounded-xl shadow-sm border border-gray-200">
         <CardHeader>
-          <CardTitle>Hiệu Suất Doanh Số KH Theo Khu Vực</CardTitle>
+          <CardTitle>Hiệu Suất Doanh Số KH Theo Khu Vực{getDatePeriodText()}</CardTitle>
         </CardHeader>
         <CardContent>
           <div className="animate-pulse space-y-4">
@@ -52,7 +70,7 @@ export default function RegionalPerformance({ displayMode }: RegionalPerformance
     <Card className="bg-white rounded-xl shadow-sm border border-gray-200" data-testid="regional-performance">
       <CardHeader className="px-6 py-4 border-b border-gray-200">
         <CardTitle className="text-lg font-semibold text-gray-900">
-          {displayMode === 'revenue' ? 'Hiệu Suất Doanh Thu Theo Khu Vực' : 'Hiệu Suất Doanh Số Theo Khu Vực'}
+          {displayMode === 'revenue' ? 'Hiệu Suất Doanh Thu Theo Khu Vực' : 'Hiệu Suất Doanh Số Theo Khu Vực'}{getDatePeriodText()}
         </CardTitle>
       </CardHeader>
       <CardContent className="p-6 space-y-4">
