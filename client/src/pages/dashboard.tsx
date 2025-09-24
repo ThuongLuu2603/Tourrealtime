@@ -175,6 +175,8 @@ export default function Dashboard() {
           displayMode={displayMode}
           dateFilterType={dateFilterType}
           dateFilterValues={dateFilterValues}
+          selectedDay={selectedDay}
+          dateRange={dateRange}
         />
 
         <div className="grid grid-cols-1 xl:grid-cols-4 gap-6 mt-8">

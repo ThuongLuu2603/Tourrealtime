@@ -7,9 +7,11 @@ interface MetricsCardsProps {
   displayMode: 'sales' | 'revenue';
   dateFilterType?: 'week' | 'month' | 'year' | 'day' | 'custom';
   dateFilterValues?: number[];
+  selectedDay?: Date;
+  dateRange?: { from: Date; to?: Date };
 }
 
-export default function MetricsCards({ displayMode, dateFilterType = 'week', dateFilterValues = [] }: MetricsCardsProps) {
+export default function MetricsCards({ displayMode, dateFilterType = 'week', dateFilterValues = [], selectedDay, dateRange }: MetricsCardsProps) {
   const { data: metrics, isLoading } = useQuery<DashboardMetrics>({
     queryKey: ["/api/dashboard/metrics"],
     refetchInterval: 30000, // Refresh every 30 seconds
@@ -39,6 +41,18 @@ export default function MetricsCards({ displayMode, dateFilterType = 'week', dat
         }
       }
       return `Lũy kế tính đến ngày hôm nay của Tháng - năm ${currentYear}`;
+    } else if (dateFilterType === 'day') {
+      if (selectedDay) {
+        return `Lũy kế tính đến ngày ${selectedDay.toLocaleDateString('vi-VN')} - năm ${currentYear}`;
+      }
+      return `Lũy kế tính đến ngày đã chọn - năm ${currentYear}`;
+    } else if (dateFilterType === 'custom') {
+      if (dateRange?.from && dateRange?.to) {
+        return `Lũy kế từ ${dateRange.from.toLocaleDateString('vi-VN')} đến ${dateRange.to.toLocaleDateString('vi-VN')}`;
+      } else if (dateRange?.from) {
+        return `Lũy kế từ ${dateRange.from.toLocaleDateString('vi-VN')}`;
+      }
+      return `Lũy kế khoảng thời gian đã chọn - năm ${currentYear}`;
     } else {
       return `Lũy kế tính đến ngày hôm nay của Năm ${currentYear}`;
     }
