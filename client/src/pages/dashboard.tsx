@@ -18,6 +18,9 @@ export default function Dashboard() {
   const [selectedSalesUnit, setSelectedSalesUnit] = useState<string>("all");
   // Thêm state để quản lý lựa chọn hiển thị: 'sales' cho Doanh số, 'revenue' cho Doanh thu
   const [displayMode, setDisplayMode] = useState<'sales' | 'revenue'>('sales');
+  // State để quản lý date filter
+  const [dateFilterType, setDateFilterType] = useState<'week' | 'month' | 'year'>('week');
+  const [dateFilterValues, setDateFilterValues] = useState<number[]>([]);
 
   // Fetch sales units data for dropdown
   const { data: salesUnits = [] } = useQuery<SalesUnit[]>({
@@ -112,7 +115,8 @@ export default function Dashboard() {
               <DateFilterDropdown
                 onSelectionChange={(type, values) => {
                   console.log(`Selected ${type}:`, values);
-                  // Handle date filter change here
+                  setDateFilterType(type);
+                  setDateFilterValues(values);
                 }}
               />
 
@@ -159,7 +163,11 @@ export default function Dashboard() {
       <main className="w-full px-4 sm:px-6 lg:px-8 py-6">
         {/* Key Metrics Cards */}
         {/* Truyền trạng thái lựa chọn vào các component con */}
-        <MetricsCards displayMode={displayMode} />
+        <MetricsCards 
+          displayMode={displayMode}
+          dateFilterType={dateFilterType}
+          dateFilterValues={dateFilterValues}
+        />
 
         <div className="grid grid-cols-1 xl:grid-cols-4 gap-6 mt-8">
           {/* Main Dashboard Table */}
