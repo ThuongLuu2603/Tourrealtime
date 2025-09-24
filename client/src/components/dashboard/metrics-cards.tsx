@@ -288,7 +288,7 @@ export default function MetricsCards({ displayMode, dateFilterType = 'week', dat
       <div className="flex-1">
         <div className="mb-4">
           <h2 className="text-xl font-bold text-gray-900" data-testid="section-title-left">
-            Ngày
+            Thống Kê theo Ngày
           </h2>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
