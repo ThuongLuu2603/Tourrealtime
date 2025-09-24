@@ -201,7 +201,9 @@ export default function MetricsCards({ displayMode, dateFilterType = 'week', dat
                     isNegative ? 'text-brand-red' : 'text-gray-600'
                   }`}>
                     {card.changeType === "customers" ? (
-                      `${isPositive ? '+' : ''}${changeValue} khách so với hôm qua`
+                      displayMode === 'revenue' ? 
+                        `${isPositive ? '+' : ''}${changeValue} khách so với cùng kỳ` :
+                        `${isPositive ? '+' : ''}${changeValue} khách so với hôm qua`
                     ) : card.changeType === "plan_percentage" ? (
                       `= ${changeValue}% kế hoạch`
                     ) : card.changeType === "revenue_total" ? (
@@ -238,7 +240,7 @@ export default function MetricsCards({ displayMode, dateFilterType = 'week', dat
       <div className="flex-1">
         <div className="mb-4">
           <h2 className="text-xl font-bold text-gray-900" data-testid="section-title-left">
-            Ngày
+            {displayMode === 'revenue' ? getRightSectionTitle() : 'Ngày'}
           </h2>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
