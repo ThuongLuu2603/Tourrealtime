@@ -44,6 +44,34 @@ export default function MetricsCards({ displayMode, dateFilterType = 'week', dat
     }
   };
 
+  // Helper function để tạo text cho kỳ so sánh
+  const getPeriodText = () => {
+    if (dateFilterType === 'week') {
+      if (dateFilterValues.length > 0) {
+        const weekNumbers = dateFilterValues.sort((a, b) => a - b);
+        if (weekNumbers.length === 1) {
+          return `tuần ${weekNumbers[0]}`;
+        } else {
+          return `tuần ${weekNumbers[0]}-${weekNumbers[weekNumbers.length - 1]}`;
+        }
+      }
+      return 'tuần';
+    } else if (dateFilterType === 'month') {
+      if (dateFilterValues.length > 0) {
+        const monthNumbers = dateFilterValues.sort((a, b) => a - b);
+        if (monthNumbers.length === 1) {
+          return `tháng ${monthNumbers[0]}`;
+        } else {
+          return `tháng ${monthNumbers[0]}-${monthNumbers[monthNumbers.length - 1]}`;
+        }
+      }
+      return 'tháng';
+    } else {
+      const currentYear = new Date().getFullYear();
+      return `năm ${currentYear}`;
+    }
+  };
+
   if (isLoading) {
     if (displayMode === 'revenue') {
       // Revenue mode loading: Tất cả cards trong 1 hàng
@@ -242,7 +270,7 @@ export default function MetricsCards({ displayMode, dateFilterType = 'week', dat
                     ) : card.changeType === "tours_sold_total" ? (
                       `${card.change}`
                     ) : (
-                      `${isPositive ? '+' : ''}${changeValue}% so với kế hoạch`
+                      `${isPositive ? '+' : ''}${changeValue}% so với kế hoạch ${getPeriodText()}`
                     )}
                   </span>
                 </div>
