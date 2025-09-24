@@ -374,7 +374,7 @@ export default function TourTable({ selectedSalesUnit, onSalesUnitChange, displa
         
       case 'opensell':
         return (
-          <span className={`text-center text-sm ${getDataTextColor(rowType, true)} text-orange-600`}>
+          <span className={`text-center text-sm ${getDataTextColor(rowType, true)}`}>
             {(rowData.data.opensell || 0).toLocaleString()}
           </span>
         );
@@ -436,21 +436,21 @@ export default function TourTable({ selectedSalesUnit, onSalesUnitChange, displa
         
       case 'dailyRevenue':
         return (
-          <span className={`text-center text-sm ${getDataTextColor(rowData.type, true)} text-blue-600`}>
+          <span className={`text-center text-sm ${getDataTextColor(rowData.type, true)}`}>
             {formatCurrency(rowData.data.dailyRevenue || "0")}
           </span>
         );
         
       case 'revenue':
         return (
-          <span className={`text-center text-sm ${getDataTextColor(rowData.type, true)} text-green-600`}>
+          <span className={`text-center text-sm ${getDataTextColor(rowData.type, true)}`}>
             {formatCurrency(rowData.data.revenue)}
           </span>
         );
         
       case 'openRevenue':
         return (
-          <span className={`text-center text-sm ${getDataTextColor(rowData.type, true)} text-teal-600`}>
+          <span className={`text-center text-sm ${getDataTextColor(rowData.type, true)}`}>
             {formatCurrency(rowData.data.openRevenue || "0")}
           </span>
         );
@@ -458,19 +458,19 @@ export default function TourTable({ selectedSalesUnit, onSalesUnitChange, displa
       case 'plannedRevenue':
         if (isSection) {
           return (
-            <span className="text-center text-sm font-semibold text-purple-600">
+            <span className={`text-center text-sm ${getDataTextColor('section', true)}`}>
               {formatCurrency(calculateSectionPlannedRevenue(rowData.section))}
             </span>
           );
         } else if (isTour) {
           return (
-            <span className={`text-center text-sm ${getDataTextColor(rowData.type, true)} text-purple-600`}>
+            <span className={`text-center text-sm ${getDataTextColor(rowData.type, true)}`}>
               {formatCurrency(rowData.data.plannedRevenue || "0")}
             </span>
           );
         } else {
           return (
-            <span className={`text-center text-sm ${getDataTextColor(rowData.type, true)} text-purple-600`}>
+            <span className={`text-center text-sm ${getDataTextColor(rowData.type, true)}`}>
               {formatCurrency(rowData.data.plannedRevenue)}
             </span>
           );
