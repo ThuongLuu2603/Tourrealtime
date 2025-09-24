@@ -5,7 +5,7 @@ import type { DashboardMetrics } from "@shared/schema";
 
 interface MetricsCardsProps {
   displayMode: 'sales' | 'revenue';
-  dateFilterType?: 'week' | 'month' | 'year';
+  dateFilterType?: 'week' | 'month' | 'year' | 'day' | 'custom';
   dateFilterValues?: number[];
 }
 

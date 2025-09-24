@@ -19,8 +19,10 @@ export default function Dashboard() {
   // Thêm state để quản lý lựa chọn hiển thị: 'sales' cho Doanh số, 'revenue' cho Doanh thu
   const [displayMode, setDisplayMode] = useState<'sales' | 'revenue'>('sales');
   // State để quản lý date filter
-  const [dateFilterType, setDateFilterType] = useState<'week' | 'month' | 'year'>('week');
+  const [dateFilterType, setDateFilterType] = useState<'week' | 'month' | 'year' | 'day' | 'custom'>('week');
   const [dateFilterValues, setDateFilterValues] = useState<number[]>([]);
+  const [selectedDay, setSelectedDay] = useState<Date | undefined>();
+  const [dateRange, setDateRange] = useState<{ from: Date; to?: Date } | undefined>();
 
   // Fetch sales units data for dropdown
   const { data: salesUnits = [] } = useQuery<SalesUnit[]>({
@@ -113,10 +115,16 @@ export default function Dashboard() {
                 </Select>
               </div>
               <DateFilterDropdown
-                onSelectionChange={(type, values) => {
-                  console.log(`Selected ${type}:`, values);
+                onSelectionChange={(type, values, dates) => {
+                  console.log(`Selected ${type}:`, values, dates);
                   setDateFilterType(type);
                   setDateFilterValues(values);
+                  if (dates?.selectedDay) {
+                    setSelectedDay(dates.selectedDay);
+                  }
+                  if (dates?.dateRange) {
+                    setDateRange(dates.dateRange);
+                  }
                 }}
               />
 
