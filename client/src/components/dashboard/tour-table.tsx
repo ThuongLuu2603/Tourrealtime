@@ -260,11 +260,11 @@ export default function TourTable({ selectedSalesUnit, onSalesUnitChange, displa
   };
 
   const calculateSectionPlannedRevenue = (category: string) => {
-    const categoryTours = filteredTours.filter(tour => tour.category === category);
-    const totalPlannedRevenue = categoryTours.reduce((sum, tour) => {
-      return sum + parseFloat(tour.plannedRevenue || "0");
-    }, 0);
-    return totalPlannedRevenue.toString();
+    // Get the main category level from hierarchy levels (tour_category level)
+    const categoryLevel = hierarchyLevels.find(level => 
+      level.category === category && level.level === 'tour_category'
+    );
+    return categoryLevel?.plannedRevenue || "0";
   };
 
   const getSalesUnitName = (code: string) => {
