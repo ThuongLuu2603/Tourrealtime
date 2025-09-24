@@ -970,7 +970,10 @@ export default function TourTable({ selectedSalesUnit, onSalesUnitChange, displa
           <thead className="bg-gray-50 sticky top-0 z-20">
             <tr>
               {columns
-                .filter(col => col.visible && (col.id !== 'topSalesUnit' || selectedSalesUnit === "all"))
+                .filter(col => {
+                  const updatedCol = updatedColumns.find(c => c.id === col.id) || col;
+                  return updatedCol.visible && (col.id !== 'topSalesUnit' || selectedSalesUnit === "all");
+                })
                 .map(column => {
                   const updatedColumn = updatedColumns.find(c => c.id === column.id) || column;
                   return (
@@ -1046,7 +1049,10 @@ export default function TourTable({ selectedSalesUnit, onSalesUnitChange, displa
                   data-testid={getTestId()}
                 >
                   {columns
-                    .filter(col => col.visible && (col.id !== 'topSalesUnit' || selectedSalesUnit === "all"))
+                    .filter(col => {
+                  const updatedCol = updatedColumns.find(c => c.id === col.id) || col;
+                  return updatedCol.visible && (col.id !== 'topSalesUnit' || selectedSalesUnit === "all");
+                })
                     .map(column => (
                       <td 
                         key={column.id}
