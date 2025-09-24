@@ -43,7 +43,7 @@ export default function MetricsCards({ displayMode, dateFilterType = 'week', dat
       return `Lũy kế tính đến ngày hôm nay của Tháng - năm ${currentYear}`;
     } else if (dateFilterType === 'day') {
       if (selectedDay) {
-        return `Lũy kế tính đến hôm nay của kế hoạch ngày ${selectedDay.toLocaleDateString('vi-VN')} - năm ${currentYear}`;
+        return `Lũy kế tính đến hôm nay của kế hoạch ngày ${selectedDay.toLocaleDateString('vi-VN')} `;
       }
       return `Lũy kế tính đến ngày đã chọn - năm ${currentYear}`;
     } else if (dateFilterType === 'custom') {
