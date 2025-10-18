@@ -11,7 +11,7 @@ export interface ColumnConfig {
   label: string;
   visible: boolean;
   width?: string;
-  fixed?: boolean; // Cột không thể ẩn
+  fixed?: boolean; 
 }
 
 interface ColumnCustomizerProps {
