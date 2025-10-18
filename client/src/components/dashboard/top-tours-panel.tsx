@@ -19,13 +19,9 @@ export default function TopToursPanel({ displayMode, dateFilterType = 'week', da
     refetchInterval: 30000,
   });
 
-  // Get top 10 tours by sold count
+
   const allTopTours = tours.sort((a, b) => b.sold - a.sold).slice(0, 10);
-
-  // Show only 5 initially, or all if showAll is true
   const topTours = showAll ? allTopTours : allTopTours.slice(0, 5);
-
-  // Format date period text based on filter type and values
   const getDatePeriodText = () => {
     if (dateFilterValues.length === 0 && !['day', 'custom'].includes(dateFilterType)) return "";
     
@@ -150,7 +146,7 @@ export default function TopToursPanel({ displayMode, dateFilterType = 'week', da
           </div>
         )}
 
-        {/* Show More / Show Less Button */}
+        {/* Show More */}
         {allTopTours.length > 5 && (
           <div className="text-center pt-4 border-t border-gray-100">
             <Button

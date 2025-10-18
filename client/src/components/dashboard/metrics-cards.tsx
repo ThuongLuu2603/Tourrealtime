@@ -161,7 +161,7 @@ export default function MetricsCards({ displayMode, dateFilterType = 'week', dat
       title: displayMode === 'revenue' ? "Số lượng Đã bán" : "SL Đã Bán hôm nay",
       value: displayMode === 'revenue' ? metrics.toursSold.toLocaleString() : (metrics.dailyBookings?.toLocaleString() || "0"),
       change: displayMode === 'revenue' ? metrics.weeklyBookingsChange : metrics.dailyBookingsChange,
-      changeType: "customers", // Hiển thị số khách thay vì phần trăm
+      changeType: "customers", 
       icon: Route,
       color: "blue",
       testId: "metric-daily-bookings"
@@ -179,7 +179,7 @@ export default function MetricsCards({ displayMode, dateFilterType = 'week', dat
       title: "Mục tiêu lượt khách đạt",
       value: `${metrics.toursSoldPlanPercentage || 0}% Kế hoạch`,
       change: metrics.toursSold.toLocaleString(),
-      changeType: "tours_sold_total", // Hiển thị tổng SL đã bán
+      changeType: "tours_sold_total", 
       icon: ShoppingCart,
       color: "amber",
       testId: "metric-tours-sold",
@@ -190,7 +190,7 @@ export default function MetricsCards({ displayMode, dateFilterType = 'week', dat
       title: displayMode === 'revenue' ? "Mục tiêu Doanh Thu đạt" : "Mục tiêu Doanh Số đạt",
       value: `${metrics.revenuePlanPercentage || 0}% Kế hoạch`,
       change: metrics.revenue || metrics.dailyRevenue,
-      changeType: "revenue_total", // Hiển thị tổng doanh số
+      changeType: "revenue_total", 
       icon: PieChart,
       color: "purple",
       testId: "metric-revenue",
@@ -210,8 +210,8 @@ export default function MetricsCards({ displayMode, dateFilterType = 'week', dat
   };
 
   // Chia cards thành 2 nhóm
-  const leftCards = displayMode === 'revenue' ? cards : cards.slice(0, 2); // Nếu revenue mode thì tất cả cards ở bên trái
-  const rightCards = displayMode === 'revenue' ? [] : cards.slice(2, 4); // Nếu revenue mode thì không có cards bên phải
+  const leftCards = displayMode === 'revenue' ? cards : cards.slice(0, 2); 
+  const rightCards = displayMode === 'revenue' ? [] : cards.slice(2, 4); 
 
   const renderCard = (card: CardProps, index: number) => {
     const IconComponent = card.icon;
@@ -256,7 +256,7 @@ export default function MetricsCards({ displayMode, dateFilterType = 'week', dat
                     ) : card.changeType === "tours_sold_total" ? (
                       `${card.change}`
                     ) : (
-                      `${isPositive ? '+' : ''}${changeValue}% so với kế hoạch`
+                      `${isPositive ? '+' : ''}${changeValue}% so với kế hoạch tuần 39`
                     )}
                   </span>
                 </div>
