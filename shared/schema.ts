@@ -125,7 +125,7 @@ export type DashboardMetrics = {
   weeklyRevenueChange: number; // So sánh doanh thu với cùng kỳ tuần trước
   toursSold: number; // Tổng từ cột "Đã bán" (sold)
   toursSoldPlanned: number; // Tổng kế hoạch lượt khách
-  toursSoldChange: number; // % kế hoạch thay vì -3.2%
+  toursSoldChange: number; // % kế hoạch 
   toursSoldPlanPercentage: number; // % so với kế hoạch cho SL Đã Bán
   revenue: string; // Tổng từ cột "Doanh số" (revenue)
   revenuePlanned: string; // Tổng kế hoạch doanh thu

@@ -594,7 +594,7 @@ export default function TourTable({ selectedSalesUnit, onSalesUnitChange, displa
     return (
       <Card className="bg-white rounded-xl shadow-sm border border-gray-200">
         <CardHeader>
-          <CardTitle>Bảng Theo Dõi Tour Realtime</CardTitle>
+          <CardTitle>Bảng Theo Dõi Tour Realtime - Tuần 39</CardTitle>
         </CardHeader>
         <CardContent>
           <div className="animate-pulse space-y-4">
@@ -897,8 +897,7 @@ export default function TourTable({ selectedSalesUnit, onSalesUnitChange, displa
     }
   };
 
-  // Always add main categories first, then their content when expanded
-  // Show TOUR QUỐC TẾ (international) first, then TOUR NỘI ĐỊA (domestic)
+  // Show international first, then domestic
   if (internationalRoot && showSections.includes('international')) {
     allRows.push({
       type: 'section',
@@ -918,8 +917,6 @@ export default function TourTable({ selectedSalesUnit, onSalesUnitChange, displa
       data: domesticRoot,
       isExpanded: expandedSections.domestic
     });
-
-    // Add content when expanded
     addExpandedContent('domestic');
   }
 
@@ -928,7 +925,7 @@ export default function TourTable({ selectedSalesUnit, onSalesUnitChange, displa
       <CardHeader className="px-6 py-4 border-b border-gray-200">
         <div className="flex justify-between items-center">
           <CardTitle className="text-lg font-semibold text-gray-900">
-            Bảng Theo Dõi Tour Realtime
+            Bảng Theo Dõi Tour Realtime - Tuần 39
           </CardTitle>
           
           <div className="flex items-center space-x-4">
