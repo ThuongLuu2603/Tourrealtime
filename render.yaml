@@ -1,0 +1,12 @@
+# Render service configuration for monorepo (server bundles client)
+services:
+  - type: web
+    name: Tourrealtime-web
+    env: node
+    plan: free
+    buildCommand: "npm ci && npm run build"
+    startCommand: "npm run start"
+    autoDeploy: true
+    envVars:
+      - key: PORT
+        value: "5000"
